@@ -1,114 +1,104 @@
 <template>
   <div class="pref-markdown">
-    <h4>Markdown</h4>
-    <compound>
-      <template #head>
-        <h6 class="title">Lists:</h6>
-      </template>
-      <template #children>
-        <bool
-          description="Prefer loose list items"
-          :bool="preferLooseListItem"
-          :onChange="value => onSelectChange('preferLooseListItem', value)"
-          more="https://spec.commonmark.org/0.29/#loose"
-        ></bool>
-        <cur-select
-          description="Preferred marker for bullet lists"
-          :value="bulletListMarker"
-          :options="bulletListMarkerOptions"
-          :onChange="value => onSelectChange('bulletListMarker', value)"
-          more="https://spec.commonmark.org/0.29/#bullet-list-marker"
-        ></cur-select>
-        <cur-select
-          description="Preferred marker for ordered lists"
-          :value="orderListDelimiter"
-          :options="orderListDelimiterOptions"
-          :onChange="value => onSelectChange('orderListDelimiter', value)"
-          more="https://spec.commonmark.org/0.29/#ordered-list"
-        ></cur-select>
-        <cur-select
-          description="Preferred list indentation"
-          :value="listIndentation"
-          :options="listIndentationOptions"
-          :onChange="value => onSelectChange('listIndentation', value)"
-        ></cur-select>
-      </template>
-    </compound>
-
-    <compound>
-      <template #head>
-        <h6 class="title">Markdown extensions:</h6>
-      </template>
-      <template #children>
-        <cur-select
-          description="Front matter format"
-          :value="frontmatterType"
-          :options="frontmatterTypeOptions"
-          :onChange="value => onSelectChange('frontmatterType', value)"
-        ></cur-select>
-        <bool
-          description="Enable Pandoc-style superscript and subscript"
-          :bool="superSubScript"
-          :onChange="value => onSelectChange('superSubScript', value)"
-          more="https://pandoc.org/MANUAL.html#superscripts-and-subscripts"
-        ></bool>
-        <bool
-          description="Enable Pandoc-style footnotes"
-          notes="Requires restart."
-          :bool="footnote"
-          :onChange="value => onSelectChange('footnote', value)"
-          more="https://pandoc.org/MANUAL.html#footnotes"
-        ></bool>
-      </template>
-    </compound>
-
-    <compound>
-      <template #head>
-        <h6 class="title">Compatibility:</h6>
-      </template>
-      <template #children>
-        <bool
-          description="Enable HTML rendering"
-          :bool="isHtmlEnabled"
-          :onChange="value => onSelectChange('isHtmlEnabled', value)"
-        ></bool>
-        <bool
-          description="Enable GitLab compatibility mode"
-          :bool="isGitlabCompatibilityEnabled"
-          :onChange="value => onSelectChange('isGitlabCompatibilityEnabled', value)"
-        ></bool>
-      </template>
-    </compound>
-
-    <compound>
-      <template #head>
-        <h6 class="title">Diagrams:</h6>
-      </template>
-      <template #children>
-        <cur-select
-          description="Sequence diagram theme"
-          :value="sequenceTheme"
-          :options="sequenceThemeOptions"
-          :onChange="value => onSelectChange('sequenceTheme', value)"
-          more="https://bramp.github.io/js-sequence-diagrams/"
-        ></cur-select>
-      </template>
-    </compound>
-
-    <compound>
-      <template #head>
-        <h6 class="title">Misc:</h6>
-      </template>
-      <template #children>
-        <cur-select
-          description="Preferred heading style"
-          :value="preferHeadingStyle"
-          :options="preferHeadingStyleOptions"
-          :onChange="value => onSelectChange('preferHeadingStyle', value)"
-          :disable="true"
-        ></cur-select>
-      </template>
-    </compound>
+    <h4>markdown</h4>
+    <bool
+      description="Prefer loose list items"
+      :bool="preferLooseListItem"
+      :onChange="value => onSelectChange('preferLooseListItem', value)"
+      more="https://spec.commonmark.org/0.29/#loose"
+    ></bool>
+    <cus-select
+      description="Preferred marker for bullet lists"
+      :value="bulletListMarker"
+      :options="bulletListMarkerOptions"
+      :onChange="value => onSelectChange('bulletListMarker', value)"
+      more="https://spec.commonmark.org/0.29/#bullet-list-marker"
+    ></cus-select>
+    <cus-select
+      description="Preferred marker for ordered lists"
+      :value="orderListDelimiter"
+      :options="orderListDelimiterOptions"
+      :onChange="value => onSelectChange('orderListDelimiter', value)"
+      more="https://spec.commonmark.org/0.29/#ordered-list"
+    ></cus-select>
+    <cus-select
+      description="Preferred heading style"
+      :value="preferHeadingStyle"
+      :options="preferHeadingStyleOptions"
+      :onChange="value => onSelectChange('preferHeadingStyle', value)"
+      :disable="true"
+    ></cus-select>
+    <cus-select
+      description="Preferred tab width"
+      :value="tabSize"
+      :options="tabSizeOptions"
+      :onChange="value => onSelectChange('tabSize', value)"
+    ></cus-select>
+    <cus-select
+      description="Preferred list indentation"
+      :value="listIndentation"
+      :options="listIndentationOptions"
+      :onChange="value => onSelectChange('listIndentation', value)"
+    ></cus-select>
+    <separator></separator>
+    <h5>Markdown extensions</h5>
+    <cus-select
+      description="Format for front matter"
+      :value="frontmatterType"
+      :options="frontmatterTypeOptions"
+      :onChange="value => onSelectChange('frontmatterType', value)"
+    ></cus-select>
+    <bool
+      description="Use Pandoc-style superscript and subscript"
+      :bool="superSubScript"
+      :onChange="value => onSelectChange('superSubScript', value)"
+      more="https://pandoc.org/MANUAL.html#superscripts-and-subscripts"
+    ></bool>
+    <bool
+      description="Use Pandoc-style footnotes (requires restart)"
+      :bool="footnote"
+      :onChange="value => onSelectChange('footnote', value)"
+      more="https://pandoc.org/MANUAL.html#footnotes"
+    ></bool>
+    <bool
+      description="Use Pandoc-style citations (requires restart)"
+      :bool="citations"
+      :onChange="value => onSelectChange('citations', value)"
+      more="https://pandoc.org/MANUAL.html#citations"
+    ></bool>
+    <bool
+      description="Render pandoc citations as links"
+      :bool="citationLinks"
+      :onChange="value => onSelectChange('citationLinks', value)"
+      more="https://pandoc.org/MANUAL.html#citations"
+    ></bool>
+    <text-box
+      description="Template for citation links"
+      :input="citationLinkTemplate"
+      :emitTime="0"
+      :onChange="value => onSelectChange('citationLinkTemplate', value)"
+    ></text-box>
+    <separator></separator>
+    <h5>Compatibility</h5>
+    <bool
+      description="Enable HTML rendering"
+      :bool="isHtmlEnabled"
+      :onChange="value => onSelectChange('isHtmlEnabled', value)"
+    ></bool>
+    <bool
+      description="Enable GitLab compatibility mode"
+      :bool="isGitlabCompatibilityEnabled"
+      :onChange="value => onSelectChange('isGitlabCompatibilityEnabled', value)"
+    ></bool>
+    <separator></separator>
+    <h5>Diagram theme</h5>
+    <cus-select
+      description="Sequence diagram theme"
+      :value="sequenceTheme"
+      :options="sequenceThemeOptions"
+      :onChange="value => onSelectChange('sequenceTheme', value)"
+      more="https://bramp.github.io/js-sequence-diagrams/"
+    ></cus-select>
   </div>
 </template>
 
@@ -117,7 +107,8 @@ import Compound from '../common/compound'
 import Separator from '../common/separator'
 import { mapState } from 'vuex'
 import Bool from '../common/bool'
-import CurSelect from '../common/select'
+import CusSelect from '../common/select'
+import TextBox from '../common/textBox'
 import {
   bulletListMarkerOptions,
   orderListDelimiterOptions,
@@ -132,7 +123,8 @@ export default {
     Compound,
     Separator,
     Bool,
-    CurSelect
+    CusSelect,
+    TextBox
   },
   data () {
     this.bulletListMarkerOptions = bulletListMarkerOptions
@@ -154,6 +146,9 @@ export default {
       superSubScript: state => state.preferences.superSubScript,
       footnote: state => state.preferences.footnote,
       isHtmlEnabled: state => state.preferences.isHtmlEnabled,
+      citations: state => state.preferences.citations,
+      citationLinks: state => state.preferences.citationLinks,
+      citationLinkTemplate: state => state.preferences.citationLinkTemplate,
       isGitlabCompatibilityEnabled: state => state.preferences.isGitlabCompatibilityEnabled,
       sequenceTheme: state => state.preferences.sequenceTheme
     })

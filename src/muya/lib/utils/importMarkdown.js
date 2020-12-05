@@ -81,6 +81,7 @@ const importRegister = ContentState => {
     }
     const {
       footnote,
+      citations,
       isGitlabCompatibilityEnabled,
       superSubScript,
       trimUnnecessaryCodeBlockEmptyLines
@@ -89,6 +90,7 @@ const importRegister = ContentState => {
     const tokens = new Lexer({
       disableInline: true,
       footnote,
+      citations,
       isGitlabCompatibilityEnabled,
       superSubScript
     }).lex(markdown)

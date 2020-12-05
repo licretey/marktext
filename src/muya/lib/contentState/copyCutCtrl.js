@@ -297,14 +297,13 @@ const copyCutCtrl = ContentState => {
         break
       }
       case 'copyAsHtml': {
-        if (text.length > 0) {
-          event.clipboardData.setData('text/html', '')
-          event.clipboardData.setData('text/plain', getSanitizeHtml(text, {
-            superSubScript: this.muya.options.superSubScript,
-            footnote: this.muya.options.footnote,
-            isGitlabCompatibilityEnabled: this.muya.options.isGitlabCompatibilityEnabled
-          }))
-        }
+        event.clipboardData.setData('text/html', '')
+        event.clipboardData.setData('text/plain', getSanitizeHtml(text, {
+          superSubScript: this.muya.options.superSubScript,
+          footnote: this.muya.options.footnote,
+          citations: this.muya.options.citations,
+          isGitlabCompatibilityEnabled: this.muya.options.isGitlabCompatibilityEnabled
+        }))
         break
       }
 
