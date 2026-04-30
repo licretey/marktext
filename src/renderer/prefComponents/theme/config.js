@@ -1,3 +1,5 @@
+import i18n from '../../i18n'
+
 export const themes = [
   {
     name: 'light'
@@ -31,13 +33,15 @@ export const themes = [
   }
 ]
 
-export const autoSwitchThemeOptions = [{
-  label: 'Adjust theme at startup',
-  value: 0
-}, {
-  label: 'Always follow system',
-  value: 1
-}, {
-  label: 'Never',
-  value: 2
-}]
+export const autoSwitchThemeOptions = () => {
+  return [{
+    label: i18n.t('preferences.theme.autoSwitchTheme.atStartup'), // Always
+    value: 0
+  }, /* {
+    label: i18n.t('preferences.theme.autoSwitchTheme.onlyAtRuntime'),
+    value: 1
+  }, */ {
+    label: i18n.t('preferences.theme.autoSwitchTheme.never'),
+    value: 2
+  }]
+}

@@ -2,20 +2,21 @@ import { Menu } from 'electron'
 import { minimizeWindow, toggleAlwaysOnTop, toggleFullScreen } from '../actions/window'
 import { zoomIn, zoomOut } from '../../windows/utils'
 import { isOsx } from '../../config'
+import i18n from '../../i18n'
 
 export default function (keybindings) {
   const menu = {
-    label: '&Window',
+    label: i18n.t('menu.window._title'),
     role: 'window',
     submenu: [{
-      label: 'Minimize',
+      label: i18n.t('menu.window.minimize'),
       accelerator: keybindings.getAccelerator('window.minimize'),
       click (menuItem, browserWindow) {
         minimizeWindow(browserWindow)
       }
     }, {
       id: 'alwaysOnTopMenuItem',
-      label: 'Always on Top',
+      label: i18n.t('menu.window.alwaysOnTop'),
       type: 'checkbox',
       accelerator: keybindings.getAccelerator('window.toggle-always-on-top'),
       click (menuItem, browserWindow) {
@@ -24,21 +25,19 @@ export default function (keybindings) {
     }, {
       type: 'separator'
     }, {
-      label: 'Zoom In',
-      accelerator: keybindings.getAccelerator('window.zoom-in'),
+      label: i18n.t('menu.window.zoomIn'),
       click (menuItem, browserWindow) {
         zoomIn(browserWindow)
       }
     }, {
-      label: 'Zoom Out',
-      accelerator: keybindings.getAccelerator('window.zoom-out'),
+      label: i18n.t('menu.window.zoomOut'),
       click (menuItem, browserWindow) {
         zoomOut(browserWindow)
       }
     }, {
       type: 'separator'
     }, {
-      label: 'Show in Full Screen',
+      label: i18n.t('menu.window.fullScreen'),
       accelerator: keybindings.getAccelerator('window.toggle-full-screen'),
       click (item, browserWindow) {
         if (browserWindow) {
@@ -50,10 +49,8 @@ export default function (keybindings) {
 
   if (isOsx) {
     menu.submenu.push({
-      label: 'Bring All to Front',
-      click () {
-        Menu.sendActionToFirstResponder('arrangeInFront:')
-      }
+      label: i18n.t('menu.window.bringAllToFront'),
+      role: 'front'
     })
   }
   return menu

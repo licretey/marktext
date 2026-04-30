@@ -1,16 +1,39 @@
 <template>
   <div class="pref-image">
-    <h4>Image</h4>
+    <h4>{{ $t('preferences.image._title') }}</h4>
     <section class="image-ctrl">
-      <div>Default action after an image is inserted from local folder or clipboard
-        <el-tooltip class='item' effect='dark'
-          content='Clipboard handling is only fully supported on macOS and Windows.'
-          placement='top-start'>
+      <div>{{ $t('preferences.image.imageInsertAction._title') }}
+        <el-tooltip class='item' effect='dark' :content="$t('preferences.image.imageInsertAction._notice')" placement='top-start'>
           <i class="el-icon-info"></i>
         </el-tooltip>
       </div>
-      <CurSelect :value="imageInsertAction" :options="imageActions"
-        :onChange="value => onSelectChange('imageInsertAction', value)"></CurSelect>
+      <el-radio-group v-model="imageInsertAction">
+        <el-radio label="upload">{{ $t('preferences.image.imageInsertAction.upload') }}</el-radio>
+        <el-radio label="folder">{{ $t('preferences.image.imageInsertAction.folder') }}</el-radio>
+        <el-radio label="path">{{ $t('preferences.image.imageInsertAction.path') }}</el-radio>
+      </el-radio-group>
+    </section>
+    <separator></separator>
+    <section class="image-folder">
+      <div class="description">{{ $t('preferences.image.localImageFolderAction._title') }}</div>
+      <div class="path">{{imageFolderPath}}</div>
+      <div>
+        <el-button size="mini" @click="modifyImageFolderPath">{{ $t('preferences.image.localImageFolderAction.modify') }}</el-button>
+        <el-button size="mini" @click="openImageFolder">{{ $t('preferences.image.localImageFolderAction.open') }}</el-button>
+      </div>
+      <bool
+        :description="$t('preferences.image.imagePreferRelativeDirectory')"
+        more="https://github.com/marktext/marktext/blob/develop/docs/IMAGES.md"
+        :bool="imagePreferRelativeDirectory"
+        :onChange="value => onSelectChange('imagePreferRelativeDirectory', value)"
+      ></bool>
+      <text-box
+        :description="$t('preferences.image.imageRelativeDirectoryName')"
+        :input="imageRelativeDirectoryName"
+        :regexValidator="/^(?:$|(?![a-zA-Z]:)[^\/\\].*$)/"
+        :defaultValue="relativeDirectoryNamePlaceholder"
+        :onChange="value => onSelectChange('imageRelativeDirectoryName', value)"
+      ></text-box>
     </section>
     <Separator />
     <ServerPathSetting v-if="imageInsertAction === 'folder' || imageInsertAction === 'path'" />

@@ -1,45 +1,53 @@
 <template>
   <div class="pref-spellchecker">
-    <h4>Spelling</h4>
-    <compound>
-      <template #head>
-        <bool
-          description="Enable spell checking"
-          :bool="spellcheckerEnabled"
-          :onChange="handleSpellcheckerEnabled"
-        ></bool>
-      </template>
-      <template #children>
-        <bool
-          description="Hide marks for spelling errors"
-          :bool="spellcheckerNoUnderline"
-          :disable="!spellcheckerEnabled"
-          :onChange="value => onSelectChange('spellcheckerNoUnderline', value)"
-        ></bool>
-        <bool
-          v-show="isOsx"
-          description="Automatically detect document language"
-          :bool="true"
-          :disable="true"
-        ></bool>
-        <cur-select
-          v-show="!isOsx"
-          description="Default language for spell checking"
-          :value="spellcheckerLanguage"
-          :options="availableDictionaries"
-          :disable="!spellcheckerEnabled"
-          :onChange="handleSpellcheckerLanguage"
-        ></cur-select>
-      </template>
-    </compound>
-
-    <div v-if="isOsx && spellcheckerEnabled" class="description">
-      The used language will be detected automatically while typing. Additional languages may be added through "Language & Region" in your system preferences pane.
+    <h4>{{ $t('preferences.spelling._title') }}</h4>
+    <bool
+      :description="$t('preferences.spelling.spellcheckerEnabled')"
+      :bool="spellcheckerEnabled"
+      :onChange="handleSpellcheckerEnabled"
+    ></bool>
+    <separator></separator>
+    <bool
+      :description="$t('preferences.spelling.spellcheckerIsHunspell')"
+      :bool="spellcheckerIsHunspell"
+      :disable="!isOsSpellcheckerSupported || !spellcheckerEnabled"
+      :onChange="value => onSelectChange('spellcheckerIsHunspell', value)"
+    ></bool>
+    <bool
+      :description="$t('preferences.spelling.spellcheckerNoUnderline')"
+      :bool="spellcheckerNoUnderline"
+      :disable="!spellcheckerEnabled"
+      :onChange="value => onSelectChange('spellcheckerNoUnderline', value)"
+    ></bool>
+    <bool
+      v-show="isOsx && !spellcheckerIsHunspell"
+      :description="$t('preferences.spelling.spellcheckerAutoDetectLanguage')"
+      :bool="spellcheckerAutoDetectLanguage"
+      :disable="!spellcheckerEnabled"
+      :onChange="value => onSelectChange('spellcheckerAutoDetectLanguage', value)"
+    ></bool>
+    <separator></separator>
+    <cur-select
+      :description="$t('preferences.spelling.spellcheckerLanguage')"
+      :value="spellcheckerLanguage"
+      :options="availableDictionaries"
+      :disable="!spellcheckerEnabled"
+      :onChange="value => onSelectChange('spellcheckerLanguage', value)"
+    ></cur-select>
+    <div
+      v-if="isOsx && !isHunspellSelected && spellcheckerEnabled"
+      class="description"
+    >
+      {{ $t('preferences.spelling.hintMacOS') }}
     </div>
-
-    <div v-if="!isOsx && spellcheckerEnabled">
-      <h6 class="title">Custom dictionary:</h6>
-      <div class="description">Edit words in custom dictionary.</div>
+    <div
+      v-if="isWindows && !isHunspellSelected && spellcheckerEnabled"
+      class="description"
+    >
+      {{ $t('preferences.spelling.hintWindows') }}
+    </div>
+    <div v-if="isHunspellSelected && spellcheckerEnabled">
+      <div class="description">{{ $t('preferences.spelling.installDictsActions._title') }}</div>
       <el-table
         :data="wordsInCustomDictionary"
         empty-text="No words available"
@@ -50,12 +58,27 @@
 
         <el-table-column fixed="right" label="Options" width="90">
           <template slot-scope="scope">
-            <el-button @click="handleDeleteClick(scope.row)" type="text" size="small" title="Delete">
-              <i class="el-icon-delete"></i>
-            </el-button>
+            <el-button @click="handleUpdateClick(scope.$index, scope.row)" type="text" size="small">{{ $t('preferences.spelling.installDictsActions.update') }}</el-button>
+            <el-button @click="handleDeleteClick(scope.$index, scope.row)" type="text" size="small">{{ $t('preferences.spelling.installDictsActions.delete') }}</el-button>
           </template>
         </el-table-column>
       </el-table>
+
+      <div class="description">{{ $t('preferences.spelling.downloadDict') }}</div>
+      <div class="dictionary-group">
+        <el-select
+          v-model="selectedDictionaryToAdd"
+        >
+          <el-option
+            v-for="item in dictionariesLanguagesOptions"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+        <el-button icon="el-icon-document-add" @click="addNewDict"></el-button>
+      </div>
+      <div v-if="errorMessage" class="description">{{ errorMessage }}</div>
     </div>
   </div>
 </template>
