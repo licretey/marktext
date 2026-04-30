@@ -175,7 +175,7 @@ const mutations = {
     if (pathname === currentFile.pathname) {
       state.currentFile = tab
       const { id, cursor, history } = tab
-      bus.$emit('file-changed', { id, markdown, cursor, renderCursor: true, history })
+      bus.$emit('file-changed', { id, markdown, cursor, renderCursor: false, history, preserveScrollPosition: true })
     }
   },
   // NOTE: Please call this function only from main process via "mt::set-pathname" and free resources before!

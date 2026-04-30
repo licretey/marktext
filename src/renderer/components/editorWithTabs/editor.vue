@@ -1255,8 +1255,9 @@ export default {
     },
 
     // listen for markdown change form source mode or change tabs etc
-    handleFileChange ({ id, markdown, cursor, renderCursor, history }) {
+    handleFileChange ({ id, markdown, cursor, renderCursor, history, preserveScrollPosition }) {
       const { editor } = this
+      const savedScrollTop = preserveScrollPosition && editor ? editor.container.scrollTop : null
       this.$nextTick(() => {
         if (editor) {
           if (history) {
@@ -1267,7 +1268,11 @@ export default {
           } else if (cursor) {
             editor.setCursor(cursor)
           }
-          if (renderCursor) {
+          if (savedScrollTop !== null) {
+            this.$nextTick(() => {
+              editor.container.scrollTop = savedScrollTop
+            })
+          } else if (renderCursor) {
             this.scrollToCursor(0)
           }
         }

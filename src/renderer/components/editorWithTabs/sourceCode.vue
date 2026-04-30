@@ -233,17 +233,19 @@ export default {
       })
     },
     // Another tab was selected - only listen to get changes but don't set history or other things.
-    handleFileChange ({ id, markdown, cursor }) {
+    handleFileChange ({ id, markdown, cursor, preserveScrollPosition }) {
       this.prepareTabSwitch()
 
       const { editor } = this
+      const savedScrollInfo = preserveScrollPosition ? editor.getScrollInfo() : null
       if (typeof markdown === 'string') {
         editor.setValue(markdown)
       }
-      // Cursor is null when loading a file or creating a new tab in source code mode.
-      if (cursor) {
+      if (savedScrollInfo) {
+        editor.scrollTo(savedScrollInfo.left, savedScrollInfo.top)
+      } else if (cursor) {
         const { anchor, focus } = cursor
-        editor.setSelection(anchor, focus, { scroll: true }) // Scroll the focus into view.
+        editor.setSelection(anchor, focus, { scroll: true })
       } else {
         setCursorAtLastLine(editor)
       }
