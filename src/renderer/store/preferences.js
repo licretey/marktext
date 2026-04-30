@@ -64,7 +64,8 @@ const state = {
   sequenceTheme: 'hand',
 
   theme: 'light',
-  autoSwitchTheme: 1,
+  autoSwitchTheme: 2,
+  customCss: '',
 
   spellcheckerEnabled: false,
   spellcheckerNoUnderline: false,
