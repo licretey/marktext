@@ -1012,6 +1012,7 @@ export default {
     },
 
     scrollToHeader (slug) {
+      if (!slug) return
       return this.scrollToElement(`#${slug}`)
     },
     tocNameToSlugName (slug) {
@@ -1062,7 +1063,13 @@ export default {
     scrollToElement (selector, duration = 300, dontAddStandardHeadroom = false) {
       // Scroll to search highlight word
       const { container } = this.editor
-      const anchor = document.querySelector(selector)
+      let anchor
+      try {
+        anchor = document.querySelector(selector)
+      } catch (e) {
+        // Invalid CSS selector (e.g. '#' from an empty heading slug). See #4087.
+        return
+      }
       if (anchor) {
         const DURATION = duration
         const anchorY = anchor.getBoundingClientRect().y
