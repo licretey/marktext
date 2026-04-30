@@ -182,7 +182,9 @@ export default {
       // edit modes
       typewriter: state => state.preferences.typewriter,
       focus: state => state.preferences.focus,
-      sourceCode: state => state.preferences.sourceCode
+      sourceCode: state => state.preferences.sourceCode,
+
+      fullWysiwyg: state => state.preferences.fullWysiwyg
     })
   },
 
@@ -401,6 +403,16 @@ export default {
       }
     },
 
+    fullWysiwyg: function (value, oldValue) {
+      const { editor } = this
+      if (value !== oldValue && editor) {
+        editor.setOptions({
+          fullWysiwyg: value,
+          autoPairMarkdownSyntax: value ? false : this.autoPairMarkdownSyntax
+        }, true)
+      }
+    },
+
     hideLinkPopup: function (value, oldValue) {
       const { editor } = this
       if (value !== oldValue && editor) {
@@ -581,7 +593,6 @@ export default {
         markdown,
         preferLooseListItem,
         autoPairBracket,
-        autoPairMarkdownSyntax,
         trimUnnecessaryCodeBlockEmptyLines,
         autoPairQuote,
         bulletListMarker,
@@ -605,6 +616,8 @@ export default {
         hideLinkPopup,
         autoCheck,
         sequenceTheme,
+        fullWysiwyg: this.fullWysiwyg,
+        autoPairMarkdownSyntax: this.fullWysiwyg ? false : autoPairMarkdownSyntax,
         spellcheckEnabled: spellcheckerEnabled,
         imageAction: this.imageAction.bind(this),
         imagePathPicker: this.imagePathPicker.bind(this),
@@ -648,6 +661,7 @@ export default {
       bus.$on('print-service-clearup', this.handlePrintServiceClearup)
       bus.$on('paragraph', this.handleEditParagraph)
       bus.$on('format', this.handleInlineFormat)
+      bus.$on('insert-table', () => this.handleEditParagraph('table'))
       bus.$on('searchValue', this.handleSearch)
       bus.$on('replaceValue', this.handReplace)
       bus.$on('find-action', this.handleFindAction)
@@ -732,6 +746,7 @@ export default {
 
       this.editor.on('selectionFormats', formats => {
         this.$store.dispatch('SELECTION_FORMATS', formats)
+        bus.$emit('selectionFormats', formats)
       })
 
       document.addEventListener('keyup', this.keyup)
