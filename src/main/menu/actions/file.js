@@ -163,6 +163,13 @@ const writeDocumentContentToDisk = async (win, id, filePath, markdown, options) 
 }
 
 const showUnsavedFilesMessage = async (win, files) => {
+  // In read-only mode, automatically don't save (no prompt)
+  // Check both CLI flag and preference setting
+  const alwaysReadOnly = global.accessor && global.accessor.preferences.getItem('alwaysReadOnly')
+  if (global.READ_ONLY_MODE || alwaysReadOnly) {
+    return { needSave: false }
+  }
+
   const { response } = await dialog.showMessageBox(win, {
     type: 'warning',
     buttons: ['Save', 'Cancel', 'Don\'t save'],
