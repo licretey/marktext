@@ -1248,19 +1248,38 @@ const actions = {
                 })
               }
             }
-          })
-          break
-        }
-        case WATCHER_CHANGE_TYPE.DELETED: {
-          commit('SET_SAVE_STATUS_BY_TAB', { tab, status: false })
-          commit('PUSH_TAB_NOTIFICATION', {
-            tabId: id,
-            msg: `"${filename}" has been removed on disk.`,
-            style: 'warn',
-            showConfirm: false,
-            exclusiveType: 'file_changed'
-          })
-          break
+
+            // FIX: Only mark as unsaved if the file has local unsaved changes.
+            // If the file is already saved, silently load external changes.
+            if (isSaved) {
+              // File is saved, load external changes without prompting
+              commit('LOAD_CHANGE', change)
+              commit('PUSH_TAB_NOTIFICATION', {
+                tabId: id,
+                msg: `"${filename}" has been updated from disk.`,
+                showConfirm: false,
+                exclusiveType: 'file_changed',
+                style: 'info'
+              })
+            } else {
+              // File has unsaved changes, ask user what to do
+              commit('SET_SAVE_STATUS_BY_TAB', { tab, status: false })
+              commit('PUSH_TAB_NOTIFICATION', {
+                tabId: id,
+                msg: `"${filename}" has been changed on disk. Do you want to reload it?`,
+                showConfirm: true,
+                exclusiveType: 'file_changed',
+                action: status => {
+                  if (status) {
+                    commit('LOAD_CHANGE', change)
+                  }
+                }
+              })
+            }
+            break
+          }
+          default:
+            console.error(`LISTEN_FOR_FILE_CHANGE: Invalid type "${type}"`)
         }
       }
     })
