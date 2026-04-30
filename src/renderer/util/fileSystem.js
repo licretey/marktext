@@ -186,12 +186,12 @@ export const uploadImage = async (pathname, image, preferences) => {
       })
   }
 
-  const uploadByCommand = async (uploader, filepath) => {
+  const uploadByCommand = async (uploader, filepath, suffix = '') => {
     let isPath = true
     if (typeof filepath !== 'string') {
       isPath = false
       const data = new Uint8Array(filepath)
-      filepath = path.join(tmpdir(), String(new Date().getTime()))
+      filepath = path.join(tmpdir(), +new Date() + suffix)
       await fs.writeFile(filepath, data)
     }
     if (uploader === 'picgo') {
@@ -261,7 +261,7 @@ export const uploadImage = async (pathname, image, preferences) => {
         switch (currentUploader) {
           case 'picgo':
           case 'cliScript':
-            uploadByCommand(currentUploader, reader.result)
+            uploadByCommand(currentUploader, reader.result, path.extname(image.name))
             break
           default:
             uploadByGithub(reader.result, image.name)
