@@ -271,7 +271,11 @@ class StateRender {
         try {
           target.removeAttribute('data-processed')
           target.innerHTML = sanitize(code, PREVIEW_DOMPURIFY_CONFIG, true)
-          await mermaid.init(undefined, target)
+          if (mermaid.run) {
+            await mermaid.run({ nodes: [target] })
+          } else {
+            mermaid.init(undefined, target)
+          }
         } catch (err) {
           console.error('Mermaid parse error for:', code.substring(0, 50), err)
           target.innerHTML = '< Invalid Mermaid Codes >'

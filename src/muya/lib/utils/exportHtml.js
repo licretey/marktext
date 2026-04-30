@@ -48,7 +48,11 @@ class ExportHtml {
       securityLevel: 'loose',
       theme: 'default'
     })
-    await mermaid.init(undefined, this.exportContainer.querySelectorAll('div.mermaid'))
+    if (mermaid.run) {
+      await mermaid.run({ nodes: this.exportContainer.querySelectorAll('div.mermaid') })
+    } else {
+      mermaid.init(undefined, this.exportContainer.querySelectorAll('div.mermaid'))
+    }
     if (this.muya) {
       mermaid.initialize({
         securityLevel: 'loose',
