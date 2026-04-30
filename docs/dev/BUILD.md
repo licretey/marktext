@@ -33,6 +33,13 @@ On Arch Linux: `sudo pacman -S libx11 libxkbfile libsecret fontconfig`
 
 - Windows 10 SDK (only needed before Windows 10)
 - Visual Studio 2019 (preferred)
+- Additional steps to fix gyp
+ ```powershell
+   npm install --global node-gyp@latest
+   npm prefix -g | % {npm config set node_gyp "$_\node_modules\node-gyp\bin\node-gyp.js"}
+   node-gyp install
+   python -m pip install setuptools
+```
 
 ### Let's build
 
