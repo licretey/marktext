@@ -109,6 +109,14 @@ export default {
       bus.$on('file-changed', this.handleFileChange)
       bus.$on('selectAll', this.handleSelectAll)
       bus.$on('image-action', this.handleImageAction)
+      bus.$on('undo', this.handleUndo)
+      bus.$on('redo', this.handleRedo)
+      bus.$on('find', this.handleFind)
+      bus.$on('replace', this.handleReplace)
+      bus.$on('findNext', this.handleFindNext)
+      bus.$on('findPrev', this.handleFindPrev)
+      document.addEventListener('click', this.docClick)
+      document.addEventListener('keyup', this.docKeyup)
 
       setMode(editor, 'markdown')
       this.listenChange()
@@ -141,6 +149,14 @@ export default {
     bus.$off('file-changed', this.handleFileChange)
     bus.$off('selectAll', this.handleSelectAll)
     bus.$off('image-action', this.handleImageAction)
+    bus.$off('undo', this.handleUndo)
+    bus.$off('redo', this.handleRedo)
+    bus.$off('find', this.handleFind)
+    bus.$off('replace', this.handleReplace)
+    bus.$off('findNext', this.handleFindNext)
+    bus.$off('findPrev', this.handleFindPrev)
+    document.removeEventListener('click', this.docClick)
+    document.removeEventListener('keyup', this.docKeyup)
 
     const { editor } = this
     const { cursor, markdown } = this.getMarkdownAndCursor(editor)
@@ -272,15 +288,50 @@ export default {
         this.tabId = null // invalidate tab id
       }
     },
-    scrollToLineNumberInViewport (line, duration = 300, dontAddStandardHeadroom = false) {
-      let pos = this.editor.charCoords({ line: line, ch: 0 }, 'local').top
-      const DURATION = duration
-      if (!dontAddStandardHeadroom) { pos -= STANDAR_Y }
-      animatedScrollTo(this.$el, pos, DURATION)
+    handleUndo () {
+      if (this.editor && this.sourceCode) {
+        this.editor.execCommand('undo')
+      }
     },
-    getFirstLineNumberInViewport () {
-      return this.editor.coordsChar({ left: 0, top: this.$el.scrollTop }, 'local').line
+
+    handleRedo () {
+      if (this.editor && this.sourceCode) {
+        this.editor.execCommand('redo')
+      }
     },
+    docKeyup (event) {
+      if (this.editor && this.sourceCode && event.key === 'Escape') {
+        this.editor.execCommand('clearSearch')
+      }
+    },
+
+    docClick () {
+      if (this.editor && this.sourceCode) { this.editor.execCommand('clearSearch') }
+    },
+    handleFind () {
+       if (this.editor && this.sourceCode) {
+        this.editor.execCommand('findPersistent')
+      }
+    },
+
+    handleReplace () {
+       if (this.editor && this.sourceCode) {
+        this.editor.execCommand('replace')
+      }
+    },
+
+    handleFindNext () {
+      if (this.editor && this.sourceCode) {
+        this.editor.execCommand('findNext')
+      }
+    },
+
+    handleFindPrev () {
+      if (this.editor && this.sourceCode) {
+        this.editor.execCommand('findPrev')
+      }
+    },
+
     handleSelectAll () {
       if (!this.sourceCode) {
         return
