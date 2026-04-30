@@ -1,7 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import EventEmitter from 'events'
-import { BrowserWindow, ipcMain, dialog } from 'electron'
+import { BrowserWindow, dialog, ipcMain } from 'electron'
+import keytar from 'keytar'
 import schema from './schema'
 import Store from 'electron-store'
 import log from 'electron-log'
@@ -20,7 +21,7 @@ try {
 const DATA_CENTER_NAME = 'dataCenter'
 
 class DataCenter extends EventEmitter {
-  constructor (paths) {
+  constructor(paths) {
     super()
 
     const { dataCenterPath, userDataPath } = paths
@@ -28,7 +29,9 @@ class DataCenter extends EventEmitter {
     this.userDataPath = userDataPath
     this.serviceName = 'marktext'
     this.encryptKeys = ['githubToken']
-    this.hasDataCenterFile = fs.existsSync(path.join(this.dataCenterPath, `./${DATA_CENTER_NAME}.json`))
+    this.hasDataCenterFile = fs.existsSync(
+      path.join(this.dataCenterPath, `./${DATA_CENTER_NAME}.json`)
+    )
     this.store = new Store({
       schema,
       name: DATA_CENTER_NAME
@@ -37,7 +40,7 @@ class DataCenter extends EventEmitter {
     this.init()
   }
 
-  init () {
+  init() {
     const defaultData = {
       imageFolderPath: path.join(this.userDataPath, 'images'),
       screenshotFolderPath: path.join(this.userDataPath, 'screenshot'),
@@ -60,15 +63,15 @@ class DataCenter extends EventEmitter {
     this._listenForIpcMain()
   }
 
-  async getAll () {
+  async getAll() {
     const { serviceName, encryptKeys } = this
     const data = this.store.store
     try {
-      const encryptData = keytar
-        ? await Promise.all(encryptKeys.map(key => {
+      const encryptData = await Promise.all(
+        encryptKeys.map((key) => {
           return keytar.getPassword(serviceName, key)
-        }))
-        : []
+        })
+      )
       const encryptObj = encryptKeys.reduce((acc, k, i) => {
         return {
           ...acc,
@@ -83,12 +86,12 @@ class DataCenter extends EventEmitter {
     }
   }
 
-  addImage (key, url) {
+  addImage(key, url) {
     const items = this.store.get(key)
-    const alreadyHas = items.some(item => item.url === url)
+    const alreadyHas = items.some((item) => item.url === url)
     let item
     if (alreadyHas) {
-      item = items.find(item => item.url === url)
+      item = items.find((item) => item.url === url)
       item.timeStamp = +new Date()
     } else {
       item = {
@@ -102,7 +105,7 @@ class DataCenter extends EventEmitter {
     return this.store.set(key, items)
   }
 
-  removeImage (type, url) {
+  removeImage(type, url) {
     const items = this.store.get(type)
     const index = items.indexOf(url)
     const item = items[index]
@@ -117,7 +120,7 @@ class DataCenter extends EventEmitter {
    * @param {string} key
    * return a promise
    */
-  getItem (key) {
+  getItem(key) {
     const { encryptKeys, serviceName } = this
     if (encryptKeys.includes(key) && keytar) {
       return keytar.getPassword(serviceName, key)
@@ -127,7 +130,7 @@ class DataCenter extends EventEmitter {
     }
   }
 
-  async setItem (key, value) {
+  async setItem(key, value) {
     const { encryptKeys, serviceName } = this
     if (key === 'screenshotFolderPath') {
       ensureDirSync(value)
@@ -149,25 +152,25 @@ class DataCenter extends EventEmitter {
    *
    * @param {Object.<string, *>} settings A settings object or subset object with key/value entries.
    */
-  setItems (settings) {
+  setItems(settings) {
     if (!settings) {
       log.error('Cannot change settings without entires: object is undefined or null.')
       return
     }
 
-    Object.keys(settings).forEach(key => {
+    Object.keys(settings).forEach((key) => {
       this.setItem(key, settings[key])
     })
   }
 
-  _listenForIpcMain () {
+  _listenForIpcMain() {
     // local main events
-    ipcMain.on('set-image-folder-path', newPath => {
+    ipcMain.on('set-image-folder-path', (newPath) => {
       this.setItem('imageFolderPath', newPath)
     })
 
     // events from renderer process
-    ipcMain.on('mt::ask-for-user-data', async e => {
+    ipcMain.on('mt::ask-for-user-data', async (e) => {
       const win = BrowserWindow.fromWebContents(e.sender)
       const userData = await this.getAll()
       win.webContents.send('mt::user-preference', userData)
@@ -213,14 +216,16 @@ class DataCenter extends EventEmitter {
     })
 
     // TODO: Replace sync. call.
-    ipcMain.on('mt::ask-for-image-path', async e => {
+    ipcMain.on('mt::ask-for-image-path', async (e) => {
       const win = BrowserWindow.fromWebContents(e.sender)
       const { filePaths } = await dialog.showOpenDialog(win, {
         properties: ['openFile'],
-        filters: [{
-          name: 'Images',
-          extensions: IMAGE_EXTENSIONS
-        }]
+        filters: [
+          {
+            name: 'Images',
+            extensions: IMAGE_EXTENSIONS
+          }
+        ]
       })
 
       if (filePaths && filePaths[0]) {

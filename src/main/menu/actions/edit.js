@@ -1,5 +1,5 @@
 import path from 'path'
-import { ipcMain, BrowserWindow } from 'electron'
+import { BrowserWindow, ipcMain } from 'electron'
 import log from 'electron-log'
 import { COMMANDS } from '../../commands'
 import { searchFilesAndDir } from '../../utils/imagePathAutoComplement'
@@ -13,71 +13,81 @@ ipcMain.on('mt::ask-for-image-auto-path', (e, { pathname, src, id }) => {
   }
 
   const fullPath = path.isAbsolute(src) ? src : path.join(path.dirname(pathname), src)
-  const dir = path.dirname(fullPath)
-  const searchKey = path.basename(fullPath)
+  // Handle the case where it ends with a trailing slash (i.e. a directory) - we should list everything in the directory
+  let dir = null
+  let searchKey = null
+  if (fullPath.endsWith(path.sep)) {
+    dir = fullPath.slice(0, -1) // It should be the entire path minus just the trailing slash
+    searchKey = ''
+  } else {
+    dir = path.dirname(fullPath)
+    searchKey = path.basename(fullPath)
+  }
   searchFilesAndDir(dir, searchKey)
-    .then(files => win.webContents.send(`mt::response-of-image-path-${id}`, files))
-    .catch(error => {
-      log.error('Error filtering directory contents for image autocompletion:', error)
-      win.webContents.send(`mt::response-of-image-path-${id}`, [])
+    .then((files) => {
+      return win.webContents.send(`mt::response-of-image-path-${id}`, files)
+    })
+    .catch((err) => {
+      log.error(err)
+      return win.webContents.send(`mt::response-of-image-path-${id}`, [])
     })
 })
 
 // --- Menu actions -------------------------------------------------------------
 
-export const editorUndo = win => {
+export const editorUndo = (win) => {
   edit(win, 'undo')
 }
 
-export const editorRedo = win => {
+export const editorRedo = (win) => {
   edit(win, 'redo')
 }
 
-export const editorCopyAsMarkdown = win => {
-  edit(win, 'copyAsMarkdown')
+export const editorCopyAsRich = (win) => {
+  edit(win, 'copyAsRich')
 }
 
-export const editorCopyAsHtml = win => {
+export const editorCopyAsHtml = (win) => {
   edit(win, 'copyAsHtml')
 }
 
-export const editorPasteAsPlainText = win => {
+export const editorPasteAsPlainText = (win) => {
   edit(win, 'pasteAsPlainText')
 }
 
-export const editorSelectAll = win => {
+export const editorSelectAll = (win) => {
   edit(win, 'selectAll')
 }
 
-export const editorDuplicate = win => {
+export const editorDuplicate = (win) => {
   edit(win, 'duplicate')
 }
 
-export const editorCreateParagraph = win => {
+export const editorCreateParagraph = (win) => {
   edit(win, 'createParagraph')
 }
 
-export const editorDeleteParagraph = win => {
+export const editorDeleteParagraph = (win) => {
   edit(win, 'deleteParagraph')
 }
 
-export const editorFind = win => {
+export const editorFind = (win) => {
   edit(win, 'find')
 }
 
-export const editorFindNext = win => {
+export const editorFindNext = (win) => {
   edit(win, 'findNext')
 }
 
-export const editorFindPrevious = win => {
+export const editorFindPrevious = (win) => {
   edit(win, 'findPrev')
 }
 
-export const editorReplace = win => {
+export const editorReplace = (win) => {
   edit(win, 'undo')
 }
 
-export const findInFolder = win => {
+export const findInFolder = (win) => {
   edit(win, 'findInFolder')
 }
 
@@ -87,25 +97,25 @@ export const edit = (win, type) => {
   }
 }
 
-export const nativeCut = win => {
+export const nativeCut = (win) => {
   if (win) {
     win.webContents.cut()
   }
 }
 
-export const nativeCopy = win => {
+export const nativeCopy = (win) => {
   if (win) {
     win.webContents.copy()
   }
 }
 
-export const nativePaste = win => {
+export const nativePaste = (win) => {
   if (win) {
     win.webContents.paste()
   }
 }
 
-export const screenshot = win => {
+export const screenshot = (win) => {
   ipcMain.emit('screen-capture', win)
 }
 
@@ -117,10 +127,10 @@ export const lineEnding = (win, lineEnding) => {
 
 // --- Commands -------------------------------------------------------------
 
-export const loadEditCommands = commandManager => {
+export const loadEditCommands = (commandManager) => {
   commandManager.add(COMMANDS.EDIT_COPY, nativeCopy)
   commandManager.add(COMMANDS.EDIT_COPY_AS_HTML, editorCopyAsHtml)
-  commandManager.add(COMMANDS.EDIT_COPY_AS_MARKDOWN, editorCopyAsMarkdown)
+  commandManager.add(COMMANDS.EDIT_COPY_AS_RICH, editorCopyAsRich)
   commandManager.add(COMMANDS.EDIT_CREATE_PARAGRAPH, editorCreateParagraph)
   commandManager.add(COMMANDS.EDIT_CUT, nativeCut)
   commandManager.add(COMMANDS.EDIT_DELETE_PARAGRAPH, editorDeleteParagraph)

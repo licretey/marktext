@@ -139,7 +139,7 @@ const fixSvgContrast = (svg) => {
 }
 
 class StateRender {
-  constructor (muya) {
+  constructor(muya) {
     this.muya = muya
     this.eventCenter = muya.eventCenter
     this.codeCache = new Map()
@@ -155,18 +155,18 @@ class StateRender {
     this.container = null
   }
 
-  setContainer (container) {
+  setContainer(container) {
     this.container = container
   }
 
   // collect link reference definition
-  collectLabels (blocks) {
+  collectLabels(blocks) {
     this.labels.clear()
 
-    const travel = block => {
+    const travel = (block) => {
       const { text, children } = block
       if (children && children.length) {
-        children.forEach(c => travel(c))
+        children.forEach((c) => travel(c))
       } else if (text) {
         const tokens = beginRules.reference_definition.exec(text)
         if (tokens) {
@@ -181,10 +181,10 @@ class StateRender {
       }
     }
 
-    blocks.forEach(b => travel(b))
+    blocks.forEach((b) => travel(b))
   }
 
-  checkConflicted (block, token, cursor) {
+  checkConflicted(block, token, cursor) {
     const { start, end } = cursor
     const key = block.key
     const { start: tokenStart, end: tokenEnd } = token.range
@@ -196,26 +196,28 @@ class StateRender {
     } else if (key !== start.key && key === end.key) {
       return conflict([tokenStart, tokenEnd], [end.offset, end.offset])
     } else {
-      return conflict([tokenStart, tokenEnd], [start.offset, start.offset]) ||
+      return (
+        conflict([tokenStart, tokenEnd], [start.offset, start.offset]) ||
         conflict([tokenStart, tokenEnd], [end.offset, end.offset])
+      )
     }
   }
 
-  getClassName (outerClass, block, token, cursor) {
-    if (this.muya.options.fullWysiwyg) {
-      return outerClass || CLASS_OR_ID.AG_HIDE
-    }
-    return outerClass || (this.checkConflicted(block, token, cursor) ? CLASS_OR_ID.AG_GRAY : CLASS_OR_ID.AG_HIDE)
+  getClassName(outerClass, block, token, cursor) {
+    return (
+      outerClass ||
+      (this.checkConflicted(block, token, cursor) ? CLASS_OR_ID.AG_GRAY : CLASS_OR_ID.AG_HIDE)
+    )
   }
 
-  getHighlightClassName (active) {
+  getHighlightClassName(active) {
     return active ? CLASS_OR_ID.AG_HIGHLIGHT : CLASS_OR_ID.AG_SELECTION
   }
 
-  getSelector (block, activeBlocks) {
+  getSelector(block, activeBlocks) {
     const { cursor, selectedBlock } = this.muya.contentState
     const type = block.type === 'hr' ? 'p' : block.type
-    const isActive = activeBlocks.some(b => b.key === block.key) || block.key === cursor.start.key
+    const isActive = activeBlocks.some((b) => b.key === block.key) || block.key === cursor.start.key
 
     let selector = `${type}#${block.key}.${CLASS_OR_ID.AG_PARAGRAPH}`
     if (isActive) {
@@ -230,17 +232,8 @@ class StateRender {
     return selector
   }
 
-  async renderMermaid () {
-    if (this.mermaidCache.size === 0) return
-    if (this._renderingMermaid) {
-      this._pendingMermaidRender = true
-      return
-    }
-
-    this._renderingMermaid = true
-    this._pendingMermaidRender = false
-
-    try {
+  async renderMermaid() {
+    if (this.mermaidCache.size) {
       const mermaid = await loadRenderer('mermaid')
 
       // Only override the specific themeVariables that mermaid gets wrong.
@@ -291,7 +284,7 @@ class StateRender {
     }
   }
 
-  async renderDiagram () {
+  async renderDiagram() {
     const cache = this.diagramCache
     if (cache.size) {
       const RENDER_MAP = {
@@ -340,10 +333,11 @@ class StateRender {
     }
   }
 
-  render (blocks, activeBlocks, matches) {
+  render(blocks, activeBlocks, matches) {
     const selector = `div#${CLASS_OR_ID.AG_EDITOR_ID}`
-    const children = blocks.map(block => {
-      return this.renderBlock(null, block, activeBlocks, matches, true)
+    const t = this.muya.options.t || ((key) => key) // 获取翻译函数，如果没有则返回原始键值
+    const children = blocks.map((block) => {
+      return this.renderBlock(null, block, activeBlocks, matches, true, t)
     })
     const newVdom = h(selector, children)
     const rootDom = document.querySelector(selector) || this.container
@@ -356,11 +350,15 @@ class StateRender {
   }
 
   // Only render the blocks which you updated
-  partialRender (blocks, activeBlocks, matches, startKey, endKey) {
+  partialRender(blocks, activeBlocks, matches, startKey, endKey) {
     const cursorOutMostBlock = activeBlocks[activeBlocks.length - 1]
     // If cursor is not in render blocks, need to render cursor block independently
     const needRenderCursorBlock = blocks.indexOf(cursorOutMostBlock) === -1
-    const newVnode = h('section', blocks.map(block => this.renderBlock(null, block, activeBlocks, matches)))
+    const t = this.muya.options.t || ((key) => key) // 获取翻译函数，如果没有则返回原始键值
+    const newVnode = h(
+      'section',
+      blocks.map((block) => this.renderBlock(null, block, activeBlocks, matches, false, t))
+    )
     const html = toHTML(newVnode).replace(/^<section>([\s\S]+?)<\/section>$/, '$1')
 
     const needToRemoved = []
@@ -381,7 +379,7 @@ class StateRender {
 
     firstOldDom.insertAdjacentHTML('beforebegin', html)
 
-    Array.from(needToRemoved).forEach(dom => dom.remove())
+    Array.from(needToRemoved).forEach((dom) => dom.remove())
 
     // Render cursor block independently
     if (needRenderCursorBlock) {
@@ -389,7 +387,14 @@ class StateRender {
       const cursorDom = document.querySelector(`#${key}`)
       if (cursorDom) {
         const oldCursorVnode = toVNode(cursorDom)
-        const newCursorVnode = this.renderBlock(null, cursorOutMostBlock, activeBlocks, matches)
+        const newCursorVnode = this.renderBlock(
+          null,
+          cursorOutMostBlock,
+          activeBlocks,
+          matches,
+          false,
+          t
+        )
         patch(oldCursorVnode, newCursorVnode)
       }
     }
@@ -406,9 +411,10 @@ class StateRender {
    * @param {array} activeBlocks
    * @param {array} matches
    */
-  singleRender (block, activeBlocks, matches) {
+  singleRender(block, activeBlocks, matches) {
     const selector = `#${block.key}`
-    const newVdom = this.renderBlock(null, block, activeBlocks, matches, true)
+    const t = this.muya.options.t || ((key) => key) // 获取翻译函数，如果没有则返回原始键值
+    const newVdom = this.renderBlock(null, block, activeBlocks, matches, true, t)
     const rootDom = document.querySelector(selector)
     const oldVdom = toVNode(rootDom)
     patch(oldVdom, newVdom)
@@ -417,7 +423,7 @@ class StateRender {
     this.codeCache.clear()
   }
 
-  invalidateImageCache () {
+  invalidateImageCache() {
     this.loadImageMap.forEach((imageInfo, key) => {
       imageInfo.touchMsec = Date.now()
       this.loadImageMap.set(key, imageInfo)

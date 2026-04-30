@@ -11,8 +11,10 @@
   "jumpToStartOnLoad": false,
   "wordWrapInToc": false,
   "fileSortBy": "created",
-  "startUpAction": "lastState",
+  "startUpAction": "restoreAll",
+  "restoreLayoutState": true,
   "defaultDirectoryToOpen": "",
+  "lastOpenedFolder": "",
   "treePathExcludePatterns": [],
   "language": "en",
 
@@ -23,6 +25,7 @@
   "codeFontFamily": "DejaVu Sans Mono",
   "codeBlockLineNumbers": true,
   "trimUnnecessaryCodeBlockEmptyLines": true,
+  "wrapCodeBlocks": false,
   "editorLineWidth": "",
 
   "autoPairBracket": true,
@@ -31,6 +34,7 @@
   "endOfLine": "default",
   "defaultEncoding": "utf8",
   "autoGuessEncoding": true,
+  "autoNormalizeLineEndings": false,
   "trimTrailingNewline": 2,
   "textDirection": "ltr",
   "hideQuickInsertHint": false,
@@ -61,7 +65,9 @@
   "sequenceTheme": "hand",
 
   "theme": "light",
-  "autoSwitchTheme": 2,
+  "followSystemTheme": true,
+  "lightModeTheme": "light",
+  "darkModeTheme": "dark",
   "customCss": "",
 
   "spellcheckerEnabled": false,

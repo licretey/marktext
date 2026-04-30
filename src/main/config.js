@@ -1,3 +1,4 @@
+import path from 'path'
 export const isOsx = process.platform === 'darwin'
 export const isWindows = process.platform === 'win32'
 export const isLinux = process.platform === 'linux'
@@ -12,7 +13,8 @@ export const editorWinOptions = Object.freeze({
     // enable it always and set the HTML spelling attribute to false.
     spellcheck: true,
     nodeIntegration: true,
-    webSecurity: false
+    webSecurity: false,
+    preload: path.join(__dirname, '../preload/index.js')
   },
   useContentSize: true,
   show: true,
@@ -31,7 +33,8 @@ export const preferencesWinOptions = Object.freeze({
     // Always true to access native spellchecker.
     spellcheck: true,
     nodeIntegration: true,
-    webSecurity: false
+    webSecurity: false,
+    preload: path.join(__dirname, '../preload/index.js')
   },
   fullscreenable: false,
   fullscreen: false,
@@ -40,7 +43,6 @@ export const preferencesWinOptions = Object.freeze({
   show: true,
   frame: false,
   thickFrame: !isOsx,
-  titleBarStyle: 'hiddenInset',
   zoomFactor: 1.0
 })
 
@@ -61,7 +63,9 @@ export const PANDOC_EXTENSIONS = Object.freeze([
   'epub'
 ])
 
-export const EXTENSION_HASH = Object.freeze({
+export const BLACK_LIST = Object.freeze(['$RECYCLE.BIN'])
+
+export const EXTENSION_HASN = Object.freeze({
   styledHtml: '.html',
   pdf: '.pdf'
 })
@@ -71,6 +75,7 @@ export const LINE_ENDING_REG = /(?:\r\n|\n)/g
 export const LF_LINE_ENDING_REG = /(?:[^\r]\n)|(?:^\n$)/
 export const CRLF_LINE_ENDING_REG = /\r\n/
 
-export const GITHUB_REPO_URL = 'https://github.com/marktext/marktext'
+export const GITHUB_REPO_URL = 'https://github.com/Tkaixiang/marktext'
 // copy from muya
-export const URL_REG = /^(http(s)?|zotero):\/\/(([a-z0-9\-._~]+\.)?[a-z]{2,}|[0-9.]+|localhost|\[[a-f0-9.:]+\])(:[0-9]{1,5})?(\/[\S]+)?/i
+export const URL_REG =
+  /^http(s)?:\/\/([a-z0-9\-._~]+\.[a-z]{2,}|[0-9.]+|localhost|\[[a-f0-9.:]+\])(:[0-9]{1,5})?(\/[\S]+)?/i

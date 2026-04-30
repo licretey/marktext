@@ -34,134 +34,146 @@ const SHIFT_KEY = isOsx ? '⇧' : 'Shift'
 // Caps Lock ⇪
 // Fn
 
-export const quickInsertObj = () => {
+// 创建一个函数来生成配置对象，接收翻译函数作为参数
+export const createQuickInsertObj = (t) => {
+  // 如果没有翻译函数，直接返回键名
+  const translate = t || ((key) => key)
+
   return {
-    'basic block': [{
-      title: i18n.t('menu.paragraph._title_simple'),
-      subTitle: 'Lorem Ipsum is simply dummy text',
-      label: 'paragraph',
-      shortCut: `${COMMAND_KEY}+0`,
-      icon: paragraphIcon
-    }, {
-      title: i18n.t('menu.paragraph.horizontalLine'),
-      subTitle: '---',
-      label: 'hr',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+-`,
-      icon: hrIcon
-    }, {
-      title: i18n.t('menu.paragraph.frontMatter'),
-      subTitle: '--- Lorem Ipsum ---',
-      label: 'front-matter',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+Y`,
-      icon: frontMatterIcon
-    }],
-    header: [{
-      title: i18n.t('menu.paragraph.heading1'),
-      subTitle: '# Lorem Ipsum is simply ...',
-      label: 'heading 1',
-      shortCut: `${COMMAND_KEY}+1`,
-      icon: header1Icon
-    }, {
-      title: i18n.t('menu.paragraph.heading2'),
-      subTitle: '## Lorem Ipsum is simply ...',
-      label: 'heading 2',
-      shortCut: `${COMMAND_KEY}+2`,
-      icon: header2Icon
-    }, {
-      title: i18n.t('menu.paragraph.heading3'),
-      subTitle: '### Lorem Ipsum is simply ...',
-      label: 'heading 3',
-      shortCut: `${COMMAND_KEY}+3`,
-      icon: header3Icon
-    }, {
-      title: i18n.t('menu.paragraph.heading4'),
-      subTitle: '#### Lorem Ipsum is simply ...',
-      label: 'heading 4',
-      shortCut: `${COMMAND_KEY}+4`,
-      icon: header4Icon
-    }, {
-      title: i18n.t('menu.paragraph.heading5'),
-      subTitle: '##### Lorem Ipsum is simply ...',
-      label: 'heading 5',
-      shortCut: `${COMMAND_KEY}+5`,
-      icon: header5Icon
-    }, {
-      title: i18n.t('menu.paragraph.heading6'),
-      subTitle: '###### Lorem Ipsum is simply ...',
-      label: 'heading 6',
-      shortCut: `${COMMAND_KEY}+6`,
-      icon: header6Icon
-    }],
-    'advanced block': [{
-      title: i18n.t('menu.paragraph.table'),
-      subTitle: '|Lorem | Ipsum is simply |',
-      label: 'table',
-      shortCut: `${SHIFT_KEY}+${COMMAND_KEY}+T`,
-      icon: newTableIcon
-    }, {
-      title: i18n.t('menu.paragraph.mathBlock'),
-      subTitle: '$$ Lorem Ipsum is simply $$',
-      label: 'mathblock',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+M`,
-      icon: mathblockIcon
-    }, {
-      title: i18n.t('menu.paragraph.htmlBlock'),
-      subTitle: '<div> Lorem Ipsum is simply </div>',
-      label: 'html',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+J`,
-      icon: htmlIcon
-    }, {
-      title: i18n.t('menu.paragraph.codeFences'),
-      subTitle: '```java Lorem Ipsum is simply ```',
-      label: 'pre',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+C`,
-      icon: codeIcon
-    }, {
-      title: i18n.t('menu.paragraph.blockquote'),
-      subTitle: '>Lorem Ipsum is simply ...',
-      label: 'blockquote',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+Q`,
-      icon: quoteIcon
-    }],
-    'list block': [{
-      title: i18n.t('menu.paragraph.orderList'),
-      subTitle: '1. Lorem Ipsum is simply ...',
-      label: 'ol-order',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+O`,
-      icon: orderListIcon
-    }, {
-      title: i18n.t('menu.paragraph.bulletList'),
-      subTitle: '- Lorem Ipsum is simply ...',
-      label: 'ul-bullet',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+U`,
-      icon: bulletListIcon
-    }, {
-      title: i18n.t('menu.paragraph.taskList'),
-      subTitle: '- [x] Lorem Ipsum is simply ...',
-      label: 'ul-task',
-      shortCut: `${OPTION_KEY}+${COMMAND_KEY}+X`,
-      icon: todoListIcon
-    }],
-    diagram: [{
-      title: i18n.t('menu.paragraph.vega'),
-      subTitle: i18n.t('menu.paragraph._descriptions.vega'),
-      label: 'vega-lite',
-      icon: vegaIcon
-    }, {
-      title: i18n.t('menu.paragraph.flowChart'),
-      subTitle: i18n.t('menu.paragraph._descriptions.flowChart'),
-      label: 'flowchart',
-      icon: flowchartIcon
-    }, {
-      title: i18n.t('menu.paragraph.seqDiagram'),
-      subTitle: i18n.t('menu.paragraph._descriptions.seqDiagram'),
-      label: 'sequence',
-      icon: sequenceIcon
-    }, {
-      title: i18n.t('menu.paragraph.mermaid'),
-      subTitle: i18n.t('menu.paragraph._descriptions.mermaid'),
-      label: 'mermaid',
-      icon: mermaidIcon
-    }]
-  }
+    [translate('quickInsert.basicBlock')]: [{
+    title: translate('quickInsert.paragraph.title'),
+    subTitle: translate('quickInsert.paragraph.subtitle'),
+    label: 'paragraph',
+    shortCut: `${COMMAND_KEY}+0`,
+    icon: paragraphIcon
+  }, {
+    title: translate('quickInsert.horizontalLine.title'),
+    subTitle: translate('quickInsert.horizontalLine.subtitle'),
+    label: 'hr',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+-`,
+    icon: hrIcon
+  }, {
+    title: translate('quickInsert.frontMatter.title'),
+    subTitle: translate('quickInsert.frontMatter.subtitle'),
+    label: 'front-matter',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+Y`,
+    icon: frontMatterIcon
+  }],
+  [translate('quickInsert.header')]: [{
+    title: translate('quickInsert.header1.title'),
+    subTitle: translate('quickInsert.header1.subtitle'),
+    label: 'heading 1',
+    shortCut: `${COMMAND_KEY}+1`,
+    icon: header1Icon
+  }, {
+    title: translate('quickInsert.header2.title'),
+    subTitle: translate('quickInsert.header2.subtitle'),
+    label: 'heading 2',
+    shortCut: `${COMMAND_KEY}+2`,
+    icon: header2Icon
+  }, {
+    title: translate('quickInsert.header3.title'),
+    subTitle: translate('quickInsert.header3.subtitle'),
+    label: 'heading 3',
+    shortCut: `${COMMAND_KEY}+3`,
+    icon: header3Icon
+  }, {
+    title: translate('quickInsert.header4.title'),
+    subTitle: translate('quickInsert.header4.subtitle'),
+    label: 'heading 4',
+    shortCut: `${COMMAND_KEY}+4`,
+    icon: header4Icon
+  }, {
+    title: translate('quickInsert.header5.title'),
+    subTitle: translate('quickInsert.header5.subtitle'),
+    label: 'heading 5',
+    shortCut: `${COMMAND_KEY}+5`,
+    icon: header5Icon
+  }, {
+    title: translate('quickInsert.header6.title'),
+    subTitle: translate('quickInsert.header6.subtitle'),
+    label: 'heading 6',
+    shortCut: `${COMMAND_KEY}+6`,
+    icon: header6Icon
+  }],
+  [translate('quickInsert.advancedBlock')]: [{
+    title: translate('quickInsert.tableBlock.title'),
+    subTitle: translate('quickInsert.tableBlock.subtitle'),
+    label: 'table',
+    shortCut: `${SHIFT_KEY}+${COMMAND_KEY}+T`,
+    icon: newTableIcon
+  }, {
+    title: translate('quickInsert.mathFormula.title'),
+    subTitle: translate('quickInsert.mathFormula.subtitle'),
+    label: 'mathblock',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+M`,
+    icon: mathblockIcon
+  }, {
+    title: translate('quickInsert.htmlBlock.title'),
+    subTitle: translate('quickInsert.htmlBlock.subtitle'),
+    label: 'html',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+J`,
+    icon: htmlIcon
+  }, {
+    title: translate('quickInsert.codeBlock.title'),
+    subTitle: translate('quickInsert.codeBlock.subtitle'),
+    label: 'pre',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+C`,
+    icon: codeIcon
+  }, {
+    title: translate('quickInsert.quoteBlock.title'),
+    subTitle: translate('quickInsert.quoteBlock.subtitle'),
+    label: 'blockquote',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+Q`,
+    icon: quoteIcon
+  }],
+  [translate('quickInsert.listBlock')]: [{
+    title: translate('quickInsert.orderedList.title'),
+    subTitle: translate('quickInsert.orderedList.subtitle'),
+    label: 'ol-order',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+O`,
+    icon: orderListIcon
+  }, {
+    title: translate('quickInsert.bulletList.title'),
+    subTitle: translate('quickInsert.bulletList.subtitle'),
+    label: 'ul-bullet',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+U`,
+    icon: bulletListIcon
+  }, {
+    title: translate('quickInsert.todoList.title'),
+    subTitle: translate('quickInsert.todoList.subtitle'),
+    label: 'ul-task',
+    shortCut: `${OPTION_KEY}+${COMMAND_KEY}+X`,
+    icon: todoListIcon
+  }],
+  [translate('quickInsert.diagram')]: [{
+     title: translate('quickInsert.vegaChart.title'),
+     subTitle: translate('quickInsert.vegaChart.subtitle'),
+     label: 'vega-lite',
+     icon: vegaIcon
+   }, {
+     title: translate('quickInsert.flowChart.title'),
+     subTitle: translate('quickInsert.flowChart.subtitle'),
+     label: 'flowchart',
+     icon: flowchartIcon
+   }, {
+     title: translate('quickInsert.sequenceChart.title'),
+     subTitle: translate('quickInsert.sequenceChart.subtitle'),
+     label: 'sequence',
+     icon: sequenceIcon
+   }, {
+     title: translate('quickInsert.plantUMLChart.title'),
+     subTitle: translate('quickInsert.plantUMLChart.subtitle'),
+     label: 'plantuml',
+     icon: plantumlIcon
+   }, {
+     title: translate('quickInsert.mermaid.title'),
+     subTitle: translate('quickInsert.mermaid.subtitle'),
+     label: 'mermaid',
+     icon: mermaidIcon
+   }]
+ }
 }
+
+// 保持向后兼容性，导出默认配置
+// 移除旧的导出，所有地方都应该使用createQuickInsertObj函数
