@@ -35,6 +35,8 @@
   "hideFrontIcon": false,
   "hideFormatPicker": false,
   "imageInsertAction": "path",
+  "serverFolderPath": "",
+  "localFolderPath": "",
   "imagePreferRelativeDirectory": false,
   "imageRelativeDirectoryName": "assets",
   "hideLinkPopup": false,
