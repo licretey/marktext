@@ -8,6 +8,7 @@ class Keyboard {
   constructor (muya) {
     this.muya = muya
     this.isComposed = false
+    this.isShiftDown = false
     this.shownFloat = new Set()
     this.recordIsComposed()
     this.dispatchEditorState()
@@ -191,6 +192,10 @@ class Keyboard {
         case EVENT_KEYS.Tab:
           contentState.tabHandler(event)
           break
+        case EVENT_KEYS.Shift:
+          eventCenter.dispatch('muya-format-picker', { reference: null })
+          this.isShiftDown = true
+          break
         default:
           break
       }
@@ -256,6 +261,10 @@ class Keyboard {
         })
       }
 
+      if (event.key === EVENT_KEYS.Shift) {
+        this.isShiftDown = false
+      }
+
       const { anchor, focus, start, end } = selection.getCursorRange()
       if (!anchor || !focus) {
         return
@@ -280,6 +289,7 @@ class Keyboard {
 
       const block = contentState.getBlock(anchor.key)
       if (
+        this.isShiftDown === false &&
         anchor.key === focus.key &&
         anchor.offset !== focus.offset &&
         block.functionType !== 'codeContent' &&
