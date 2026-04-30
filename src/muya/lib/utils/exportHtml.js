@@ -45,34 +45,14 @@ class ExportHtml {
     }
     const mermaid = await loadRenderer('mermaid')
     mermaid.initialize({
-      securityLevel: 'strict',
-      theme: 'default',
-      startOnLoad: false,
-      logLevel: 'error'
+      securityLevel: 'loose',
+      theme: 'default'
     })
-    const mermaidElements = this.exportContainer.querySelectorAll('div.mermaid')
-    if (mermaidElements.length > 0) {
-      // Render each diagram individually so one failure doesn't block the rest
-      for (const element of mermaidElements) {
-        try {
-          await mermaid.parse(element.textContent)
-          await mermaid.run({
-            nodes: [element],
-            suppressErrors: true
-          })
-        } catch (err) {
-          console.error('Mermaid export render error:', err.message || err)
-          element.innerHTML = '<pre style="color:red">Mermaid render failed</pre>'
-        }
-      }
-    }
-    // Restore the editor's mermaid theme after export
+    await mermaid.init(undefined, this.exportContainer.querySelectorAll('div.mermaid'))
     if (this.muya) {
       mermaid.initialize({
-        securityLevel: 'strict',
-        theme: this.muya.options.mermaidTheme,
-        startOnLoad: false,
-        logLevel: 'error'
+        securityLevel: 'loose',
+        theme: this.muya.options.mermaidTheme
       })
     }
   }

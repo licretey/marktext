@@ -231,7 +231,16 @@ class StateRender {
   }
 
   async renderMermaid () {
-    if (this.mermaidCache.size) {
+    if (this.mermaidCache.size === 0) return
+    if (this._renderingMermaid) {
+      this._pendingMermaidRender = true
+      return
+    }
+
+    this._renderingMermaid = true
+    this._pendingMermaidRender = false
+
+    try {
       const mermaid = await loadRenderer('mermaid')
 
       // Only override the specific themeVariables that mermaid gets wrong.
@@ -243,17 +252,8 @@ class StateRender {
       const neutralBg = isDark ? '#1e1e1e' : '#ffffff'
 
       mermaid.initialize({
-        securityLevel: 'strict',
-        theme: this.muya.options.mermaidTheme || 'default',
-        themeVariables: {
-          edgeLabelBackground: neutralBg,
-          signalTextColor: labelColor,
-          pieTitleTextColor: labelColor,
-          pieSectionTextColor: '#fff',
-          pieLegendTextColor: labelColor
-        },
-        startOnLoad: false,
-        logLevel: 'error'
+        securityLevel: 'loose',
+        theme: this.muya.options.mermaidTheme
       })
 
       // Wait longer for DOM to be fully ready
@@ -269,70 +269,21 @@ class StateRender {
         }
 
         try {
-          // Clean up any previous mermaid content
           target.removeAttribute('data-processed')
-          target.innerHTML = '' // Clear previous content
-
-          // Force layout recalculation and visibility
-          // eslint-disable-next-line no-unused-expressions
-          target.offsetHeight
-          target.style.visibility = 'visible'
-          target.style.display = 'block'
-
-          // v11: parse first to validate
-          await mermaid.parse(code)
-
-          // v11: set the code content
-          target.textContent = code
-          targets.push(target)
+          target.innerHTML = sanitize(code, PREVIEW_DOMPURIFY_CONFIG, true)
+          await mermaid.init(undefined, target)
         } catch (err) {
           console.error('Mermaid parse error for:', code.substring(0, 50), err)
           target.innerHTML = '< Invalid Mermaid Codes >'
           target.classList.add(CLASS_OR_ID.AG_MATH_ERROR)
         }
       }
-
-      // Render all diagrams at once if we have any
-      if (targets.length > 0) {
-        try {
-          await mermaid.run({
-            nodes: targets,
-            suppressErrors: false
-          })
-
-          // Force multiple repaints to ensure visibility
-          await new Promise(resolve => {
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                requestAnimationFrame(resolve)
-              })
-            })
-          })
-
-          // Fix any text with insufficient contrast against its background
-          for (const target of targets) {
-            const figure = target.closest('figure')
-            const preview = figure ? figure.querySelector('.ag-container-preview') : null
-            const svg = preview ? preview.querySelector('svg') : null
-            if (svg) fixSvgContrast(svg)
-          }
-        } catch (err) {
-          console.error('Mermaid batch render error:', err)
-          // Fallback: try individual rendering
-          for (const target of targets) {
-            try {
-              await mermaid.run({
-                nodes: [target],
-                suppressErrors: false
-              })
-            } catch (individualErr) {
-              console.error('Individual render fallback failed:', individualErr)
-            }
-          }
-        }
-      }
-
       this.mermaidCache.clear()
+    } finally {
+      this._renderingMermaid = false
+      if (this._pendingMermaidRender && this.mermaidCache.size > 0) {
+        this.renderMermaid()
+      }
     }
   }
 
