@@ -102,7 +102,7 @@ import Printer from '@/services/printService'
 import { SpellcheckerLanguageCommand } from '@/commands'
 import { SpellChecker } from '@/spellchecker'
 import { isOsx, animatedScrollTo } from '@/util'
-import { moveImageToFolder, moveToRelativeFolder, uploadImage } from '@/util/fileSystem'
+import { getRelativeImagePathIfIdentical, moveImageToFolder, moveToRelativeFolder, uploadImage } from '@/util/fileSystem'
 import { guessClipboardFilePath } from '@/util/clipboard'
 import { getCssForOptions, getHtmlToc } from '@/util/pdf'
 import { addCommonStyle, setEditorWidth } from '@/util/theme'
@@ -790,9 +790,14 @@ export default {
           break
         }
         case 'folder': {
-          destImagePath = await moveImageToFolder(pathname, image, resolvedImageFolderPath)
-          if (isTabSavedOnDisk && imagePreferRelativeDirectory) {
-            destImagePath = await moveToRelativeFolder(relativeBasePath, resolvedImageRelativeDirectoryName, pathname, destImagePath)
+          const { identical, relPath } = getRelativeImagePathIfIdentical(relativeBasePath, resolvedImageRelativeDirectoryName, image)
+          if (identical && isTabSavedOnDisk && imagePreferRelativeDirectory) {
+            destImagePath = relPath
+          } else {
+            destImagePath = await moveImageToFolder(pathname, image, resolvedImageFolderPath)
+            if (isTabSavedOnDisk && imagePreferRelativeDirectory) {
+              destImagePath = await moveToRelativeFolder(relativeBasePath, resolvedImageRelativeDirectoryName, pathname, destImagePath)
+            }
           }
           break
         }
