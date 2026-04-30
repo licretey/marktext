@@ -207,6 +207,93 @@ Names and company logos of all sponsors (from both Patreon and Open Collective) 
 
 ## Download and Installation
 
+### EastAgile Edition (v0.17.2-ea1)
+
+**[Download Latest Release](https://github.com/EastAgile/marktext/releases/latest)**
+
+This fork includes Electron 41, Mermaid 11.13 (all 16 diagram types), new themes, WCAG contrast enforcement, and PDF export fixes.
+
+| Platform | Download | Notes |
+|----------|----------|-------|
+| macOS Apple Silicon | [marktext-arm64.dmg](https://github.com/EastAgile/marktext/releases/download/v0.17.2-ea1/marktext-arm64.dmg) | M1/M2/M3/M4 Macs |
+
+**macOS:** Download the `.dmg`, open it, drag MarkText to Applications. On first launch, right-click > Open to bypass Gatekeeper.
+
+**Other platforms** must be built from source — native modules require compilation on the target platform. **Node.js 22** is required (20 is too old for `@electron/rebuild`).
+
+#### Linux (Ubuntu/Debian ARM64 or x64)
+
+```bash
+# 1. Install system dependencies (requires sudo)
+sudo apt update
+sudo apt install -y git build-essential python3 \
+  libsecret-1-dev libx11-dev libxkbfile-dev libfontconfig1-dev
+
+# 2. Install Node.js 22 via nvm (recommended)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc        # or restart your terminal
+nvm install 22
+nvm use 22
+
+# 3. Install yarn
+npm install -g yarn
+
+# 4. Clone and build
+git clone https://github.com/EastAgile/marktext.git
+cd marktext
+git checkout develop
+yarn install
+yarn run build:bin
+
+# 5. Run
+./build/linux-*-unpacked/marktext
+```
+
+**Troubleshooting:**
+- If `yarn install` fails with a rebuild error, run `yarn install --ignore-scripts` then `node .electron-vue/postinstall.js && node .electron-vue/rebuild.js && yarn run lint:fix`
+- If rebuild reports "Could not detect abi", run: `cd node_modules/@electron/rebuild/node_modules && rm -rf node-abi && cp -r ../../../node-abi .` then retry
+
+To add a desktop launcher:
+
+```bash
+mkdir -p ~/.local/share/applications
+cat > ~/.local/share/applications/marktext.desktop << DESKTOP
+[Desktop Entry]
+Name=MarkText
+Comment=Next generation markdown editor
+Exec=$(pwd)/build/linux-*-unpacked/marktext %F
+Icon=$(pwd)/static/logo-96px.png
+Terminal=false
+Type=Application
+Categories=Office;TextEditor;
+MimeType=text/markdown;
+DESKTOP
+```
+
+#### macOS Intel
+
+```bash
+# Requires Xcode command line tools and Node.js 22
+git clone https://github.com/EastAgile/marktext.git
+cd marktext && git checkout develop
+yarn install && yarn run build:bin
+open build/mac/MarkText.app
+```
+
+#### Windows
+
+Requires [Visual Studio Build Tools](https://visualstudio.microsoft.com/visual-cpp-build-tools/) with the C++ workload, Node.js 22, and yarn.
+
+```bash
+git clone https://github.com/EastAgile/marktext.git
+cd marktext && git checkout develop
+yarn install && yarn run build:bin
+```
+
+---
+
+### Upstream (v0.17.1)
+
 ![platform](https://img.shields.io/static/v1.svg?label=Platform&message=Linux-64%20|%20macOS-64%20|%20Win-32%20|%20Win-64&style=for-the-badge)
 
 | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/mac-pass-sm.png)                                                                                         | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/windows-pass-sm.png)                                                                                         | ![](https://raw.githubusercontent.com/wiki/ryanoasis/nerd-fonts/screenshots/v1.0.x/linux-pass-sm.png)                                                                                                       |

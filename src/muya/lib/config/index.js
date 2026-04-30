@@ -278,7 +278,7 @@ export const MUYA_DEFAULT_OPTION = Object.freeze({
   listIndentation: 1,
   frontmatterType: '-',
   sequenceTheme: 'hand', // hand or simple
-  mermaidTheme: 'default', // dark / forest / default
+  mermaidTheme: 'default', // dark / forest / neutral / default
   vegaTheme: 'latimes', // excel / ggplot2 / quartz / vox / fivethirtyeight / dark / latimes
   hideQuickInsertHint: false,
   hideFrontIcon: false,

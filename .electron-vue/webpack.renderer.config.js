@@ -23,7 +23,7 @@ const isProduction = process.env.NODE_ENV === 'production'
  * that provide pure *.vue files that need compiling
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/webpack-configurations.html#white-listing-externals
  */
-const whiteListedModules = ['vue']
+const whiteListedModules = ['vue', 'mermaid', '@mermaid-js/parser', 'cytoscape', 'dagre', 'd3', 'khroma', 'stylis', 'lodash-es', '@braintree/sanitize-url', 'dompurify', 'dayjs', 'uuid', 'internmap', 'delaunator', 'robust-predicates']
 
 /** @type {import('webpack').Configuration} */
 const rendererConfig = {
@@ -89,7 +89,10 @@ const rendererConfig = {
         use: 'vue-html-loader'
       },
       {
-        test: /\.js$/,
+        test: /\.m?js$/,
+        resolve: {
+          fullySpecified: false
+        },
         use: [
           {
             loader: 'babel-loader',
@@ -98,7 +101,7 @@ const rendererConfig = {
             }
           }
         ],
-        exclude: /node_modules/
+        exclude: /node_modules\/(?!(mermaid|@mermaid-js\/parser|cytoscape|dagre|khroma|stylis|d3|lodash-es|internmap|delaunator|robust-predicates)\/).*/
       },
       {
         test: /\.node$/,
@@ -188,6 +191,14 @@ const rendererConfig = {
         : false
     }),
     new webpack.DefinePlugin(getRendererEnvironmentDefinitions()),
+    // Polyfill esbuild's __name helper used by mermaid and @mermaid-js/parser.
+    // Without this, webpack code-splitting separates __name from the chunks that use it,
+    // causing gitGraph and pie chart parsing to fail with "__name is not defined".
+    new webpack.BannerPlugin({
+      banner: 'var __defProp = Object.defineProperty; var __name = (target, value) => __defProp(target, "name", { value, configurable: true });',
+      raw: true,
+      include: /\.js$/
+    }),
     // Use node http request instead axios's XHR adapter.
     new webpack.NormalModuleReplacementPlugin(
       /.+[\/\\]node_modules[\/\\]axios[\/\\]lib[\/\\]adapters[\/\\]xhr\.js$/,
@@ -212,7 +223,8 @@ const rendererConfig = {
       snapsvg: path.join(__dirname, '../src/muya/lib/assets/libs/snap.svg-min.js'),
       'vue$': 'vue/dist/vue.esm.js'
     },
-    extensions: ['.js', '.vue', '.json', '.css', '.node']
+    extensions: ['.mjs', '.js', '.vue', '.json', '.css', '.node'],
+    fullySpecified: false
   },
   target: 'electron-renderer'
 }
@@ -250,9 +262,10 @@ if (!isProduction && process.env.MARKTEXT_BUILD_VSCODE_DEBUG) {
  * Adjust rendererConfig for production settings
  */
 if (isProduction) {
-  rendererConfig.devtool = 'nosources-source-map'
+  rendererConfig.devtool = false
   rendererConfig.mode = 'production'
-  rendererConfig.optimization.minimize = true
+  // Temporarily disable minification for Mermaid v11 compatibility
+  rendererConfig.optimization.minimize = false
 
   rendererConfig.plugins.push(
     new webpack.DefinePlugin({

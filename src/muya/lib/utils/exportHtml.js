@@ -38,21 +38,41 @@ class ExportHtml {
     for (const code of codes) {
       const preEle = code.parentNode
       const mermaidContainer = document.createElement('div')
-      mermaidContainer.innerHTML = sanitize(unescapeHTML(code.innerHTML), EXPORT_DOMPURIFY_CONFIG, true)
+      // v11: mermaid.run() reads textContent, so set raw code as text, not HTML
+      mermaidContainer.textContent = unescapeHTML(code.innerHTML)
       mermaidContainer.classList.add('mermaid')
       preEle.replaceWith(mermaidContainer)
     }
     const mermaid = await loadRenderer('mermaid')
-    // We only export light theme, so set mermaid theme to `default`, in the future, we can choose whick theme to export.
     mermaid.initialize({
       securityLevel: 'strict',
-      theme: 'default'
+      theme: 'default',
+      startOnLoad: false,
+      logLevel: 'error'
     })
-    mermaid.init(undefined, this.exportContainer.querySelectorAll('div.mermaid'))
+    const mermaidElements = this.exportContainer.querySelectorAll('div.mermaid')
+    if (mermaidElements.length > 0) {
+      // Render each diagram individually so one failure doesn't block the rest
+      for (const element of mermaidElements) {
+        try {
+          await mermaid.parse(element.textContent)
+          await mermaid.run({
+            nodes: [element],
+            suppressErrors: true
+          })
+        } catch (err) {
+          console.error('Mermaid export render error:', err.message || err)
+          element.innerHTML = '<pre style="color:red">Mermaid render failed</pre>'
+        }
+      }
+    }
+    // Restore the editor's mermaid theme after export
     if (this.muya) {
       mermaid.initialize({
         securityLevel: 'strict',
-        theme: this.muya.options.mermaidTheme
+        theme: this.muya.options.mermaidTheme,
+        startOnLoad: false,
+        logLevel: 'error'
       })
     }
   }
