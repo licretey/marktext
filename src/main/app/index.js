@@ -12,8 +12,7 @@ import { normalizeMarkdownPath } from '../filesystem/markdown'
 import { registerKeyboardListeners } from '../keyboard'
 import { selectTheme } from '../menu/actions/theme'
 import { dockMenu } from '../menu/templates'
-import registerSpellcheckerListeners from '../spellchecker'
-import { watchers } from '../utils/imagePathAutoComplement'
+import ensureDefaultDict from '../preferences/hunspell'
 import { WindowType } from '../windows/base'
 import EditorWindow from '../windows/editor'
 import SettingWindow from '../windows/setting'
@@ -82,11 +81,7 @@ class App {
     app.on('ready', this.ready)
 
     app.on('window-all-closed', () => {
-      // Close all the image path watcher
-      for (const watcher of watchers.values()) {
-        watcher.close()
-      }
-      this._windowManager.closeWatcher()
+      this._windowManager.close()
       if (!isOsx) {
         app.quit()
       }

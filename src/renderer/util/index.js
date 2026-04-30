@@ -135,23 +135,8 @@ export const cloneObj = (obj, deepCopy = true) => {
   return deepCopy ? JSON.parse(JSON.stringify(obj)) : Object.assign({}, obj)
 }
 
-/**
- * Shallow clone the given object.
- *
- * @param {*} obj Object to clone
- * @param {boolean} inheritFromObject Whether the clone should inherit from `Object`
- */
-export const cloneObject = (obj, inheritFromObject = true) => {
-  return Object.assign(inheritFromObject ? {} : Object.create(null), obj)
-}
-
-/**
- * Deep clone the given object.
- *
- * @param {*} obj Object to clone
- */
-export const deepClone = obj => {
-  return JSON.parse(JSON.stringify(obj))
+export const getErrorMessageFromInvokeRequest = error => {
+  return error.message.replace(/Error invoking remote method '[^']+': /, '')
 }
 
 export const isOsx = process.platform === 'darwin'

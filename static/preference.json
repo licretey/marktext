@@ -70,5 +70,6 @@
   "searchNoIgnore": false,
   "searchFollowSymlinks": true,
 
-  "watcherUsePolling": false
+  "watcherUsePolling": false,
+  "watcherDirectoryDepth": 12
 }
