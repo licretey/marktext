@@ -4,20 +4,23 @@ Preferences can be controlled and modified in the settings window or via the `pr
 
 #### General
 
-| Key                    | Type    | Default Value | Description                                                                                                                                               |
-| ---------------------- | ------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| autoSave               | Boolean | false         | Automatically save the content being edited. option value: true, false                                                                                    |
-| autoSaveDelay          | Number  | 5000          | The delay in milliseconds after a changed file is saved automatically? 1000 ~10000                                                                        |
-| titleBarStyle          | String  | custom        | The title bar style on Linux and Window: `custom` or `native`                                                                                             |
-| openFilesInNewWindow   | Boolean | false         | true, false                                                                                                                                               |
-| openFolderInNewWindow  | Boolean | false         | true, false                                                                                                                                               |
-| hideScrollbar          | Boolean | false         | Whether to hide scrollbars. Optional value: true, false                                                                                                   |
-| wordWrapInToc          | Boolean | false         | Whether to enable word wrap in TOC. Optional value: true, false                                                                                           |
-| aidou                  | Boolean | true          | Enable aidou. Optional value: true, false                                                                                                                 |
-| fileSortBy             | String  | created       | Sort files in opened folder by `created` time, modified time and title.                                                                                   |
-| startUpAction          | String  | lastState     | The action after Mark Text startup, open the last edited content, open the specified folder or blank page, optional value: `lastState`, `folder`, `blank` |
-| defaultDirectoryToOpen | String  | `""`          | The path that should be opened if `startUpAction=folder`.                                                                                                 |
-| language               | String  | en            | The language Mark Text use.                                                                                                                               |
+| Key                    | Type    | Default Value | Description                                                                                                                                                |
+| ---------------------- | ------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| autoSave               | Boolean | false         | Automatically save the content being edited. option value: true, false                                                                                     |
+| autoSaveDelay          | Number  | 5000          | The delay in milliseconds after a changed file is saved automatically? 1000 ~10000                                                                         |
+| titleBarStyle          | String  | custom        | The title bar style on Linux and Window: `custom` or `native`                                                                                              |
+| openFilesInNewWindow   | Boolean | false         | true, false                                                                                                                                                |
+| openFolderInNewWindow  | Boolean | false         | true, false                                                                                                                                                |
+| zoom                   | Number  | 1.0           | The zoom level. Between 0.5 and 2.0 inclusive.                                                                                                             |
+| hideScrollbar          | Boolean | false         | Whether to hide scrollbars. Optional value: true, false                                                                                                    |
+| jumpToStartOnLoad      | Boolean | false         | Jump to the start of the document on load (rather than end)                                                                                                |
+| wordWrapInToc          | Boolean | false         | Whether to enable word wrap in TOC. Optional value: true, false                                                                                            |
+| aidou                  | Boolean | true          | Enable aidou. Optional value: true, false                                                                                                                  |
+| fileSortBy             | String  | created       | Sort files in opened folder by `created` time, modified time and title.                                                                                    |
+| startUpAction          | String  | lastState     | The action after MarkText startup, open the last edited content, open the specified folder or blank page, optional value: `lastState`, `folder`, `blank`   |
+| defaultDirectoryToOpen | String  | `""`          | The path that should be opened if `startUpAction=folder`.                                                                                                  |
+| language               | String  | en            | The language MarkText use.                                                                                                                                 |
+
 
 #### Editor
 
