@@ -63,18 +63,19 @@ export const addFile = (tree, file) => {
   // Add file to related directory
   if (!currentFolder.files.find((f) => f.name === name)) {
     // Remove file content from object.
-    const fileCopy = {
+    const fileEntry = {
       id: getUniqueId(),
-      pathname: fullPath,
-      name: filename,
-      isFile: true
+      pathname,
+      name,
+      isFile: true,
+      isMarkdown: file.isMarkdown
     }
 
     const idx = currentFolder.files.findIndex((f) => {
       return f.name.localeCompare(name) > 0
     })
     if (idx !== -1) {
-      currentFolder.files.splice(idx, 0, fileCopy)
+      currentFolder.files.splice(idx, 0, fileEntry)
     } else {
       currentFolder.files.push(fileEntry)
     }

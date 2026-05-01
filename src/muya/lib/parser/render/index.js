@@ -233,49 +233,51 @@ class StateRender {
   }
 
   async renderMermaid() {
-    if (this.mermaidCache.size) {
-      const mermaid = await loadRenderer('mermaid')
+    try {
+      if (this.mermaidCache.size) {
+        const mermaid = await loadRenderer('mermaid')
 
-      // Only override the specific themeVariables that mermaid gets wrong.
-      // Do NOT override node text colours — mermaid's own themes handle
-      // contrast correctly (white text on dark fills, dark on light fills).
-      // We only fix: edge label backgrounds, pie legends, and signal text.
-      const isDark = document.body.classList.contains('dark')
-      const labelColor = isDark ? '#ffffff' : '#1a1a1a'
-      const neutralBg = isDark ? '#1e1e1e' : '#ffffff'
+        // Only override the specific themeVariables that mermaid gets wrong.
+        // Do NOT override node text colours — mermaid's own themes handle
+        // contrast correctly (white text on dark fills, dark on light fills).
+        // We only fix: edge label backgrounds, pie legends, and signal text.
+        const isDark = document.body.classList.contains('dark')
+        const labelColor = isDark ? '#ffffff' : '#1a1a1a'
+        const neutralBg = isDark ? '#1e1e1e' : '#ffffff'
 
-      mermaid.initialize({
-        securityLevel: 'loose',
-        theme: this.muya.options.mermaidTheme
-      })
+        mermaid.initialize({
+          securityLevel: 'loose',
+          theme: this.muya.options.mermaidTheme
+        })
 
-      // Wait longer for DOM to be fully ready
-      await new Promise(resolve => setTimeout(resolve, 200))
+        // Wait longer for DOM to be fully ready
+        await new Promise(resolve => setTimeout(resolve, 200))
 
-      // Prepare all diagrams first
-      const targets = []
-      for (const [key, value] of this.mermaidCache.entries()) {
-        const { code } = value
-        const target = document.querySelector(key)
-        if (!target) {
-          continue
-        }
-
-        try {
-          target.removeAttribute('data-processed')
-          target.innerHTML = sanitize(code, PREVIEW_DOMPURIFY_CONFIG, true)
-          if (mermaid.run) {
-            await mermaid.run({ nodes: [target] })
-          } else {
-            mermaid.init(undefined, target)
+        // Prepare all diagrams first
+        const targets = []
+        for (const [key, value] of this.mermaidCache.entries()) {
+          const { code } = value
+          const target = document.querySelector(key)
+          if (!target) {
+            continue
           }
-        } catch (err) {
-          console.error('Mermaid parse error for:', code.substring(0, 50), err)
-          target.innerHTML = '< Invalid Mermaid Codes >'
-          target.classList.add(CLASS_OR_ID.AG_MATH_ERROR)
+
+          try {
+            target.removeAttribute('data-processed')
+            target.innerHTML = sanitize(code, PREVIEW_DOMPURIFY_CONFIG, true)
+            if (mermaid.run) {
+              await mermaid.run({ nodes: [target] })
+            } else {
+              mermaid.init(undefined, target)
+            }
+          } catch (err) {
+            console.error('Mermaid parse error for:', code.substring(0, 50), err)
+            target.innerHTML = '< Invalid Mermaid Codes >'
+            target.classList.add(CLASS_OR_ID.AG_MATH_ERROR)
+          }
         }
+        this.mermaidCache.clear()
       }
-      this.mermaidCache.clear()
     } finally {
       this._renderingMermaid = false
       if (this._pendingMermaidRender && this.mermaidCache.size > 0) {

@@ -37,6 +37,7 @@ export const usePreferencesStore = defineStore('preferences', {
     defaultEncoding: 'utf8',
     autoGuessEncoding: true,
     autoNormalizeLineEndings: false,
+    maxOpenTabs: 20,
 
     trimTrailingNewline: 2,
     textDirection: 'ltr',

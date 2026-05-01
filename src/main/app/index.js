@@ -16,7 +16,7 @@ import registerSpellcheckerListeners from '../spellchecker'
 import { WindowType } from '../windows/base'
 import EditorWindow from '../windows/editor'
 import SettingWindow from '../windows/setting'
-import { setLanguage } from '../i18n'
+import { setLanguage, getCurrentLanguage } from '../i18n'
 
 class App {
   /**
@@ -137,8 +137,7 @@ class App {
           'fr',
           'de',
           'es',
-          'pt',
-          'ru'
+          'pt'
         ]
 
         // 语言映射：系统语言代码 -> 应用语言代码
@@ -161,9 +160,7 @@ class App {
           es: 'es',
           'es-ES': 'es',
           pt: 'pt',
-          'pt-BR': 'pt',
-          ru: 'ru',
-          'ru-RU': 'ru'
+          'pt-BR': 'pt'
         }
 
         currentLanguage = languageMap[systemLanguage] || 'en'
@@ -811,13 +808,15 @@ class App {
     const { preferences } = this._accessor
     const { language } = preferences.getAll()
 
-    i18n.locale = language || DEFAULT_LOCALE
+    if (language) {
+      setLanguage(language)
+    }
+    const currentLang = getCurrentLanguage()
 
     log.info(`
       Main Process UI Locales:
-      * Default locale:                 ${DEFAULT_LOCALE}
       * Locale defined in preferences:  ${language}
-      * Locale set in Vue-I18n:         ${i18n.locale}
+      * Current locale:                 ${currentLang}
     `)
   }
 }

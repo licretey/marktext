@@ -61,7 +61,15 @@ export const useProjectStore = defineStore('project', {
       const projectTree = createProjectRoot(pathname)
       if (!projectTree) return
 
+      // Unwatch previous directory if any
+      if (this.projectTree?.pathname) {
+        window.electron.ipcRenderer.send('mt::watcher-unwatch-sidebar-directory', this.projectTree.pathname)
+      }
+
       this.projectTree = projectTree
+
+      // Start watching the new directory for file changes
+      window.electron.ipcRenderer.send('mt::watcher-watch-sidebar-directory', { path: pathname, token: '' })
 
       const layout = {
         rightColumn: 'files',
@@ -132,10 +140,10 @@ export const useProjectStore = defineStore('project', {
           editorStore.SET_SAVE_STATUS_WHEN_REMOVE(change)
           break
         case 'addDir':
-          addDirectory(this.projectTree, change)
+          addDirectory(this.projectTree, change.pathname)
           break
         case 'unlinkDir':
-          unlinkDirectory(this.projectTree, change)
+          unlinkDirectory(this.projectTree, change.pathname)
           break
         case 'change':
           break

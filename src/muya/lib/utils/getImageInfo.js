@@ -8,12 +8,16 @@ export const getImageInfo = image => {
   const offset = getOffsetOfParagraph(image, paragraph)
   const tokens = tokenizer(raw)
   const token = tokens[0]
+  if (!token) {
+    return null
+  }
   token.range = {
     start: offset,
     end: offset + raw.length
   }
   const imageContainer = image.querySelector('.ag-image-container')
-  const absoluteImagePath = imageContainer.firstChild.currentSrc
+  const firstChild = imageContainer && imageContainer.firstChild
+  const absoluteImagePath = firstChild ? firstChild.currentSrc : ''
   return {
     key: paragraph.id,
     token,

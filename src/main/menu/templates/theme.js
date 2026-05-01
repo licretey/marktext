@@ -33,7 +33,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.ayuLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'ayu-light',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'ayu-light',
@@ -43,7 +43,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.cadmiumLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'light',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'light',
@@ -53,7 +53,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.catppuccinLatte'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'catppuccin-latte',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'catppuccin-latte',
@@ -63,7 +63,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.everforestLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'everforest-light',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'everforest-light',
@@ -73,7 +73,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.graphiteLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'graphite',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'graphite',
@@ -83,7 +83,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.gruvboxLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'gruvbox-light',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'gruvbox-light',
@@ -93,7 +93,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.rosePineDawn'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'rose-pine-dawn',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'rose-pine-dawn',
@@ -103,7 +103,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.solarizedLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'solarized-light',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'solarized-light',
@@ -113,7 +113,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.tokyoNightLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'tokyo-night-light',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'tokyo-night-light',
@@ -123,7 +123,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.ulyssesLight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'ulysses',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'ulysses',
@@ -139,7 +139,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.ayuDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'ayu-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'ayu-dark',
@@ -149,7 +149,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.ayuMirage'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'ayu-mirage',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'ayu-mirage',
@@ -159,7 +159,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.cadmiumDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'dark',
@@ -169,7 +169,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.catppuccinMocha'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'catppuccin-mocha',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'catppuccin-mocha',
@@ -179,7 +179,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.cyberdream'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'cyberdream',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'cyberdream',
@@ -189,7 +189,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.dracula'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'dracula',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'dracula',
@@ -199,7 +199,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.everforestDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'everforest-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'everforest-dark',
@@ -209,7 +209,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.gruvboxDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'gruvbox-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'gruvbox-dark',
@@ -219,7 +219,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.horizonDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'horizon-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'horizon-dark',
@@ -229,7 +229,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.kanagawa'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'kanagawa',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'kanagawa',
@@ -239,7 +239,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.materialDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'material-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'material-dark',
@@ -249,7 +249,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.monokaiPro'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'monokai-pro',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'monokai-pro',
@@ -259,7 +259,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.nightfox'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'nightfox',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'nightfox',
@@ -269,7 +269,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.nord'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'nord',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'nord',
@@ -279,7 +279,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.oneDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'one-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'one-dark',
@@ -289,7 +289,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.oxocarbonDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'oxocarbon-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'oxocarbon-dark',
@@ -299,7 +299,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.palenight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'palenight',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'palenight',
@@ -309,7 +309,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.rosePine'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'rose-pine',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'rose-pine',
@@ -319,7 +319,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.rosePineMoon'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'rose-pine-moon',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'rose-pine-moon',
@@ -329,7 +329,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.solarizedDark'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'solarized-dark',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'solarized-dark',
@@ -339,7 +339,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.synthwave84'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'synthwave-84',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'synthwave-84',
@@ -349,7 +349,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.tokyoNight'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'tokyo-night',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'tokyo-night',
@@ -359,7 +359,7 @@ export default function (userPreference) {
     },
     {
       label: t('menu.theme.tokyoNightStorm'),
-      type: 'radio',
+      type: 'checkbox',
       id: 'tokyo-night-storm',
       enabled: isThemeSelectionEnabled,
       checked: theme === 'tokyo-night-storm',

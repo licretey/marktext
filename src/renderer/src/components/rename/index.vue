@@ -7,7 +7,7 @@
       custom-class="ag-dialog-table"
       width="410px"
     >
-      <template #title>
+      <template #header>
         <div class="search-wrapper">
           <div class="input-wrapper">
             <input
@@ -51,7 +51,7 @@ const handleRename = () => {
 }
 
 const confirm = () => {
-  editorStore.rename(tempName.value)
+  editorStore.RENAME(tempName.value)
   showRename.value = false
 }
 

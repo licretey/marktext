@@ -5,7 +5,6 @@ import { CLASS_OR_ID, DEVICE_MEMORY, PREVIEW_DOMPURIFY_CONFIG, HAS_TEXT_BLOCK_RE
 import { tokenizer } from '../../'
 import { snakeToCamel, sanitize, escapeHTML, getLongUniqueId, getImageInfo } from '../../../utils'
 import { h, htmlToVNode } from '../snabbdom'
-import i18n from '../../../i18n'
 
 // todo@jocs any better solutions?
 const MARKER_HASK = {

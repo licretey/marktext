@@ -11,7 +11,7 @@
     "minify-locales": "node scripts/minify-locales.mjs",
     "rebuild-native": "npx @electron/rebuild -f",
     "start": "cross-env PERF_TESTING=true electron-vite preview",
-    "dev": "ulimit -n 65536 && cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ electron-vite dev",
+    "dev": "cross-env ELECTRON_MIRROR=https://npmmirror.com/mirrors/electron/ electron-vite dev",
     "build": "electron-vite build",
     "build:unpack": "npm run minify-locales && npm run build",
     "build:win": "npm run minify-locales && npx @electron/rebuild && npm run build && electron-builder --win --publish never",

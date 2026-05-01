@@ -28,7 +28,9 @@ class Muya {
 
   constructor(container, options) {
     this.options = Object.assign({}, MUYA_DEFAULT_OPTION, options)
-    this.options = Object.assign(this.options, preferences)
+    if (typeof preferences !== 'undefined') {
+      this.options = Object.assign(this.options, preferences)
+    }
 
     const { markdown } = this.options
     this.markdown = markdown
@@ -527,7 +529,7 @@ class Muya {
  * [ensureContainerDiv ensure container element is div]
  */
 function getContainer(originContainer, options) {
-  const { hideQuickInsertHint, spellcheckEnabled } = options
+  const { hideQuickInsertHint, spellcheckEnabled, hideFrontIcon } = options
   const container = document.createElement('div')
   const rootDom = document.createElement('div')
   const attrs = originContainer.attributes
@@ -582,7 +584,7 @@ function initI18n () {
     }
     
     pre.ag-multiple-math span.ag-code-content:first-of-type:empty::after {
-      content: '${i18n.t('hints.editor.math')};
+      content: '${i18n.t('hints.editor.math')}';
       color: var(--editorColor10);
     }
 

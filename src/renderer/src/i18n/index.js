@@ -9,6 +9,7 @@ const i18n = createI18n({
   legacy: false,
   locale: 'en', // default is en
   fallbackLocale: 'en',
+  warnHtmlMessage: false,
   messages: { en: enTranslations }, // Load en by default only
   // 禁用链接功能以避免@符号被误解析
   modifiers: {
@@ -54,7 +55,7 @@ export const t = (key, ...args) => {
 // 导出语言设置函数
 export const setLanguage = (locale) => {
   if (!locale) return
-  if (!i18n.global.availableLocales.includes[locale]) {
+  if (!i18n.global.availableLocales.includes(locale)) {
     // Locale not yet available, need to get it from the main process
     const translation = window.i18nUtils.loadTranslations(locale)
     if (!translation) return // Failed to load locale file, error msg should be in the loadTranslations function
@@ -68,6 +69,23 @@ export const setLanguage = (locale) => {
 
 // 导出获取当前语言函数
 export const getCurrentLanguage = () => i18n.global.locale.value
+
+// 异步获取当前语言
+export const asyncGetLanguage = () => {
+  return new Promise((resolve) => {
+    if (window.electron && window.electron.ipcRenderer) {
+      window.electron.ipcRenderer.send('mt::get-current-language')
+      window.electron.ipcRenderer.once('mt::current-language', (event, language) => {
+        resolve(language)
+      })
+    } else {
+      resolve(i18n.global.locale.value)
+    }
+  })
+}
+
+// 默认语言
+export const DEFAULT_LOCALE = 'en'
 
 // 导出i18n实例（命名导出和默认导出）
 export { i18n }

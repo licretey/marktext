@@ -241,6 +241,13 @@
     "type": "boolean",
     "default": false
   },
+  "maxOpenTabs": {
+    "description": "Editor--Maximum number of open tabs. Least recently used saved tabs are automatically closed when the limit is exceeded.",
+    "type": "number",
+    "minimum": 3,
+    "maximum": 99,
+    "default": 20
+  },
   "preferLooseListItem": {
     "description": "Markdown--The preferred list type",
     "type": "boolean",

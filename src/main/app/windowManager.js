@@ -5,6 +5,7 @@ import Watcher, {
   WATCHER_STABILITY_THRESHOLD,
   WATCHER_STABILITY_POLL_INTERVAL
 } from '../filesystem/watcher'
+import { getWatcherSettingsFromPreferences } from '../filesystem/watcher/index'
 import { WindowType } from '../windows/base'
 
 class WindowActivityList {
@@ -98,7 +99,7 @@ class WindowManager extends EventEmitter {
     })
     window.on('window-closed', () => {
       this.remove(windowId)
-      this._watcherManager.unwatchByWindowId(windowId)
+      this._watcher.unwatchByWindowId(windowId)
     })
   }
 
@@ -295,6 +296,10 @@ class WindowManager extends EventEmitter {
     this._watcher.close()
   }
 
+  close() {
+    this._watcher.close()
+  }
+
   /**
    * Closes the browser window and associated application window without asking to save documents.
    *
@@ -309,7 +314,7 @@ class WindowManager extends EventEmitter {
     const { _appMenu, _windows } = this
 
     // Free watchers used by this window
-    this._watcherManager.unwatchByWindowId(windowId)
+    this._watcher.unwatchByWindowId(windowId)
 
     // Application clearup and remove listeners
     _appMenu.removeWindowMenu(windowId)
@@ -396,14 +401,18 @@ class WindowManager extends EventEmitter {
       const window = BrowserWindow.fromWebContents(event.sender)
       if (window != null) {
         const config = getWatcherSettingsFromPreferences(this._preferences)
-        this._watcherManager.watchDirectory(fullPath, window, token, config)
+        try {
+          this._watcher.watchDirectory(fullPath, window, token, config)
+        } catch (err) {
+          log.error(`Failed to watch directory "${fullPath}":`, err.message)
+        }
       }
     })
 
     ipcMain.on('mt::watcher-unwatch-sidebar-directory', (event, fullPath) => {
       const window = BrowserWindow.fromWebContents(event.sender)
       if (window != null) {
-        this._watcherManager.unwatchDirectory(fullPath, window.id)
+        this._watcher.unwatchDirectory(fullPath, window.id)
       }
     })
 
@@ -424,10 +433,14 @@ class WindowManager extends EventEmitter {
     })
     ipcMain.on('watcher-watch-file', (window, filePath) => {
       const config = getWatcherSettingsFromPreferences(this._preferences)
-      this._watcherManager.watchFile(filePath, window, null, config)
+      try {
+        this._watcher.watchFile(filePath, window, null, config)
+      } catch (err) {
+        log.error(`Failed to watch file "${filePath}":`, err.message)
+      }
     })
     ipcMain.on('watcher-unwatch-file', (window, filePath) => {
-      this._watcherManager.unwatchFile(filePath, window.id)
+      this._watcher.unwatchFile(filePath, window.id)
     })
 
     ipcMain.on('window-add-file-path', (windowId, filePath) => {

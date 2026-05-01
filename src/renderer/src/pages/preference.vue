@@ -18,7 +18,7 @@ import SideBar from '@/prefComponents/sideBar'
 import { addThemeStyle } from '@/util/theme'
 import { DEFAULT_STYLE } from '@/config'
 import { isOsx } from '@/util'
-import { asyncGetLanguage, DEFAULT_LOCALE } from '../i18n'
+
 
 // Store
 const preferencesStore = usePreferencesStore()

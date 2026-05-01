@@ -319,7 +319,9 @@ class AppMenu {
       }
 
       themeMenus.submenu.items.forEach((item) => {
-        if (item.type === 'radio' && typeof followSystemTheme !== 'undefined') {
+        const isThemeItem = item.type === 'radio' || item.type === 'checkbox'
+
+        if (isThemeItem && typeof followSystemTheme !== 'undefined') {
           item.enabled = !followSystemTheme
         }
 
@@ -327,7 +329,7 @@ class AppMenu {
           item.checked = followSystemTheme
         }
 
-        if (item.type === 'radio' && typeof theme !== 'undefined') {
+        if (isThemeItem && typeof theme !== 'undefined') {
           item.checked = item.id === theme
         } else if (item.id && item.id === theme) {
           item.checked = true

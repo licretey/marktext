@@ -169,6 +169,14 @@
           :bool="wrapCodeBlocks"
           :on-change="(value) => onSelectChange('wrapCodeBlocks', value)"
         ></bool>
+        <range
+          :description="t('preferences.editor.misc.maxOpenTabs')"
+          :value="maxOpenTabs"
+          :min="3"
+          :max="99"
+          :step="1"
+          :on-change="(value) => onSelectChange('maxOpenTabs', value)"
+        ></range>
       </template>
     </compound>
   </div>
@@ -215,6 +223,7 @@ const {
   hideLinkPopup,
   autoCheck,
   autoNormalizeLineEndings,
+  maxOpenTabs,
   wrapCodeBlocks,
   editorLineWidth,
   defaultEncoding,

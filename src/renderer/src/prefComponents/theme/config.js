@@ -1,7 +1,4 @@
-import { t } from '../../i18n'
-
-export const themes = [
-  // Light Themes (alphabetical)
+export const lightThemes = [
   { name: 'ayu-light' },
   { name: 'light' },
   { name: 'catppuccin-latte' },
@@ -11,8 +8,10 @@ export const themes = [
   { name: 'rose-pine-dawn' },
   { name: 'solarized-light' },
   { name: 'tokyo-night-light' },
-  { name: 'ulysses' },
-  // Dark Themes (alphabetical)
+  { name: 'ulysses' }
+]
+
+export const darkThemes = [
   { name: 'ayu-dark' },
   { name: 'ayu-mirage' },
   { name: 'dark' },
@@ -38,5 +37,4 @@ export const themes = [
   { name: 'tokyo-night-storm' }
 ]
 
-// getAutoSwitchThemeOptions removed - no longer needed
-// We now use a boolean toggle for followSystemTheme instead of a dropdown
+export const themes = [...lightThemes, ...darkThemes]

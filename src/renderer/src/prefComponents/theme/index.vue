@@ -2,8 +2,27 @@
   <div class="pref-theme">
     <h4>{{ t('preferences.theme.title') }}</h4>
     <section class="offcial-themes">
+      <h5 class="theme-group-title">{{ t('menu.theme.lightThemes') }}</h5>
       <div
-        v-for="t of themes"
+        v-for="t of lightThemeCards"
+        :key="t.name"
+        class="theme"
+        :class="[
+          t.name,
+          {
+            active: t.name === theme,
+            disabled: followSystemTheme
+          }
+        ]"
+        @click="!followSystemTheme && onSelectChange('theme', t.name)"
+      >
+        <div v-html="t.html"></div>
+      </div>
+    </section>
+    <section class="offcial-themes">
+      <h5 class="theme-group-title">{{ t('menu.theme.darkThemes') }}</h5>
+      <div
+        v-for="t of darkThemeCards"
         :key="t.name"
         class="theme"
         :class="[
@@ -82,14 +101,15 @@ import { usePreferencesStore } from '@/store/preferences'
 import { storeToRefs } from 'pinia'
 import { useI18n } from 'vue-i18n'
 import themeMd from './theme.md?raw'
-import { themes as configThemes } from './config'
+import { lightThemes as lightThemesConfig, darkThemes as darkThemesConfig, themes as configThemes } from './config'
 import markdownToHtml from '@/util/markdownToHtml'
 import Bool from '../common/bool'
 import CurSelect from '../common/select'
 import Separator from '../common/separator'
 import Compound from '../common/compound'
 
-const themes = ref([])
+const lightThemeCards = ref([])
+const darkThemeCards = ref([])
 
 const { t } = useI18n()
 const preferenceStore = usePreferencesStore()
@@ -105,15 +125,14 @@ const themeOptions = configThemes.map(theme => ({
 }))
 
 onMounted(async () => {
-  const newThemes = []
-  for (const theme of configThemes) {
-    const html = await markdownToHtml(themeMd.replace(/{theme}/, theme.name))
-    newThemes.push({
-      name: theme.name,
-      html
-    })
+  for (const themeConfig of lightThemesConfig) {
+    const html = await markdownToHtml(themeMd.replace(/{theme}/, themeConfig.name))
+    lightThemeCards.value.push({ name: themeConfig.name, html })
   }
-  themes.value = newThemes
+  for (const themeConfig of darkThemesConfig) {
+    const html = await markdownToHtml(themeMd.replace(/{theme}/, themeConfig.name))
+    darkThemeCards.value.push({ name: themeConfig.name, html })
+  }
 })
 
 const onSelectChange = (type, value) => {
@@ -124,6 +143,13 @@ const onSelectChange = (type, value) => {
 <style>
 .offcial-themes {
   margin-top: 12px;
+  & .theme-group-title {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--editorColor50);
+    margin: 0 20px 8px 20px;
+    padding: 0 30px;
+  }
   & .theme {
     cursor: pointer;
     width: 248px;

@@ -163,7 +163,7 @@ class Watcher {
   // Watch a file or directory and return a unwatch function.
   watch(win, watchPath, type = 'dir' /* file or dir */) {
     // TODO: Is it needed to set `watcherUsePolling` ? because macOS need to set to true.
-    const usePolling = isOsx ? true : this._preferences.getItem('watcherUsePolling')
+    const usePolling = isOsx ? true : (this._preferences.getItem('watcherUsePolling') || process.platform === 'linux')
 
     const id = getUniqueId()
     const watcher = chokidar.watch(watchPath, {
@@ -346,6 +346,23 @@ class Watcher {
       watchIds.forEach((id) => delete this.watchers[id])
       watchers.forEach((watcher) => watcher.close())
     }
+  }
+
+  // Adapter methods for WindowManager compatibility
+  watchDirectory(pathToWatch, window, responseUuid, settings) {
+    return this.watch(window, pathToWatch, 'dir')
+  }
+
+  watchFile(fileToWatch, window, responseUuid, settings) {
+    return this.watch(window, fileToWatch, 'file')
+  }
+
+  unwatchDirectory(pathToWatch, windowId) {
+    return this.unwatch(null, pathToWatch, 'dir')
+  }
+
+  unwatchFile(fileToWatch, windowId) {
+    return this.unwatch(null, fileToWatch, 'file')
   }
 
   close() {

@@ -200,6 +200,7 @@ class ClickEvent {
           }
         }
         const imageInfo = getImageInfo(imageWrapper, this.muya.options)
+        if (!imageInfo) return
         eventCenter.dispatch('muya-image-selector', {
           reference,
           imageInfo,

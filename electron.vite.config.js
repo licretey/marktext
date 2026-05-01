@@ -46,7 +46,9 @@ export default defineConfig({
     assetsInclude: ['**/*.md'],
     server: {
       watch: {
-        ignored: ['**/node_modules/**', '**/out/**', '**/.git/**']
+        ignored: ['**/node_modules/**', '**/out/**', '**/.git/**'],
+        usePolling: true,
+        interval: 1000
       }
     },
     resolve: {

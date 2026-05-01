@@ -1,5 +1,6 @@
 import BaseFloat from '../baseFloat'
 import { patch, h } from '../../parser/render/snabbdom'
+import { URL_REG } from '../../config'
 import getIcons from './config'
 
 import './index.css'

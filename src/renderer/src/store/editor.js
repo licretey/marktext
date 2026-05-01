@@ -21,6 +21,7 @@ import { useProjectStore } from './project'
 import { useLayoutStore } from './layout'
 import { useMainStore } from '.'
 import { i18n } from '../i18n'
+import { MAX_OPEN_TABS as MAX_OPEN_TABS_DEFAULT } from '../config'
 import { debouncedSendBufferedState, sendBufferedState } from './bufferedState'
 
 const autoSaveTimers = new Map()
@@ -623,6 +624,7 @@ export const useEditorStore = defineStore('editor', {
           currentFile
         window.DIRNAME = pathname ? window.path.dirname(pathname) : ''
         this.currentFile = currentFile
+        currentFile.lastAccessTime = Date.now()
         didUpdateCurrentFile = true
 
         if (!this.tabs.some((file) => file.id === currentFile.id)) {
@@ -1029,9 +1031,22 @@ export const useEditorStore = defineStore('editor', {
         selected = true
       }
 
+      const preferencesStore = usePreferencesStore()
+      const limit = preferencesStore.maxOpenTabs || MAX_OPEN_TABS_DEFAULT
+
+      if (this.tabs.length >= limit) {
+        if (!this.EVICT_LRU_TAB()) {
+          notice.notify({
+            title: 'Too many open tabs',
+            type: 'warning',
+            message: `Maximum of ${limit} tabs reached. Please close some tabs before opening new ones.`
+          })
+          return
+        }
+      }
+
       this.SHOW_TAB_VIEW(false)
 
-      const preferencesStore = usePreferencesStore()
       const { defaultEncoding, endOfLine } = preferencesStore
       const fileState = getBlankFileState(this.tabs, defaultEncoding, endOfLine, markdownString)
 
@@ -1044,6 +1059,21 @@ export const useEditorStore = defineStore('editor', {
         this.updateTabIdToIndex()
         debouncedSendBufferedState()
       }
+    },
+
+    /**
+     * Evict the least recently used saved tab when the tab limit is exceeded.
+     * Returns true if a tab was evicted, false if no eligible tab could be evicted.
+     */
+    EVICT_LRU_TAB() {
+      const evictable = this.tabs
+        .filter((t) => t.isSaved && t.pathname)
+        .sort((a, b) => (a.lastAccessTime || 0) - (b.lastAccessTime || 0))
+
+      if (evictable.length === 0) return false
+
+      this.FORCE_CLOSE_TAB(evictable[0])
+      return true
     },
 
     /**
@@ -1070,6 +1100,23 @@ export const useEditorStore = defineStore('editor', {
       if (existingTab) {
         this.UPDATE_CURRENT_FILE(existingTab)
         return
+      }
+
+      const preferencesStore = usePreferencesStore()
+      const limit = preferencesStore.maxOpenTabs || MAX_OPEN_TABS_DEFAULT
+
+      // Evict LRU tab if we're at the limit (skip if this is an untitled replace)
+      if (tabs.length >= limit && currentFile?.isSaved && !currentFile?.pathname) {
+        // About to replace an untitled blank tab, don't count it against limit
+      } else if (tabs.length >= limit) {
+        if (!this.EVICT_LRU_TAB()) {
+          notice.notify({
+            title: 'Too many open tabs',
+            type: 'warning',
+            message: `Maximum of ${limit} tabs reached. Please close some tabs before opening new ones.`
+          })
+          return
+        }
       }
 
       let keepTabBarState = false

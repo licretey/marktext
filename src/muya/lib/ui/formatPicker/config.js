@@ -32,7 +32,7 @@ export default function () {
       icon: underlineIcon
     }, {
       type: 'del',
-      tooltip: i18n.t('menu.format.strike'),
+      tooltip: i18n.t('menu.format.strikethrough'),
       shortcut: `${COMMAND_KEY}+D`,
       icon: strikeIcon
     }, {
@@ -62,7 +62,7 @@ export default function () {
       icon: imageIcon
     }, {
       type: 'clear',
-      tooltip: i18n.t('menu.format.clear'),
+      tooltip: i18n.t('menu.format.clearFormat'),
       shortcut: `⇧+${COMMAND_KEY}+R`,
       icon: clearIcon
     }

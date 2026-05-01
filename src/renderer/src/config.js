@@ -1,5 +1,7 @@
 export const PATH_SEPARATOR = window.path.sep
 
+export const MAX_OPEN_TABS = 20
+
 export const THEME_STYLE_ID = 'ag-theme'
 export const COMMON_STYLE_ID = 'ag-common-style'
 
