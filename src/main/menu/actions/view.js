@@ -44,6 +44,10 @@ export const toggleFocusMode = (win) => {
   toggleTypeMode(win, 'focus')
 }
 
+export const toggleFullWysiwyg = (win) => {
+  toggleTypeMode(win, 'wysiwyg')
+}
+
 export const toggleSourceCodeMode = (win) => {
   toggleTypeMode(win, 'sourceCode')
 }
