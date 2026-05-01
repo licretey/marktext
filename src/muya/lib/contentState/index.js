@@ -370,7 +370,6 @@ class ContentState {
     return this.cursor
   }
 
-  getBlock(key) {
   getBlockKeyByIndex (index) {
     let arr = index.split('.')
     const travel = blocks => {
@@ -385,7 +384,7 @@ class ContentState {
     return travel(this.blocks)
   }
 
-  getBlockIndex (key) {
+  getBlock (key) {
     if (!key) return null
     let result = null
     const travel = (blocks) => {

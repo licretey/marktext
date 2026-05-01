@@ -65,7 +65,7 @@ export const PANDOC_EXTENSIONS = Object.freeze([
 
 export const BLACK_LIST = Object.freeze(['$RECYCLE.BIN'])
 
-export const EXTENSION_HASN = Object.freeze({
+export const EXTENSION_HASH = Object.freeze({
   styledHtml: '.html',
   pdf: '.pdf'
 })
