@@ -86,11 +86,9 @@ const handleMoreClick = () => {
 }
 
 onMounted(async () => {
-  // Delay load native library because it's not needed for the editor and causes a delay.
-  const { getFonts } = require('font-list')
-
-  const fonts = await getFonts()
-  fontFamilies.value = fonts.map((f) => f.replace(/\"/g, '').trim())
+  // Load system fonts via IPC (context-isolation safe).
+  const fonts = await window.electron.getSystemFonts()
+  fontFamilies.value = fonts
 })
 </script>
 

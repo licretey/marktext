@@ -1,7 +1,6 @@
 import { resolve, dirname } from 'path'
 import { defineConfig } from 'electron-vite'
 import vue from '@vitejs/plugin-vue'
-import renderer from 'vite-plugin-electron-renderer'
 import svgLoader from 'vite-svg-loader'
 import postcssPresetEnv from 'postcss-preset-env'
 import packageJson from './package.json' with { type: 'json' }
@@ -43,6 +42,13 @@ export default defineConfig({
     }
   },
   renderer: {
+    define: {
+      // contextIsolation: true — Node.js globals are unavailable in renderer.
+      // Replace bare identifiers with globalThis/window.* equivalents.
+      global: 'globalThis',
+      process: 'window.process',
+      Buffer: 'window.nodeBuffer'
+    },
     assetsInclude: ['**/*.md'],
     server: {
       watch: {
@@ -56,16 +62,24 @@ export default defineConfig({
         '@': resolve(__dirname, 'src/renderer/src'),
         common: resolve(__dirname, 'src/common'),
         muya: resolve(__dirname, 'src/muya'),
-        main_renderer: resolve(__dirname, 'src/main')
+        main_renderer: resolve(__dirname, 'src/main'),
+        // Override Node.js builtins with contextBridge-compatible shims
+        // NOTE: sub-path aliases (fs/promises) must come BEFORE their parent (fs) — Vite does prefix matching
+        'fs/promises': resolve(__dirname, 'src/renderer/src/nodeShims/fs/promises.js'),
+        path: resolve(__dirname, 'src/renderer/src/nodeShims/path.js'),
+        fs: resolve(__dirname, 'src/renderer/src/nodeShims/fs.js'),
+        crypto: resolve(__dirname, 'src/renderer/src/nodeShims/crypto.js'),
+        os: resolve(__dirname, 'src/renderer/src/nodeShims/os.js'),
+        url: resolve(__dirname, 'src/renderer/src/nodeShims/url.js'),
+        zlib: resolve(__dirname, 'src/renderer/src/nodeShims/zlib.js'),
+        child_process: resolve(__dirname, 'src/renderer/src/nodeShims/child_process.js'),
+        electron: resolve(__dirname, 'src/renderer/src/nodeShims/electron.js')
       },
       extensions: ['.mjs', '.js', '.json', '.vue']
     },
     plugins: [
       vue(),
-      svgLoader(),
-      renderer({
-        nodeIntegration: true
-      })
+      svgLoader()
     ],
     css: {
       postcss: {

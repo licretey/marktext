@@ -1,0 +1,19 @@
+const p = window.path
+export const resolve = p.resolve.bind(p)
+export const normalize = p.normalize.bind(p)
+export const isAbsolute = p.isAbsolute.bind(p)
+export const join = p.join.bind(p)
+export const relative = p.relative.bind(p)
+export const toNamespacedPath = p.toNamespacedPath.bind(p)
+export const dirname = p.dirname.bind(p)
+export const basename = p.basename.bind(p)
+export const extname = p.extname.bind(p)
+export const format = p.format.bind(p)
+export const parse = p.parse.bind(p)
+export const matchesGlob = p.matchesGlob?.bind(p)
+export const sep = p.sep
+export const delimiter = p.delimiter
+export const win32 = p.win32
+export const posix = p.posix
+export const _makeLong = p._makeLong?.bind(p)
+export default p

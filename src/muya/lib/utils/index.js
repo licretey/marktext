@@ -294,9 +294,9 @@ export const getImageInfo = (src, options) => {
       // Correct relative path on desktop.
       // NOTE: We don't need to convert Windows styled path to UNIX style because Chromium handles this internally.
       if (!isAbsoluteLocal) {
-        src = require('path').resolve(baseUrl, src)
+        src = path.resolve(baseUrl, src)
       } else {
-        src = require('path').resolve(src)
+        src = path.resolve(src)
       }
       return {
         isUnknownType: false,

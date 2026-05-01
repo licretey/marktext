@@ -799,6 +799,12 @@ class App {
     ipcMain.handle('mt::fs-trash-item', async (event, fullPath) => {
       return shell.trashItem(fullPath)
     })
+
+    ipcMain.handle('mt::get-system-fonts', async () => {
+      const { getFonts } = await import('font-list')
+      const fonts = await getFonts()
+      return fonts.map((f) => f.replace(/\"/g, '').trim())
+    })
   }
 
   /**

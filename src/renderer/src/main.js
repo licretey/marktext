@@ -1,3 +1,4 @@
+document.title = 'LOADING'
 import { createApp } from 'vue'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import bootstrapRenderer from './bootstrap'
@@ -22,6 +23,9 @@ import './assets/styles/index.css'
 import './assets/styles/printService.css'
 
 // -----------------------------------------------
+
+// contextIsolation: true — Node.js `global` is unavailable. Alias it to `window`.
+window.global = window
 
 global.marktext = {}
 bootstrapRenderer()

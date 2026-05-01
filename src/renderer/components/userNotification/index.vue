@@ -26,10 +26,10 @@ export default {
     }
   },
   created () {
-    require('electron').ipcRenderer.on('showUserNotificationDialog', this.showDialog)
+    window.electron.ipcRenderer.on('showUserNotificationDialog', this.showDialog)
   },
   beforeDestroy () {
-    require('electron').ipcRenderer.off('showUserNotificationDialog', this.showDialog)
+    window.electron.ipcRenderer.off('showUserNotificationDialog', this.showDialog)
   },
   methods: {
     showDialog (e, title, message) {
