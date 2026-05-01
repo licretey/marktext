@@ -498,7 +498,7 @@ const tokenizerFac = (src, beginRules, inlineRules, pos = 0, top, labels, option
     }
 
     // html-tag
-    const htmlTo = matchHtmlTag(src, disableHtml)
+    const htmlTo = matchHtmlTag(src, options && options.disableHtml)
     let attrs
     // handle comment
     if (htmlTo && htmlTo[1] && !htmlTo[3]) {

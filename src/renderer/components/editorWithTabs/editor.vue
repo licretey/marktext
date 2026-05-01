@@ -96,7 +96,6 @@ import FrontMenu from 'muya/lib/ui/frontMenu'
 import Search from '../search'
 import bus from '@/bus'
 import { DEFAULT_EDITOR_FONT_FAMILY, PATH_SEPARATOR } from '@/config'
-import { showContextMenu } from '@/contextMenu/editor'
 import notice from '@/services/notification'
 import Printer from '@/services/printService'
 import { SpellcheckerLanguageCommand } from '@/commands'
@@ -500,10 +499,10 @@ export default {
     },
 
     currentFile: function (value, oldValue) {
-        if (this.sourceCode === false && oldValue && oldValue !== value) { // Cannot use the changed event above as it happens after we have switched to the new file
-          let firstViewportVisibleItem = this.getFirstElementInViewport()
-          if (firstViewportVisibleItem) { oldValue.firstViewportVisibleItem = 'M' + this.editor.contentState.getBlockIndex(firstViewportVisibleItem.id) } else { oldValue.firstViewportVisibleItem = 'Z' }// undefining if already set
-        }
+      if (this.sourceCode === false && oldValue && oldValue !== value) { // Cannot use the changed event above as it happens after we have switched to the new file
+        let firstViewportVisibleItem = this.getFirstElementInViewport()
+        if (firstViewportVisibleItem) { oldValue.firstViewportVisibleItem = 'M' + this.editor.contentState.getBlockIndex(firstViewportVisibleItem.id) } else { oldValue.firstViewportVisibleItem = 'Z' }// undefining if already set
+      }
 
       if (value && value !== oldValue) {
         if (this.sourceCode === false && value.firstViewportVisibleItem && value.firstViewportVisibleItem.startsWith('M')) {
@@ -1042,36 +1041,36 @@ export default {
     },
 
     getFirstElementInViewport () {
-    let node = this.editor.container
-    if (node.childNodes.length === 0) { return null }
-    let offsetY = node.scrollTop
-    node = node.childNodes[0]// this gets us to the editors primary div
-    if (offsetY === 0) {
+      let node = this.editor.container
       if (node.childNodes.length === 0) { return null }
-      return node.childNodes[0]
-    }
+      let offsetY = node.scrollTop
+      node = node.childNodes[0]// this gets us to the editors primary div
+      if (offsetY === 0) {
+        if (node.childNodes.length === 0) { return null }
+        return node.childNodes[0]
+      }
 
-    const nodeStack = []
+      const nodeStack = []
 
       while (node) {
             // Only iterate over elements and text nodes
-            if (node.nodeType > 3) {
-              node = nodeStack.pop()
-              continue
-            }
-            if (node.offsetTop >= offsetY) { return node }
+        if (node.nodeType > 3) {
+          node = nodeStack.pop()
+          continue
+        }
+        if (node.offsetTop >= offsetY) { return node }
 
-            if (node.nodeType === 1) {
+        if (node.nodeType === 1) {
                 // this is an element
                 // add all its children to the stack
-                let i = node.childNodes.length - 1
-                while (i >= 0) {
-                  nodeStack.push(node.childNodes[i])
-                  i -= 1
-                }
-              }
+          let i = node.childNodes.length - 1
+          while (i >= 0) {
+            nodeStack.push(node.childNodes[i])
+            i -= 1
+          }
+        }
 
-              node = nodeStack.pop()
+        node = nodeStack.pop()
       }
     },
 

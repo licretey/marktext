@@ -36,14 +36,16 @@ export default function inTextCitation (h, cursor, block, token, outerClass) {
   }
 
   const citekeyContent = [h(`span.${className}.${CLASS_OR_ID.AG_REMOVE}`, markerItem), h('span', citekeyItem)]
-  const citeKeyElem = citationLinks ? h(`a.${CLASS_OR_ID.AG_INLINE_RULE}.${CLASS_OR_ID.AG_INLINE_CITATION_LINK}`, {
-    attrs: {
-      spellcheck: 'false',
-      href: getCitationLink(citeKey, citationLinkTemplate),
-      target: '_blank',
-      title: citeKey
-    }
-  }, citekeyContent) : h('span', citekeyContent)
+  const citeKeyElem = citationLinks
+    ? h(`a.${CLASS_OR_ID.AG_INLINE_RULE}.${CLASS_OR_ID.AG_INLINE_CITATION_LINK}`, {
+      attrs: {
+        spellcheck: 'false',
+        href: getCitationLink(citeKey, citationLinkTemplate),
+        target: '_blank',
+        title: citeKey
+      }
+    }, citekeyContent)
+    : h('span', citekeyContent)
 
   return [
     h(`span#citation-${citeKey}.${CLASS_OR_ID.AG_INLINE_CITATION}.${CLASS_OR_ID.AG_INLINE_CITATION_IN_TEXT}.${CLASS_OR_ID.AG_INLINE_RULE}`, [

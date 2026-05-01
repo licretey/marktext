@@ -80,18 +80,3 @@ export const showEditorContextMenu = (win, event, params, isSpellcheckerEnabled)
     })
     menu.popup([{ window: win, x: event.clientX, y: event.clientY }])
   }
-
-  [CUT, COPY, COPY_AS_HTML, COPY_AS_MARKDOWN].forEach(item => {
-    item.enabled = canCopy
-  })
-  CONTEXT_ITEMS.forEach(item => {
-    menu.append(new MenuItem(item))
-  })
-  if (hasImageContents) {
-    // TODO implement upload-image buttons
-    // if (isLocalImage)
-    //   menu.append(new MenuItem(UPLOAD_IMAGE))
-  }
-  menu.popup([{ window: win, x: event.clientX, y: event.clientY }])
-
-}

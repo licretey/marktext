@@ -1,6 +1,6 @@
 import loadRenderer from '../../renderers'
-import { CLASS_OR_ID } from '../../config'
-import { conflict, mixins, camelToSnake } from '../../utils'
+import { CLASS_OR_ID, PREVIEW_DOMPURIFY_CONFIG } from '../../config'
+import { conflict, mixins, camelToSnake, sanitize } from '../../utils'
 import { patch, toVNode, toHTML, h } from './snabbdom'
 import { beginRules } from '../rules'
 import renderInlines from './renderInlines'

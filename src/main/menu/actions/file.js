@@ -7,9 +7,12 @@ import { MARKDOWN_EXTENSIONS, isMarkdownFile } from 'common/filesystem/paths'
 import { EXTENSION_HASH, PANDOC_EXTENSIONS, URL_REG } from '../../config'
 import { normalizeAndResolvePath, writeFile } from '../../filesystem'
 import { writeMarkdownFile } from '../../filesystem/markdown'
+import { COMMANDS } from '../../commands'
 import { getPath, getRecommendTitleFromMarkdownString } from '../../utils'
 import pandoc from '../../utils/pandoc'
 import { t } from '../../i18n'
+import { showTabBar } from './view'
+import { checkUpdates, userSetting } from './marktext'
 
 // TODO(refactor): "save" and "save as" should be moved to the editor window (editor.js) and
 // the renderer should communicate only with the editor window for file relevant stuff.
@@ -651,7 +654,7 @@ export const openFolder = async (win) => {
   }
 }
 export const gotoSlug = (win, slug) => {
-    ipcMain.emit('scroll-to-header-by-name', win.id, slug)
+  ipcMain.emit('scroll-to-header-by-name', win.id, slug)
 }
 export const openFileOrFolder = (win, pathname, slug) => {
   const resolvedPath = normalizeAndResolvePath(pathname)

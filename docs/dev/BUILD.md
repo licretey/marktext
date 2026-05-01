@@ -64,12 +64,13 @@ On Arch Linux: `sudo pacman -S libx11 libxkbfile libsecret fontconfig`
 - Windows 10 SDK (only needed before Windows 10)
 - Visual Studio 2019 (preferred)
 - Additional steps to fix gyp
- ```powershell
+  
+  ```powershell
    npm install --global node-gyp@latest
    npm prefix -g | % {npm config set node_gyp "$_\node_modules\node-gyp\bin\node-gyp.js"}
    node-gyp install
    python -m pip install setuptools
-```
+  ```
 
 ### Let's build
 
@@ -96,8 +97,9 @@ $ yarn run <script> # or npm run <script>
 
 For more scripts please see `package.json`.
 
->[!TIP]
->To improve efficiency during development, you can tr
+> [!TIP]
+> To improve efficiency during development, you can tr
+> 
 > 1. Use `yarn dev` instead of `yarn build:bin`. This will automatically reload the window when source code is modified.
 > 2. Use `Ctrl+R` to manually reload the application in development mode if needed.
 > 

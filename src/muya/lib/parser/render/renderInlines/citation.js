@@ -48,14 +48,16 @@ export default function citation (h, cursor, block, token, outerClass) {
           const citekeyElem = h(`span.${CLASS_OR_ID.AG_INLINE_CITATION_CITEKEY}`, hight)
           const content = [keyMarkerElem, citekeyElem]
 
-          const item = citationLinks ? h(`a.${CLASS_OR_ID.AG_INLINE_RULE}.${CLASS_OR_ID.AG_INLINE_CITATION_LINK}`, {
-            attrs: {
-              spellcheck: 'false',
-              href: getCitationLink(match, citationLinkTemplate),
-              target: '_blank',
-              title: match
-            }
-          }, content) : h('span', content)
+          const item = citationLinks
+            ? h(`a.${CLASS_OR_ID.AG_INLINE_RULE}.${CLASS_OR_ID.AG_INLINE_CITATION_LINK}`, {
+              attrs: {
+                spellcheck: 'false',
+                href: getCitationLink(match, citationLinkTemplate),
+                target: '_blank',
+                title: match
+              }
+            }, content)
+            : h('span', content)
           citeItems.push(item)
         }
           break

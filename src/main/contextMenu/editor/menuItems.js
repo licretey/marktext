@@ -1,8 +1,4 @@
 import * as contextMenu from './actions'
-import i18n from '../../../locales'
-
-// NOTE: This are mutable fields that may change at runtime.
-
 import { t } from '../../i18n'
 
 // 使用函数形式避免模块加载时调用翻译函数
@@ -73,36 +69,6 @@ export const COPY_AS_HTML = getCOPY_AS_HTML()
 export const PASTE_AS_PLAIN_TEXT = getPASTE_AS_PLAIN_TEXT()
 export const INSERT_BEFORE = getINSERT_BEFORE()
 export const INSERT_AFTER = getINSERT_AFTER()
-
-export const PASTE_AS_PLAIN_TEXT = () => {
-  return {
-    label: i18n.t('menu.edit.pasteAsPlainText'),
-    id: 'pasteAsPlainTextMenuItem',
-    click (menuItem, browserWindow) {
-      contextMenu.pasteAsPlainText()
-    }
-  }
-}
-
-export const INSERT_BEFORE = () => {
-  return {
-    label: i18n.t('menu.edit.insertParagraphBefore'),
-    id: 'insertParagraphBeforeMenuItem',
-    click (menuItem, browserWindow) {
-      contextMenu.insertParagraph('before')
-    }
-  }
-}
-
-export const INSERT_AFTER = () => {
-  return {
-    label: i18n.t('menu.edit.insertParagraphAfter'),
-    id: 'insertParagraphAfterMenuItem',
-    click (menuItem, browserWindow) {
-      contextMenu.insertParagraph('after')
-    }
-  }
-}
 
 export const SEPARATOR = () => {
   return {

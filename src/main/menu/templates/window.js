@@ -1,4 +1,3 @@
-import { Menu } from 'electron'
 import { minimizeWindow, toggleAlwaysOnTop, toggleFullScreen } from '../actions/window'
 import { zoomIn, zoomOut } from '../../windows/utils'
 import { isOsx } from '../../config'
