@@ -11,62 +11,64 @@
   <a href="docs/i18n/README-jp.md">JP</a>
   <a href="docs/i18n/README-kr.md">KR</a>
   <a href="docs/i18n/README-pt.md">PT</a>
+  &nbsp;|&nbsp;
+  <a href="README_zh.md">中文说明</a>
 </div>
 
-## 合并社区 PR 汇总 (v260501)
+## Merged Community PRs (v260501)
 
-基于上游 [marktext](https://github.com/marktext/marktext) 社区未合并 PR，2026-05 批量合并 54 个有效 PR 至本仓库，涵盖以下改进：
+54 upstream community PRs from [marktext](https://github.com/marktext/marktext) merged in 2026-05, covering the following improvements:
 
-**编辑器修复与增强 (Muya):**
-- PR #3007, #3010, #3051, #3108 — 图片加载/渲染/图标修复，图片控制器改进
-- PR #3122, #4152 — Markdown 导入优化，编辑器标签页状态修复
-- PR #3125, #3129 — 源码模式 UI 改进，CSS 样式修复
-- PR #3128, #3721 — 键盘事件处理，快捷键配置修复
-- PR #3272, #3621, #4150 — 粘贴控制器增强，自动链接扩展正则修复
-- PR #3275, #3298, #3544 — Tab/退格/回车键控制器改进
-- PR #3751 — 拖放图片处理、图片路径偏好设置、编辑器焦点修复
-- PR #4135 — 表格拖拽栏、slugger 标题锚点、编辑器渲染修复
-- PR #4145 — 视图操作菜单，源码模式/打字机模式/专注模式切换
-- PR #4157, #4183 — HTML 导出重构，支持 Pandoc 导出
+**Editor Fixes & Enhancements (Muya):**
+- PR #3007, #3010, #3051, #3108 — Image loading/rendering/icon fixes, image controller improvements
+- PR #3122, #4152 — Markdown import optimization, editor tab state fixes
+- PR #3125, #3129 — Source code mode UI fixes, CSS styling improvements
+- PR #3128, #3721 — Keyboard event handling, shortcut configuration fixes
+- PR #3272, #3621, #4150 — Paste controller enhancements, auto-link extension regex fix
+- PR #3275, #3298, #3544 — Tab/backspace/enter key controller improvements
+- PR #3751 — Drag-and-drop image handling, image path preferences, editor focus fixes
+- PR #4135 — Table drag bar, slugger heading anchors, editor rendering fixes
+- PR #4145 — View action menus, source code/typewriter/focus mode toggles
+- PR #4157, #4183 — HTML export refactoring, Pandoc export support
 
-**文件系统与监视器:**
-- PR #3132 — 文件监视器重构，防止 inotify 耗尽，窗口管理优化
-- PR #3269, #3295, #3296, #3366, #4178 — 文件系统工具函数修复
-- PR #4172 — .gitignore 规则改进
+**Filesystem & Watcher:**
+- PR #3132 — File watcher refactoring, inotify exhaustion prevention, window management
+- PR #3269, #3295, #3296, #3366, #4178 — Filesystem utility fixes
+- PR #4172 — .gitignore rule improvements
 
-**菜单与快捷键:**
-- PR #3230 — 标签页间快速切换 (1-10)，菜单操作增强
-- PR #3319 — 编辑器右键菜单增强，拼写检查菜单项
-- PR #4134 — 快捷键配置器改进，自定义按键绑定
-- PR #4177 — 文件菜单操作增强
+**Menus & Keybindings:**
+- PR #3230 — Quick tab switching (1-10), menu action enhancements
+- PR #3319 — Editor context menu enhancements, spellcheck menu items
+- PR #4134 — Keybinding configurator improvements, custom key bindings
+- PR #4177 — File menu action enhancements
 
-**偏好设置:**
-- PR #3141, #3335, #3279 — 主题选择器改进，跟随系统主题、自动保存配置
-- PR #4146 — 编辑器标签页 LRU 管理，最大打开标签数
+**Preferences:**
+- PR #3141, #3335, #3279 — Theme selector improvements, follow system theme, auto-save config
+- PR #4146 — Editor tab LRU management, max open tabs limit
 
-**构建与 CI/CD:**
-- PR #4025 — 构建配置现代化，支持 electron-vite
-- PR #4075, #4093 — GitHub Actions CI/release 工作流，跨平台构建
-- PR #4183 — electron-builder 配置更新
+**Build & CI/CD:**
+- PR #4025 — Build config modernization, electron-vite support
+- PR #4075, #4093 — GitHub Actions CI/release workflows, cross-platform builds
+- PR #4183 — electron-builder config updates
 
-**CLI 与主进程:**
-- PR #3136 — 窗口管理增强，新建窗口/文件夹支持
-- PR #4070 — CLI 命令行接口完善，文件/文件夹路径解析
+**CLI & Main Process:**
+- PR #3136 — Window management enhancements, new window/folder support
+- PR #4070 — CLI command-line interface improvements, file/folder path resolution
 
-**文档完善:**
-- PR #3381, #3683, #3867 — 构建文档完善
-- PR #3525 — 架构文档、IPC 文档、图标资源更新
-- PR #3916 — Markdown 语法文档更新
-- PR #3928 — i18n 阿拉伯语文档
-- PR #3939 — 编辑器功能文档更新
+**Documentation:**
+- PR #3381, #3683, #3867 — Build documentation updates
+- PR #3525 — Architecture docs, IPC docs, icon resources
+- PR #3916 — Markdown syntax documentation update
+- PR #3928 — i18n Arabic documentation
+- PR #3939 — Editor feature documentation update
 
-**i18n 国际化:**
-- PR #2773 — 9 语言翻译系统重构，支持 en/zh-CN/zh-TW/de/es/fr/ja/ko/pt
+**i18n Internationalization:**
+- PR #2773 — 9-language translation system refactoring (en/zh-CN/zh-TW/de/es/fr/ja/ko/pt)
 
-**其他:**
-- PR #3215 — 表情选择器样式修复
-- PR #3952 — Electron 快捷键匹配工具函数
-- PR #4154 — 异常处理器改进
+**Misc:**
+- PR #3215 — Emoji picker style fix
+- PR #3952 — Electron accelerator matching utilities
+- PR #4154 — Exception handler improvements
 
 ---
 
@@ -95,7 +97,7 @@
 - Sadly, the core repository became unmaintained since about 3 years ago, but various Quality of Life issues remained that I noticed in my daily usage.
 
 - This repository serves as an attempt at modernising my favourite Markdown Editor, and is a fork based off [Jacob Whall's Fork](https://github.com/jacobwhall/marktext)
-  
+
   - See [my motivation below](#1-soo-is-this-fork-any-different-from-the-countless-others)
 
 # 1. Installing
@@ -107,7 +109,7 @@
 - Simply check out the [Releases Page](https://github.com/Tkaixiang/marktext/releases)!
 
 - Tested on:
-  
+
   - `Windows 11`
 
 ## Linux
@@ -136,7 +138,7 @@
 # 3. ✨Features ⭐
 
 - 🆕 Now available in **9 languages** from the `Preferences` editor (Special thanks to [@hubo1989](https://github.com/hubo1989))
-  
+
   - `English` 🇺🇸
   - `简体中文` 🇨🇳
   - `繁體中文` 🇹🇼
@@ -198,73 +200,75 @@ MarkText includes **33 built-in themes** - 10 light and 23 dark themes:
 ## 1. Soo is this fork any different from the countless others?
 
 - A main gripe I had when looking into `marktext` was that the development framework + environment was aging badly and took forever to compile
-  
-  - Most libaries were outdated and some couldn't even be installed with modern versions of Node.JS/Python
 
-- Hence, this fork is kind of a major "re-write" that makes use of [electron-vite](https://electron-vite.org/) instead of the old `Babel + Webpack` setup
-  
+  - Most libraries were outdated and some couldn't even be installed with modern versions of Node.JS/Python
+
+- Hence, this fork is a major "re-write" that makes use of [electron-vite](https://electron-vite.org/) instead of the old `Babel + Webpack` setup
+
   - The goal here is to give `marktext` a **fresh start** using **modern frameworks and libraries as much as possible**
-  - Everything has also been migrated to `Vue3` and `Pinia` with all libraries updated to their latest possible versions
+  - Everything has also been migrated to `Vue 3` and `Pinia` with all libraries updated to their latest possible versions
 
 - The `main` and `preload` processes are still compiled to `CommonJS`, but the `renderer` is now fully **`ESModules` only** (_which posed some interesting issues during migration_)
 
 ## 2. That's cool! How can I help?
 
 - Any form of:
-  
+
   1. Testing for bugs (Bug-Reports)
-  
+
   2. Pull Requests
-  
+
   Are more than welcome!
 
 - You can find a basic list of commands for getting around this repo below, but otherwise - the file structure should be **very similar to the original marktext**
 
-## 3. 技术栈重构 (electron-vite + npm)
+## 3. Tech Stack Refactoring (electron-vite + npm)
 
-本项目已从旧的 `Babel + Webpack + Yarn` 构建体系全面迁移至现代化工具链：
+This project has been fully migrated from the old `Babel + Webpack + Yarn` build system to a modern toolchain:
 
-| 项目 | 旧技术 | 新技术 |
-|------|--------|--------|
-| 构建工具 | Webpack 4 + Babel | **Vite 7** (electron-vite) |
-| 包管理 | Yarn | **npm** |
-| 前端框架 | Vue 2 + Vuex | **Vue 3.5** + **Pinia** |
-| UI 组件库 | Element UI | **Element Plus** |
+| Area | Old | New |
+|------|-----|-----|
+| Build Tool | Webpack 4 + Babel | **Vite 7** (electron-vite) |
+| Package Manager | Yarn | **npm** |
+| Frontend Framework | Vue 2 + Vuex | **Vue 3.5** + **Pinia** |
+| UI Library | Element UI | **Element Plus** |
 | Electron | v18 | **v41** |
 | Node.js | v16 | **v24** |
-| 进程编译 | CJS (全部) | CJS (main/preload) + **ESM (renderer)** |
+| Process Compilation | CJS (all) | CJS (main/preload) + **ESM (renderer)** |
 
-### 安装
+### Install
 
 ```bash
-# 1. 克隆仓库
+# 1. Clone the repo
 git clone https://github.com/Tkaixiang/marktext.git
 cd marktext
 
-# 2. 安装依赖
+# 2. Install dependencies
 npm install
 ```
 
-### 开发运行
+### Development
 
 ```bash
-# 启动开发模式 (热重载)
+# Start dev mode (with hot reload for renderer)
 npm run dev
 
-# 预览生产构建
+# Preview production build
 npm run start
 ```
 
-### 构建打包
+### Build & Package
 
 ```bash
-# 编译代码 (不打包)
+# Compile only (no packaging)
 npm run build
 
-# 平台打包
+# Package for specific platforms
 npm run build:win      # Windows
 npm run build:mac      # macOS
 npm run build:linux    # Linux
 ```
 
-详细开发者文档见 [docs/dev/README.md](docs/dev/README.md)
+See [docs/dev/README.md](docs/dev/README.md) for detailed developer documentation.
+
+> 📖 For Chinese instructions, see [README_zh.md](README_zh.md)
