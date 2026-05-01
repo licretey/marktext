@@ -38,6 +38,7 @@
 </template>
 
 <script>
+import { ipcRenderer } from 'electron'
 import { addStyles, addThemeStyle, addCustomStyle } from '@/util/theme'
 import Recent from '@/components/recent'
 import EditorWithTabs from '@/components/editorWithTabs'

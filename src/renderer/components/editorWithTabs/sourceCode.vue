@@ -10,12 +10,9 @@
 import codeMirror, { setMode, setCursorAtLastLine, setTextDirection } from '../../codeMirror'
 import { wordCount as getWordCount } from 'muya/lib/utils'
 import { mapState } from 'vuex'
-import { adjustCursor, animatedScrollTo } from '../../util'
+import { adjustCursor } from '../../util'
 import bus from '../../bus'
 import { oneDarkThemes, railscastsThemes } from '@/config'
-
-// Same as editor.vue
-const STANDAR_Y = 320
 
 export default {
   props: {
@@ -311,13 +308,13 @@ export default {
       if (this.editor && this.sourceCode) { this.editor.execCommand('clearSearch') }
     },
     handleFind () {
-       if (this.editor && this.sourceCode) {
+      if (this.editor && this.sourceCode) {
         this.editor.execCommand('findPersistent')
       }
     },
 
     handleReplace () {
-       if (this.editor && this.sourceCode) {
+      if (this.editor && this.sourceCode) {
         this.editor.execCommand('replace')
       }
     },

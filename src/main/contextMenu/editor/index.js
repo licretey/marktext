@@ -8,8 +8,7 @@ import {
   PASTE_AS_PLAIN_TEXT,
   SEPARATOR,
   INSERT_BEFORE,
-  INSERT_AFTER,
-  UPLOAD_IMAGE
+  INSERT_AFTER
 } from './menuItems'
 import spellcheckMenuBuilder from './spellcheck'
 
@@ -57,5 +56,4 @@ export const showEditorContextMenu = (win, event, params, isSpellcheckerEnabled)
     //   menu.append(new MenuItem(UPLOAD_IMAGE))
   }
   menu.popup([{ window: win, x: event.clientX, y: event.clientY }])
-
 }

@@ -1,4 +1,5 @@
 import { isEqualAccelerator } from 'common/keybinding'
+import { getRecommendTitleFromMarkdownString } from '../../../src/main/utils/index.js'
 
 const characterKeys = [
   '0',

@@ -33,46 +33,46 @@ export default function () {
     label: i18n.t('menu.help._title'),
     role: 'help',
     submenu: [{
-    label: i18n.t('menu.help.quickStart'),
+      label: i18n.t('menu.help.quickStart'),
       click () {
         shell.openExternal('https://github.com/marktext/marktext/blob/master/docs/README.md')
       }
     }, {
-    label: i18n.t('menu.help.markdownReference'),
+      label: i18n.t('menu.help.markdownReference'),
       click () {
         shell.openExternal('https://github.com/marktext/marktext/blob/master/docs/MARKDOWN_SYNTAX.md')
       }
     }, {
-    label: i18n.t('menu.help.changeLog'),
+      label: i18n.t('menu.help.changeLog'),
       click () {
         shell.openExternal('https://github.com/marktext/marktext/blob/master/.github/CHANGELOG.md')
       }
     }, {
       type: 'separator'
     }, {
-    label: i18n.t('menu.help.donateViaOpenCollective'),
+      label: i18n.t('menu.help.donateViaOpenCollective'),
       click (item, win) {
         shell.openExternal('https://opencollective.com/marktext')
       }
     }, {
-    label: i18n.t('menu.help.feedbackViaTwitter'),
+      label: i18n.t('menu.help.feedbackViaTwitter'),
       click (item, win) {
         actions.showTweetDialog(win, 'twitter')
       }
     }, {
-    label: i18n.t('menu.help.reportIssueOrRequestFeature'),
+      label: i18n.t('menu.help.reportIssueOrRequestFeature'),
       click () {
         shell.openExternal('https://github.com/marktext/marktext/issues')
       }
     }, {
       type: 'separator'
     }, {
-    label: i18n.t('menu.help.website'),
+      label: i18n.t('menu.help.website'),
       click () {
         shell.openExternal('https://github.com/marktext/marktext')
       }
     }, {
-    label: i18n.t('menu.help.watchOnGithub'),
+      label: i18n.t('menu.help.watchOnGithub'),
       click () {
         shell.openExternal('https://github.com/marktext/marktext')
       }

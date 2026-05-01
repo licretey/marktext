@@ -564,9 +564,9 @@ function initI18n () {
   const style = document.createElement('style')
 
   if (style.styleSheet) {
-      style.styleSheet.cssText = cssOverride
+    style.styleSheet.cssText = cssOverride
   } else {
-      style.appendChild(document.createTextNode(cssOverride))
+    style.appendChild(document.createTextNode(cssOverride))
   }
 
   document.getElementsByTagName('head')[0].appendChild(style)

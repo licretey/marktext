@@ -4,7 +4,6 @@ import MarkdownIcon from '@/assets/icons/pref_markdown.svg'
 import ThemeIcon from '@/assets/icons/pref_theme.svg'
 import ImageIcon from '@/assets/icons/pref_image.svg'
 import SpellIcon from '@/assets/icons/pref_spellcheck.svg'
-import KeyBindingIcon from '@/assets/icons/pref_key_binding.svg'
 
 import preferences from '../../../main/preferences/schema'
 
@@ -44,7 +43,7 @@ export const category = () => {
   }, {
     name: i18n.t('preferences.imageUploader._title'),
     label: 'imageUploader',
-    icon: ImageUploaderIcon,
+    icon: ImageIcon,
     path: '/preference/imageUploader'
   }]
 }

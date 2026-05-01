@@ -356,7 +356,7 @@ class ContentState {
       if (num !== pos || Number.isInteger(num) === false) { return null }
       pos = num
       if (blocks.length <= pos) { return null }
-        let block = blocks[pos]
+      let block = blocks[pos]
       if (arr.length === 0) { return block.key } else { return travel(block.children) }
     }
     return travel(this.blocks)

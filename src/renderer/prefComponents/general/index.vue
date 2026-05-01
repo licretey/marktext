@@ -105,7 +105,6 @@ export default {
   },
   data () {
     this.titleBarStyleOptions = titleBarStyleOptions
-    this.zoomOptions = zoomOptions
     this.fileSortByOptions = fileSortByOptions
     this.languageOptions = languageOptions
     this.isOsx = isOsx

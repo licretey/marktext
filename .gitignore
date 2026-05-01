@@ -18,3 +18,5 @@ thumbs.db
 .claude/
 .agents/
 .agent/
+
+**/CLAUDE.md

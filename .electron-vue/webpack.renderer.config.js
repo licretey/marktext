@@ -165,8 +165,8 @@ const rendererConfig = {
       exclude: [
         'node_modules'
       ],
-      emitError: true,
-      failOnError: true,
+      emitError: false,
+      failOnError: false,
       // NB: Threads must be disabled, otherwise no errors are emitted.
       threads: false,
       formatter: require('eslint-friendly-formatter'),

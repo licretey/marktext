@@ -1,8 +1,9 @@
 import * as actions from '../actions/edit'
+import { COMMANDS } from '../../commands'
 import { isOsx } from '../../config'
 import i18n from '../../i18n'
 
-export default function (keybindings) {
+export default function (keybindings, preferences) {
   return {
     label: i18n.t('menu.edit._title'),
     submenu: [{
@@ -116,7 +117,7 @@ export default function (keybindings) {
       type: 'separator'
     }, {
       label: i18n.t('menu.edit.aidou'),
-      visible: aidou,
+      visible: preferences.aidou,
       id: 'aidou',
       accelerator: keybindings.getAccelerator('edit.aidou'),
       click (menuItem, browserWindow) {

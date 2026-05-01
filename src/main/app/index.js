@@ -12,7 +12,7 @@ import { normalizeMarkdownPath } from '../filesystem/markdown'
 import { registerKeyboardListeners } from '../keyboard'
 import { selectTheme } from '../menu/actions/theme'
 import { dockMenu } from '../menu/templates'
-import ensureDefaultDict from '../preferences/hunspell'
+import registerSpellcheckerListeners from '../spellchecker'
 import { WindowType } from '../windows/base'
 import EditorWindow from '../windows/editor'
 import SettingWindow from '../windows/setting'
@@ -294,7 +294,7 @@ class App {
   /**
    * Create a new setting window.
    */
-  _createSettingWindow () {
+  _createSettingWindow (category) {
     this._setI18nLocale()
 
     const setting = new SettingWindow(this._accessor)
