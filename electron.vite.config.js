@@ -12,10 +12,6 @@ const __dirname = dirname(__filename)
 
 export default defineConfig({
   main: {
-    // --> Bundled as CommonJS
-    // externalizeDepsPlugin() basically externises all the dependencies from being bundled during build - treating them as runtime dependencies
-    // electron-vite still builds the main and preload processes into commonJS
-    // hence, we need to "exclude" (in order to NOT externalise) ESonly modules so that they can be converted to commonJS and can be required() afterwards correctly
     build: {
       externalizeDeps: {
         exclude: ['electron-store']
@@ -36,7 +32,6 @@ export default defineConfig({
     }
   },
   preload: {
-    // --> Bundled as CommonJS
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src/renderer/src'),
@@ -48,8 +43,12 @@ export default defineConfig({
     }
   },
   renderer: {
-    // --> Bundled as ES Modules
     assetsInclude: ['**/*.md'],
+    server: {
+      watch: {
+        ignored: ['**/node_modules/**', '**/out/**', '**/.git/**']
+      }
+    },
     resolve: {
       alias: {
         '@': resolve(__dirname, 'src/renderer/src'),
