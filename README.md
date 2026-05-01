@@ -220,6 +220,51 @@ MarkText includes **33 built-in themes** - 10 light and 23 dark themes:
 
 - You can find a basic list of commands for getting around this repo below, but otherwise - the file structure should be **very similar to the original marktext**
 
-## 3. Project Setup
+## 3. 技术栈重构 (electron-vite + npm)
 
-- See [Developer Documentation](docs/dev/README.md)
+本项目已从旧的 `Babel + Webpack + Yarn` 构建体系全面迁移至现代化工具链：
+
+| 项目 | 旧技术 | 新技术 |
+|------|--------|--------|
+| 构建工具 | Webpack 4 + Babel | **Vite 7** (electron-vite) |
+| 包管理 | Yarn | **npm** |
+| 前端框架 | Vue 2 + Vuex | **Vue 3.5** + **Pinia** |
+| UI 组件库 | Element UI | **Element Plus** |
+| Electron | v18 | **v41** |
+| Node.js | v16 | **v24** |
+| 进程编译 | CJS (全部) | CJS (main/preload) + **ESM (renderer)** |
+
+### 安装
+
+```bash
+# 1. 克隆仓库
+git clone https://github.com/Tkaixiang/marktext.git
+cd marktext
+
+# 2. 安装依赖
+npm install
+```
+
+### 开发运行
+
+```bash
+# 启动开发模式 (热重载)
+npm run dev
+
+# 预览生产构建
+npm run start
+```
+
+### 构建打包
+
+```bash
+# 编译代码 (不打包)
+npm run build
+
+# 平台打包
+npm run build:win      # Windows
+npm run build:mac      # macOS
+npm run build:linux    # Linux
+```
+
+详细开发者文档见 [docs/dev/README.md](docs/dev/README.md)
