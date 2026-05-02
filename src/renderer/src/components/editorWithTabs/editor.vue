@@ -1086,6 +1086,13 @@ onMounted(() => {
     }
   })
 
+  editor.value.on('cursorChange', (changes) => {
+    const { id } = currentFile.value
+    if (id) {
+      editorStore.LISTEN_FOR_CONTENT_CHANGE(Object.assign(changes, { id }))
+    }
+  })
+
   editor.value.on('scroll', (scrollEvent) => {
     editorStore.updateScrollPosition(currentFile.value.id, scrollEvent.scrollTop)
   })
@@ -1220,6 +1227,7 @@ onBeforeUnmount(() => {
 
   document.removeEventListener('keyup', keyup)
   editor.value.off('change')
+  editor.value.off('cursorChange')
   editor.value.off('scroll')
 
   resizeObserverForEditor.disconnect()
