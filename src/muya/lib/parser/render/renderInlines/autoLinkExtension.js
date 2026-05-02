@@ -15,6 +15,9 @@ export default function autoLinkExtension (h, cursor, block, token, outerClass) 
       props: {
         href: href,
         target: '_blank'
+      },
+      dataset: {
+        originalHref: href
       }
     }, content)
   ]

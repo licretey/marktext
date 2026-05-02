@@ -6,6 +6,7 @@ import log from 'electron-log'
 import { app, BrowserWindow, clipboard, dialog, nativeTheme, shell, ipcMain } from 'electron'
 import { isChildOfDirectory } from 'common/filesystem/paths'
 import { isLinux, isOsx, isWindows } from '../config'
+import { t } from '../i18n'
 import parseArgs from '../cli/parser'
 import { normalizeAndResolvePath } from '../filesystem'
 import { normalizeMarkdownPath } from '../filesystem/markdown'
@@ -121,9 +122,9 @@ class App {
 
     ipcMain.on('mt::blocked-protocol', (e) => {
       e.sender.send('mt::show-notification', {
-        title: 'Protocol not allowed',
+        title: t('store.editor.protocolNotAllowedTitle'),
         type: 'error',
-        message: '未允许的协议设置,无法操作!'
+        message: t('store.editor.protocolNotAllowedMessage')
       })
     })
   }

@@ -2,6 +2,7 @@ import { rename as fsRename } from 'fs-extra'
 import path from 'path'
 import { BrowserWindow, app, dialog, shell, ipcMain } from 'electron'
 import log from 'electron-log'
+import { t } from '../../i18n'
 import { isDirectory, isFile, exists } from 'common/filesystem'
 import { MARKDOWN_EXTENSIONS, isMarkdownFile } from 'common/filesystem/paths'
 import { EXTENSION_HASH, PANDOC_EXTENSIONS, URL_REG } from '../../config'
@@ -10,7 +11,6 @@ import { writeMarkdownFile } from '../../filesystem/markdown'
 import { COMMANDS } from '../../commands'
 import { getPath, getRecommendTitleFromMarkdownString } from '../../utils'
 import pandoc from '../../utils/pandoc'
-import { t } from '../../i18n'
 import { showTabBar } from './view'
 import { checkUpdates, userSetting } from './marktext'
 
@@ -506,6 +506,23 @@ ipcMain.on('mt::format-link-click', async (e, { data, dirname }) => {
   const win = BrowserWindow.fromWebContents(e.sender)
 
   const rawUrl = data.href || data.text
+
+  // If href was empty (stripped by DOMPurify) and the fallback text has no
+  // protocol prefix and doesn't look like a path, show notification instead of
+  // silently opening as file.
+  if (!data.href) {
+    const hasProtocol = /^([a-z][a-z0-9+\-.]*):/i.test(rawUrl)
+    const looksLikePath = /[/\\]|\.\w+$/i.test(rawUrl) || path.isAbsolute(rawUrl)
+    if (!hasProtocol && !looksLikePath) {
+      win.webContents.send('mt::show-notification', {
+        title: t('store.editor.protocolNotAllowedTitle'),
+        type: 'error',
+        message: t('store.editor.protocolNotAllowedMessage')
+      })
+      return
+    }
+  }
+
   const urlCandidate = rawUrl.replace(/^<(.+)>$/, '$1') // Replace any <> CommonMark #489
   if (urlCandidate === rawUrl) {
     // No <> found, no spaces should be allowed
@@ -528,16 +545,14 @@ ipcMain.on('mt::format-link-click', async (e, { data, dirname }) => {
     const allowed = global.accessor?.preferences.getItem('allowedProtocols') || defaults
     if (!allowed.includes(protocol)) {
       win.webContents.send('mt::show-notification', {
-        title: 'Protocol not allowed',
+        title: t('store.editor.protocolNotAllowedTitle'),
         type: 'error',
-        message: '未允许的协议设置,无法操作!'
+        message: t('store.editor.protocolNotAllowedMessage')
       })
       return
     }
-    // Protocol is in allowed list — only open http/https via shell
-    if (URL_REG.test(urlCandidate)) {
-      shell.openExternal(urlCandidate)
-    }
+    // Protocol is in allowed list — open via system handler
+    shell.openExternal(urlCandidate)
     return
   }
 

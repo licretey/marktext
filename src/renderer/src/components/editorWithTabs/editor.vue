@@ -455,8 +455,10 @@ const photoCreatorClick = (url) => {
 }
 
 const jumpClick = (linkInfo) => {
-  const { href } = linkInfo
-  editorStore.FORMAT_LINK_CLICK({ data: { href }, dirname: window.DIRNAME })
+  const { href, token } = linkInfo
+  // Extract text from token if available (token may have text/content/anchor/children)
+  const text = token ? (token.text || token.content || token.anchor || '') : ''
+  editorStore.FORMAT_LINK_CLICK({ data: { href, text }, dirname: window.DIRNAME })
 }
 
 const imagePathAutoComplete = async (src) => {
@@ -1096,8 +1098,32 @@ onMounted(() => {
     const ctrlOrMeta = (isOsx && event.metaKey) || (!isOsx && event.ctrlKey)
     if (formatType === 'link') {
       event.preventDefault()
+
+      // Resolve the effective href: prefer data.href, fall back to DOM dataset
+      // (which preserves the pre-sanitization value for e.g. javascript: links).
+      let effectiveHref = data.href
+      if (!effectiveHref && event.target) {
+        const anchor = event.target.closest('a')
+        if (anchor && anchor.dataset.originalHref) {
+          effectiveHref = anchor.dataset.originalHref
+        }
+      }
+
       if (ctrlOrMeta) {
-        editorStore.FORMAT_LINK_CLICK({ data, dirname: window.DIRNAME })
+        editorStore.FORMAT_LINK_CLICK({
+          data: effectiveHref !== data.href ? { ...data, href: effectiveHref } : data,
+          dirname: window.DIRNAME
+        })
+      } else if (effectiveHref) {
+        // Regular click (no Ctrl): show notification for inherently dangerous
+        // protocols so the user gets feedback even without Ctrl.
+        const m = effectiveHref.match(/^([a-z][a-z0-9+\-.]*):/i)
+        if (m) {
+          const proto = m[1].toLowerCase() + ':'
+          if (proto === 'javascript:' || proto === 'vbscript:' || proto === 'data:') {
+            window.electron.ipcRenderer.send('mt::blocked-protocol')
+          }
+        }
       }
     } else if (formatType === 'image' && ctrlOrMeta) {
       if (imageViewer) {

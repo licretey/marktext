@@ -8,7 +8,7 @@ export const getLinkInfo = a => {
   const end = a.getAttribute('data-end')
   const tokens = tokenizer(raw)
   const token = tokens[0]
-  const href = a.getAttribute('href')
+  const href = a.getAttribute('href') || a.getAttribute('data-original-href')
   token.range = {
     start,
     end

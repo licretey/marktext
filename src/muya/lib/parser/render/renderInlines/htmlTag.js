@@ -69,6 +69,8 @@ export default function htmlTag (h, cursor, block, token, outerClass) {
             const attrData = attrs[attr]
             if (isValidAttribute(tag, attr, attrData)) {
               data.attrs[attr] = attrData
+            } else if (tag === 'a' && attr === 'href') {
+              data.dataset.originalHref = attrData
             }
           }
         }

@@ -21,6 +21,9 @@ export default function autoLink (h, cursor, block, token, outerClass) {
       props: {
         href: sanitizeHyperlink(hyperlink),
         target: '_blank'
+      },
+      dataset: {
+        originalHref: isLink ? href : `mailto:${email}`
       }
     }, content),
     h(`span.${className}`, endMarker)

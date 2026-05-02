@@ -50,6 +50,9 @@ export default function link(h, cursor, block, token, outerClass) {
               href: sanitizeHyperlink(token.href + encodeURI(token.backlash.second)),
               target: '_blank',
               title: token.title
+            },
+            dataset: {
+              originalHref: token.href
             }
           },
           [
@@ -74,7 +77,8 @@ export default function link(h, cursor, block, token, outerClass) {
             dataset: {
               start,
               end,
-              raw: token.raw
+              raw: token.raw,
+              originalHref: token.href
             }
           },
           [

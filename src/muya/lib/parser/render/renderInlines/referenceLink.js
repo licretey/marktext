@@ -53,7 +53,8 @@ export default function referenceLink (h, cursor, block, token, outerClass) {
     dataset: {
       start,
       end,
-      raw: token.raw
+      raw: token.raw,
+      originalHref: href || ''
     }
   }
   if (href) {
