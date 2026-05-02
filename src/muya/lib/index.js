@@ -52,6 +52,8 @@ class Muya {
     this.resize = new Resize(this)
     this.mouseEvent = new MouseEvent(this)
     this.i18nCSS = new I18nCSS(this.options.t)
+    this.changeDebounceTimer = null
+    this.CHANGE_DEBOUNCE_MS = 150
     this.init()
   }
 
@@ -127,15 +129,24 @@ class Muya {
   }
 
   dispatchChange = () => {
-    const { eventCenter } = this
-    const markdown = (this.markdown = this.getMarkdown())
-    const wordCount = this.getWordCount(markdown)
+    // Lightweight cursor updates — no debounce needed
     const cursor = this.getCursor()
     const muyaIndexCursor = this.contentState.getMuyaIndexCursor()
     const history = this.getHistory()
     const toc = this.getTOC()
 
-    eventCenter.dispatch('change', { markdown, wordCount, cursor, muyaIndexCursor, history, toc })
+    this.eventCenter.dispatch('cursorChange', { cursor, muyaIndexCursor, history, toc })
+
+    // Heavy markdown serialization — trailing debounce
+    if (this.changeDebounceTimer) {
+      clearTimeout(this.changeDebounceTimer)
+    }
+    this.changeDebounceTimer = setTimeout(() => {
+      const markdown = (this.markdown = this.getMarkdown())
+      const wordCount = this.getWordCount(markdown)
+      this.eventCenter.dispatch('change', { markdown, wordCount })
+      this.changeDebounceTimer = null
+    }, this.CHANGE_DEBOUNCE_MS)
   }
 
   dispatchSelectionChange = (cursor) => {
