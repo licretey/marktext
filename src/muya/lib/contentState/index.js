@@ -78,6 +78,7 @@ class ContentState {
 
     // Use to cache the keys which you don't want to remove.
     this.exemption = new Set()
+    this.blockIndex = new Map()
     this.blocks = [this.createBlockP()]
     this.stateRender = new StateRender(muya)
     this.renderRange = [null, null]
@@ -342,6 +343,7 @@ class ContentState {
     }
 
     Object.assign(blockData, extras)
+    this.blockIndex.set(blockData.key, blockData)
     return blockData
   }
 
@@ -384,23 +386,9 @@ class ContentState {
     return travel(this.blocks)
   }
 
-  getBlock (key) {
+  getBlock(key) {
     if (!key) return null
-    let result = null
-    const travel = (blocks) => {
-      for (const block of blocks) {
-        if (block.key === key) {
-          result = block
-          return
-        }
-        const { children } = block
-        if (children.length) {
-          travel(children)
-        }
-      }
-    }
-    travel(this.blocks)
-    return result
+    return this.blockIndex.get(key) || null
   }
 
   copyBlock(origin) {
@@ -584,6 +572,17 @@ class ContentState {
             nextSibling.preSibling = preSibling && !breakLinkedList ? preSibling.key : null
           }
 
+          this.blockIndex.delete(block.key)
+          // Recursively remove child block indexes
+          const removeIndex = (b) => {
+            if (b.children && b.children.length) {
+              b.children.forEach((child) => {
+                this.blockIndex.delete(child.key)
+                removeIndex(child)
+              })
+            }
+          }
+          removeIndex(block)
           return blocks.splice(i, 1)
         } else {
           if (blocks[i].children.length) {
