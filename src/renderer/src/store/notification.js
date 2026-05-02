@@ -23,7 +23,8 @@ export const useNotificationStore = defineStore('notification', {
         const options = Object.assign(DEFAULT_OPTS, opts)
         options.showConfirm = true
         await notice.notify(options)
-        window.electron.shell.openExternal('http://pandoc.org')
+        const protocol = process.env.NODE_ENV === 'development' ? 'http' : 'https'
+        window.electron.shell.openExternal(`${protocol}://pandoc.org`)
       })
     }
   }
