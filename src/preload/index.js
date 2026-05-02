@@ -28,7 +28,17 @@ const i18nUtils = {
 // serializable values (plain objects, functions, primitives).
 const customElectronAPI = {
   shell: {
-    openExternal: (url) => shell.openExternal(url),
+    openExternal: (url) => {
+      try {
+        const allowed = ['https:', 'http:', 'webdav:', 'smb:', 'ftp:', 'sftp:', 'mailto:']
+        const protocol = new URL(url).protocol
+        if (allowed.includes(protocol)) {
+          shell.openExternal(url)
+        }
+      } catch (_) {
+        // Invalid URL, silently ignore
+      }
+    },
     showItemInFolder: (path) => shell.showItemInFolder(path),
     openPath: (path) => shell.openPath(path)
   },
