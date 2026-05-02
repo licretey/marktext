@@ -3,6 +3,11 @@
 // insertAfter(), insertBefore(), insertChild() etc. can then be used to add new vnodes
 
 import { HAS_TEXT_BLOCK_REG, DEFAULT_TURNDOWN_CONFIG } from '../config'
+
+// Threshold for incremental label collection during partial renders.
+// When the labels Map exceeds this size, fall back to a full document scan
+// to prevent stale reference definitions from accumulating.
+const LABEL_COUNT_THRESHOLD = 50
 import { getUniqueId, deepCopy } from '../utils'
 import selection from '../selection'
 import StateRender from '../parser/render'
@@ -283,7 +288,14 @@ class ContentState {
     const blocksToRender = blocks.slice(startIndex, endIndex)
 
     this.setNextRenderRange()
-    this.stateRender.collectLabels(blocks)
+    // Incrementally scan only blocks within the render range for reference link
+    // definitions. Falls back to full document scan when labels exceed threshold
+    // to prevent stale definitions from accumulating.
+    if (this.stateRender.labels.size > LABEL_COUNT_THRESHOLD) {
+      this.stateRender.collectLabels(blocks)
+    } else {
+      this.stateRender.collectLabelsIncremental(blocksToRender)
+    }
     this.stateRender.partialRender(blocksToRender, activeBlocks, matches, startKey, endKey)
     if (isRenderCursor) {
       this.setCursor()
