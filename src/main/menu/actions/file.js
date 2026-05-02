@@ -4,7 +4,7 @@ import { BrowserWindow, app, dialog, shell, ipcMain } from 'electron'
 import log from 'electron-log'
 import { isDirectory, isFile, exists } from 'common/filesystem'
 import { MARKDOWN_EXTENSIONS, isMarkdownFile } from 'common/filesystem/paths'
-import { EXTENSION_HASH, PANDOC_EXTENSIONS, URL_REG } from '../../config'
+import { EXTENSION_HASH, PANDOC_EXTENSIONS, URL_REG, ALLOWED_PROTOCOLS } from '../../config'
 import { normalizeAndResolvePath, writeFile } from '../../filesystem'
 import { writeMarkdownFile } from '../../filesystem/markdown'
 import { COMMANDS } from '../../commands'
@@ -521,7 +521,10 @@ ipcMain.on('mt::format-link-click', async (e, { data, dirname }) => {
   }
 
   if (URL_REG.test(urlCandidate)) {
-    shell.openExternal(urlCandidate)
+    const protocol = new URL(urlCandidate).protocol
+    if (ALLOWED_PROTOCOLS.includes(protocol)) {
+      shell.openExternal(urlCandidate)
+    }
     return
   } else if (/^[a-z0-9]+:\/\//i.test(urlCandidate)) {
     // Prevent other URLs.
