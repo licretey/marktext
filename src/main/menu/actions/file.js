@@ -520,22 +520,24 @@ ipcMain.on('mt::format-link-click', async (e, { data, dirname }) => {
     }
   }
 
-  if (URL_REG.test(urlCandidate)) {
-    const protocol = new URL(urlCandidate).protocol
+  // Check for any protocol prefix (e.g. http://, javascript:, file://, ftp://)
+  const protocolMatch = urlCandidate.match(/^([a-z][a-z0-9+\-.]*):/i)
+  if (protocolMatch) {
+    const protocol = protocolMatch[1].toLowerCase() + ':'
     const defaults = ['https:', 'http:', 'webdav:', 'smb:', 'ftp:', 'sftp:', 'mailto:']
     const allowed = global.accessor?.preferences.getItem('allowedProtocols') || defaults
-    if (allowed.includes(protocol)) {
-      shell.openExternal(urlCandidate)
-    } else {
+    if (!allowed.includes(protocol)) {
       win.webContents.send('mt::show-notification', {
         title: 'Protocol not allowed',
         type: 'error',
         message: '未允许的协议设置,无法操作!'
       })
+      return
     }
-    return
-  } else if (/^[a-z0-9]+:\/\//i.test(urlCandidate)) {
-    // Prevent other URLs.
+    // Protocol is in allowed list — only open http/https via shell
+    if (URL_REG.test(urlCandidate)) {
+      shell.openExternal(urlCandidate)
+    }
     return
   }
 
