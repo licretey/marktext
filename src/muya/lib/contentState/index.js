@@ -427,7 +427,29 @@ class ContentState {
 
   getBlock(key) {
     if (!key) return null
-    return this.blockIndex.get(key) || null
+    const result = this.blockIndex.get(key)
+    if (result) return result
+
+    // Fallback: tree traversal for blocks not yet registered in blockIndex.
+    // Once all creation paths properly register blocks, this path should be
+    // unreachable. Log a warning so remaining gaps can be identified and fixed.
+    console.warn(`getBlock: key "${key}" not found in blockIndex, falling back to tree traversal`)
+    const found = this._findBlockInTree(key, this.blocks)
+    if (found) {
+      this.blockIndex.set(key, found)
+    }
+    return found
+  }
+
+  _findBlockInTree(key, blockList) {
+    for (const block of blockList) {
+      if (block.key === key) return block
+      if (block.children && block.children.length) {
+        const found = this._findBlockInTree(key, block.children)
+        if (found) return found
+      }
+    }
+    return null
   }
 
   copyBlock(origin) {
