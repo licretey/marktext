@@ -133,7 +133,7 @@ const handleSearchResultClick = (searchMatch) => {
   }
 
   if (openedTab) {
-    openedTab.cursor = cursor
+    openedTab.muyaIndexCursor = cursor
     if (currentFile.value !== openedTab) {
       editorStore.UPDATE_CURRENT_FILE(openedTab)
     } else {
@@ -141,14 +141,14 @@ const handleSearchResultClick = (searchMatch) => {
       bus.emit('file-changed', {
         id,
         markdown,
-        cursor: currentFile.value.cursor,
+        muyaIndexCursor: cursor,
         renderCursor: true,
         history
       })
     }
   } else {
     window.electron.ipcRenderer.send('mt::open-file', filePath, {
-      cursor
+      muyaIndexCursor: cursor
     })
   }
 }

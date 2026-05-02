@@ -12,8 +12,8 @@ export const editorWinOptions = Object.freeze({
     // renderer startup due to a bug in Electron (Electron#32755). We'll
     // enable it always and set the HTML spelling attribute to false.
     spellcheck: true,
-    nodeIntegration: true,
-    webSecurity: false,
+    nodeIntegration: false,
+    webSecurity: process.env.NODE_ENV === 'production',
     sandbox: false,
     preload: path.join(__dirname, '../preload/index.js')
   },
@@ -33,8 +33,8 @@ export const preferencesWinOptions = Object.freeze({
     contextIsolation: true,
     // Always true to access native spellchecker.
     spellcheck: true,
-    nodeIntegration: true,
-    webSecurity: false,
+    nodeIntegration: false,
+    webSecurity: process.env.NODE_ENV === 'production',
     sandbox: false,
     preload: path.join(__dirname, '../preload/index.js')
   },
