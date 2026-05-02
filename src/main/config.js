@@ -81,3 +81,13 @@ export const GITHUB_REPO_URL = 'https://github.com/Tkaixiang/marktext'
 // copy from muya
 export const URL_REG =
   /^http(s)?:\/\/([a-z0-9\-._~]+\.[a-z]{2,}|[0-9.]+|localhost|\[[a-f0-9.:]+\])(:[0-9]{1,5})?(\/[\S]+)?/i
+
+export const ALLOWED_PROTOCOLS = Object.freeze([
+  'https:',
+  'http:',
+  'webdav:',
+  'smb:',
+  'ftp:',
+  'sftp:',
+  'mailto:'
+])
