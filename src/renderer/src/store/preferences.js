@@ -104,7 +104,8 @@ export const usePreferencesStore = defineStore('preferences', {
         branch: ''
       }
     },
-    cliScript: ''
+    cliScript: '',
+    allowedProtocols: ['https:', 'http:', 'webdav:', 'smb:', 'ftp:', 'sftp:', 'mailto:']
   }),
 
   getters: {

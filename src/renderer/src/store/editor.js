@@ -268,7 +268,7 @@ export const useEditorStore = defineStore('editor', {
     FORMAT_LINK_CLICK({ data, dirname }) {
       // Check if the link starts with a #, that is a local anchor link.
 
-      if (data.href.length > 0 && data.href[0] === '#') {
+      if (data.href && data.href.length > 0 && data.href[0] === '#') {
         const anchorSlug = data.href.substring(1)
         if (!anchorSlug) return
 

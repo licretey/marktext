@@ -4,7 +4,7 @@ import { BrowserWindow, app, dialog, shell, ipcMain } from 'electron'
 import log from 'electron-log'
 import { isDirectory, isFile, exists } from 'common/filesystem'
 import { MARKDOWN_EXTENSIONS, isMarkdownFile } from 'common/filesystem/paths'
-import { EXTENSION_HASH, PANDOC_EXTENSIONS, URL_REG, ALLOWED_PROTOCOLS } from '../../config'
+import { EXTENSION_HASH, PANDOC_EXTENSIONS, URL_REG } from '../../config'
 import { normalizeAndResolvePath, writeFile } from '../../filesystem'
 import { writeMarkdownFile } from '../../filesystem/markdown'
 import { COMMANDS } from '../../commands'
@@ -522,8 +522,16 @@ ipcMain.on('mt::format-link-click', async (e, { data, dirname }) => {
 
   if (URL_REG.test(urlCandidate)) {
     const protocol = new URL(urlCandidate).protocol
-    if (ALLOWED_PROTOCOLS.includes(protocol)) {
+    const defaults = ['https:', 'http:', 'webdav:', 'smb:', 'ftp:', 'sftp:', 'mailto:']
+    const allowed = global.accessor?.preferences.getItem('allowedProtocols') || defaults
+    if (allowed.includes(protocol)) {
       shell.openExternal(urlCandidate)
+    } else {
+      win.webContents.send('mt::show-notification', {
+        title: 'Protocol not allowed',
+        type: 'error',
+        message: '未允许的协议设置,无法操作!'
+      })
     }
     return
   } else if (/^[a-z0-9]+:\/\//i.test(urlCandidate)) {

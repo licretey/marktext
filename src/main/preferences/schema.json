@@ -448,5 +448,13 @@
     "type": "number",
     "minimum": 1,
     "default": 12
+  },
+  "allowedProtocols": {
+    "description": "Security--List of allowed URL protocols for external links.",
+    "type": "array",
+    "items": {
+      "type": "string"
+    },
+    "default": ["https:", "http:", "webdav:", "smb:", "ftp:", "sftp:", "mailto:"]
   }
 }

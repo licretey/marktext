@@ -548,7 +548,9 @@
           "japanese": "日本語",
           "korean": "한국어",
           "portuguese": "Português"
-        }
+        },
+        "allowedProtocols": "允许的协议",
+        "allowedProtocolsNotes": "逗号分隔的 URL 协议前缀（如 https:,http:,ftp:）。不在列表中的协议将被阻止打开。"
       }
     },
     "editor": {

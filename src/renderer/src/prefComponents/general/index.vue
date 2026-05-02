@@ -149,6 +149,13 @@
           :options="getLanguageOptions()"
           :on-change="(value) => onSelectChange('language', value)"
         ></cur-select>
+
+        <text-box
+          :description="t('preferences.general.misc.allowedProtocols')"
+          :notes="t('preferences.general.misc.allowedProtocolsNotes')"
+          :input="allowedProtocols.join(',')"
+          :on-change="(value) => onSelectChange('allowedProtocols', value.split(',').map(s => s.trim()).filter(Boolean))"
+        ></text-box>
       </template>
     </compound>
   </div>
@@ -188,7 +195,8 @@ const {
   hideScrollbar,
   wordWrapInToc,
   fileSortBy,
-  language
+  language,
+  allowedProtocols
 } = storeToRefs(preferenceStore)
 
 const startUpAction = computed({

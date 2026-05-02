@@ -1,0 +1,105 @@
+<h2>Step 1: Enable <code>contextIsolation: true</code></h2>
+<p class="subtitle">Preload 已用 contextBridge 封装好所有 API，改动面可控</p>
+
+<div class="section">
+  <h3>Current State vs Target</h3>
+  <div class="split">
+    <div class="mockup">
+      <div class="mockup-header">Before (Insecure)</div>
+      <div class="mockup-body" style="font-size:13px;line-height:1.6">
+        <pre style="background:#2d2a2e;color:#fcfcfa;padding:12px;border-radius:4px;margin:0">
+contextIsolation: false
+nodeIntegration: true
+webSecurity: false
+
+Renderer ──direct access──► Node.js
+  require('fs')
+  require('child_process')
+  process.env.HOME
+
+Preload (window.* fallback path)
+  contextBridge never used</pre>
+      </div>
+    </div>
+    <div class="mockup">
+      <div class="mockup-header">After Step 1</div>
+      <div class="mockup-body" style="font-size:13px;line-height:1.6">
+        <pre style="background:#1e1e2e;color:#cdd6f4;padding:12px;border-radius:4px;margin:0">
+contextIsolation: true   ← 改
+nodeIntegration: true    ← 暂保留
+webSecurity: false       ← 暂保留
+
+Renderer ══isolated══► Node.js
+  require() ❌ blocked
+
+Preload (contextBridge path)
+  window.electron ✅
+  window.fileUtils ✅
+  window.path ✅</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>唯一需要修改的代码</h3>
+  <table style="width:100%;border-collapse:collapse;font-size:13px">
+    <tr style="background:var(--editorColor10)">
+      <th style="padding:8px;text-align:left">文件</th>
+      <th style="padding:8px;text-align:left">改动</th>
+      <th style="padding:8px;text-align:left">原因</th>
+    </tr>
+    <tr>
+      <td style="padding:8px"><code>src/main/config.js</code> (2处)</td>
+      <td style="padding:8px"><code>false</code> → <code>true</code></td>
+      <td style="padding:8px">核心安全开关</td>
+    </tr>
+    <tr>
+      <td style="padding:8px"><code>fontTextBox/index.vue</code></td>
+      <td style="padding:8px"><code>require('font-list')</code> → IPC</td>
+      <td style="padding:8px">渲染进程唯一的运行时 require()</td>
+    </tr>
+    <tr>
+      <td style="padding:8px"><code>src/main/windows/</code></td>
+      <td style="padding:8px">IPC handler 注册</td>
+      <td style="padding:8px">暴露 getSystemFonts 给渲染进程</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <h3>为什么这步可以独立做</h3>
+  <ul>
+    <li>Preload 已有 <code>process.contextIsolated</code> 条件分支，设 <code>true</code> 后自动走 contextBridge 路径</li>
+    <li>所有 ~20 个渲染进程文件使用 <code>window.electron</code> / <code>window.fileUtils</code> 等 API，contextBridge 注入后访问方式不变</li>
+    <li>Muya 的 <code>require()</code> 调用在 vite 构建阶段已被打包转换，非运行时调用</li>
+    <li><code>nodeIntegration: true</code> 暂保留意味着 preload 可继续使用 Node API</li>
+  </ul>
+</div>
+
+<div class="section">
+  <h3>验证标准</h3>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>预期正常工作的功能</h4>
+      <ul>
+        <li>文件打开/保存/拖放</li>
+        <li>编辑器所有功能</li>
+        <li>图片上传 (picgo)</li>
+        <li>ripgrep 全文搜索</li>
+        <li>i18n 语言切换</li>
+        <li>剪切板粘贴图片</li>
+        <li>系统字体列表 (修复后)</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>可能受影响需检查</h4>
+      <ul>
+        <li>截图功能</li>
+        <li>Mermaid / Vega 图表渲染</li>
+        <li>导出 HTML/PDF</li>
+        <li>打印功能</li>
+      </ul>
+    </div>
+  </div>
+</div>

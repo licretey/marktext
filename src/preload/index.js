@@ -34,6 +34,8 @@ const customElectronAPI = {
         const protocol = new URL(url).protocol
         if (allowed.includes(protocol)) {
           shell.openExternal(url)
+        } else {
+          ipcRenderer.send('mt::blocked-protocol')
         }
       } catch (_) {
         // Invalid URL, silently ignore

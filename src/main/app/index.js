@@ -118,6 +118,14 @@ class App {
         callback(allowed.includes(permission))
       })
     })
+
+    ipcMain.on('mt::blocked-protocol', (e) => {
+      e.sender.send('mt::show-notification', {
+        title: 'Protocol not allowed',
+        type: 'error',
+        message: '未允许的协议设置,无法操作!'
+      })
+    })
   }
 
   /**

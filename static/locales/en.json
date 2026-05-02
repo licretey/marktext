@@ -546,7 +546,9 @@
           "japanese": "日本語",
           "korean": "한국어",
           "portuguese": "Português"
-        }
+        },
+        "allowedProtocols": "Allowed protocols",
+        "allowedProtocolsNotes": "Comma-separated URL protocol prefixes (e.g. https:,http:,ftp:). Links with protocols not in this list will be blocked."
       }
     },
     "editor": {

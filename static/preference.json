@@ -85,5 +85,7 @@
   "searchFollowSymlinks": true,
 
   "watcherUsePolling": false,
-  "watcherDirectoryDepth": 12
+  "watcherDirectoryDepth": 12,
+
+  "allowedProtocols": ["https:", "http:", "webdav:", "smb:", "ftp:", "sftp:", "mailto:"]
 }
