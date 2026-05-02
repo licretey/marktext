@@ -39,6 +39,14 @@ export default function (keybindings) {
         actions.toggleFullWysiwyg(focusedWindow)
       }
     }, {
+      id: 'cleanWriteMenuItem',
+      label: 'Clean Write Mode',
+      type: 'checkbox',
+      checked: false,
+      click (item, focusedWindow) {
+        actions.toggleCleanWrite(focusedWindow)
+      }
+    }, {
       id: 'focusModeMenuItem',
       label: t('menu.view.focusMode'),
       accelerator: keybindings.getAccelerator('view.focus-mode'),

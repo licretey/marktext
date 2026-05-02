@@ -450,7 +450,12 @@ export const MUYA_DEFAULT_OPTION = Object.freeze({
 
   // Full WYSIWYG mode: never show raw markdown syntax to the user.
   // The document renders like a word processor while saving as markdown.
-  fullWysiwyg: false
+  fullWysiwyg: false,
+
+  // Clean write mode: always hide valid markdown syntax markers. Only show
+  // raw syntax when it's broken/incomplete. The tokenizer naturally handles
+  // broken syntax as plain text.
+  cleanWrite: false
 })
 
 // export const DIAGRAM_TEMPLATE = Object.freeze({

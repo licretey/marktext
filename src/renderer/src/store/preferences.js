@@ -90,6 +90,7 @@ export const usePreferencesStore = defineStore('preferences', {
     typewriter: false, // typewriter mode
     focus: false, // focus mode
     sourceCode: false, // source code mode
+    cleanWrite: false, // clean write mode — hide valid markdown syntax markers
 
     // user configration
     imageFolderPath: '',

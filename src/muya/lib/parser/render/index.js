@@ -209,6 +209,9 @@ class StateRender {
   }
 
   getClassName(outerClass, block, token, cursor) {
+    if (this.muya.options.cleanWrite) {
+      return CLASS_OR_ID.AG_HIDE
+    }
     return (
       outerClass ||
       (this.checkConflicted(block, token, cursor) ? CLASS_OR_ID.AG_GRAY : CLASS_OR_ID.AG_HIDE)

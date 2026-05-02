@@ -183,7 +183,8 @@ export default {
       focus: state => state.preferences.focus,
       sourceCode: state => state.preferences.sourceCode,
 
-      fullWysiwyg: state => state.preferences.fullWysiwyg
+      fullWysiwyg: state => state.preferences.fullWysiwyg,
+      cleanWrite: state => state.preferences.cleanWrite
     })
   },
 
@@ -412,6 +413,13 @@ export default {
       }
     },
 
+    cleanWrite: function (value, oldValue) {
+      const { editor } = this
+      if (value !== oldValue && editor) {
+        editor.setOptions({ cleanWrite: value }, true)
+      }
+    },
+
     hideLinkPopup: function (value, oldValue) {
       const { editor } = this
       if (value !== oldValue && editor) {
@@ -616,6 +624,7 @@ export default {
         autoCheck,
         sequenceTheme,
         fullWysiwyg: this.fullWysiwyg,
+        cleanWrite: this.cleanWrite,
         autoPairMarkdownSyntax: this.fullWysiwyg ? false : autoPairMarkdownSyntax,
         spellcheckEnabled: spellcheckerEnabled,
         imageAction: this.imageAction.bind(this),

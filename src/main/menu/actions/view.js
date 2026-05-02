@@ -48,6 +48,10 @@ export const toggleFullWysiwyg = (win) => {
   toggleTypeMode(win, 'wysiwyg')
 }
 
+export const toggleCleanWrite = (win) => {
+  toggleTypeMode(win, 'cleanWrite')
+}
+
 export const toggleSourceCodeMode = (win) => {
   toggleTypeMode(win, 'sourceCode')
 }
@@ -136,6 +140,9 @@ export const viewLayoutChanged = (applicationMenu, changes) => {
         break
       case 'fullWysiwyg':
         changeMenuByName('fullWysiwygMenuItem', value)
+        break
+      case 'cleanWrite':
+        changeMenuByName('cleanWriteMenuItem', value)
         break
     }
   }
