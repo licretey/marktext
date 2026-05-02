@@ -1,4 +1,3 @@
-import { deepCopy } from '../utils'
 import { UNDO_DEPTH } from '../config'
 
 // History stores both position changes and content changes, so we need a pointer to see what is the "last" actual content change.
@@ -23,16 +22,42 @@ class History {
     this.lastEditIndex = -1
   }
 
+  buildCompactState(state) {
+    const { blocks, cursor, renderRange } = state
+    const blockTexts = new Map()
+    const collectTexts = (blockList) => {
+      for (const block of blockList) {
+        if (block.text !== undefined) {
+          blockTexts.set(block.key, block.text)
+        }
+        if (block.children && block.children.length) {
+          collectTexts(block.children)
+        }
+      }
+    }
+    collectTexts(blocks)
+    return {
+      id: this.id,
+      blockTexts,
+      cursor: { ...cursor },
+      renderRange: [...renderRange]
+    }
+  }
+
   undo() {
     this.commitPending()
     if (this.index >= 0) {
       this.index = this.index - 1
       this.updateFinalEditIndex()
 
-      const state = deepCopy(this.stack[this.index])
-      const { blocks, cursor, renderRange } = state
+      const { blockTexts, cursor, renderRange } = this.stack[this.index]
       cursor.noHistory = true
-      this.contentState.blocks = blocks
+      for (const [key, text] of blockTexts) {
+        const block = this.contentState.getBlock(key)
+        if (block) {
+          block.text = text
+        }
+      }
       this.contentState.renderRange = renderRange
       this.contentState.cursor = cursor
       this.contentState.render()
@@ -46,10 +71,14 @@ class History {
     if (index < len - 1) {
       this.index = index + 1
       this.updateFinalEditIndex()
-      const state = deepCopy(stack[this.index])
-      const { blocks, cursor, renderRange } = state
+      const { blockTexts, cursor, renderRange } = stack[this.index]
       cursor.noHistory = true
-      this.contentState.blocks = blocks
+      for (const [key, text] of blockTexts) {
+        const block = this.contentState.getBlock(key)
+        if (block) {
+          block.text = text
+        }
+      }
       this.contentState.renderRange = renderRange
       this.contentState.cursor = cursor
       this.contentState.render()
@@ -61,8 +90,7 @@ class History {
     // But, we should reset it if another event comes in that is not pending.
     this.stack.splice(this.index + 1)
     this.id += 1
-    const copyState = { id: this.id, ...deepCopy(state) }
-    this.stack.push(copyState)
+    this.stack.push(this.buildCompactState(state))
     if (this.stack.length > UNDO_DEPTH) {
       this.stack.shift()
       this.index = this.index - 1
@@ -84,7 +112,7 @@ class History {
     } else {
       // Replace the pending state
       const dirtyState = this.stack[this.pendingIndex]
-      this.stack[this.pendingIndex] = { ...dirtyState, ...deepCopy(state) }
+      this.stack[this.pendingIndex] = { ...dirtyState, ...this.buildCompactState(state) }
     }
   }
 
