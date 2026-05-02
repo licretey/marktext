@@ -4,10 +4,6 @@
 
 import { HAS_TEXT_BLOCK_REG, DEFAULT_TURNDOWN_CONFIG } from '../config'
 
-// Threshold for incremental label collection during partial renders.
-// When the labels Map exceeds this size, fall back to a full document scan
-// to prevent stale reference definitions from accumulating.
-const LABEL_COUNT_THRESHOLD = 50
 import { getUniqueId, deepCopy } from '../utils'
 import selection from '../selection'
 import StateRender from '../parser/render'
@@ -42,6 +38,11 @@ import footnoteCtrl from './footnoteCtrl'
 import importMarkdown from '../utils/importMarkdown'
 import Cursor from '../selection/cursor'
 import escapeCharactersMap, { escapeCharacters } from '../parser/escapeCharacter'
+
+// Threshold for incremental label collection during partial renders.
+// When the labels Map exceeds this size, fall back to a full document scan
+// to prevent stale reference definitions from accumulating.
+const LABEL_COUNT_THRESHOLD = 50
 
 const prototypes = [
   coreApi,
@@ -84,6 +85,8 @@ class ContentState {
     // Use to cache the keys which you don't want to remove.
     this.exemption = new Set()
     this.blockIndex = new Map()
+    this.markdownCache = new Map()  // key → markdown_string cache
+    this.markdownCacheDirty = true  // initially dirty, first export will be full
     this.blocks = [this.createBlockP()]
     this.stateRender = new StateRender(muya)
     this.renderRange = [null, null]
@@ -378,6 +381,12 @@ class ContentState {
 
   clearBlockIndex() {
     this.blockIndex.clear()
+  }
+
+  invalidateMarkdownCache(keys) {
+    for (const key of keys) {
+      this.markdownCache.delete(key)
+    }
   }
 
   // getBlocks

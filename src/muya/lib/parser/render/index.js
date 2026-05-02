@@ -162,26 +162,7 @@ class StateRender {
   // collect link reference definition
   collectLabels(blocks) {
     this.labels.clear()
-
-    const travel = (block) => {
-      const { text, children } = block
-      if (children && children.length) {
-        children.forEach((c) => travel(c))
-      } else if (text) {
-        const tokens = beginRules.reference_definition.exec(text)
-        if (tokens) {
-          const key = (tokens[2] + tokens[3]).toLowerCase()
-          if (!this.labels.has(key)) {
-            this.labels.set(key, {
-              href: tokens[6],
-              title: tokens[10] || ''
-            })
-          }
-        }
-      }
-    }
-
-    blocks.forEach((b) => travel(b))
+    this.collectLabelsIncremental(blocks)
   }
 
   // Incrementally collect labels without clearing the existing labels Map.
