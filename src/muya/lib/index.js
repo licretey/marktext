@@ -167,6 +167,8 @@ class Muya {
   getMarkdown() {
     const blocks = this.contentState.getBlocks()
     const { isGitlabCompatibilityEnabled, listIndentation } = this.contentState
+    // Phase 1: Full serialization (frequency reduced by dispatchChange debounce)
+    // Phase 2: Will use contentState.markdownCache for incremental per-block export
     return new ExportMarkdown(blocks, listIndentation, isGitlabCompatibilityEnabled).generate()
   }
 
