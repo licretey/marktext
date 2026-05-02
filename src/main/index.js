@@ -89,6 +89,7 @@ app.on('browser-window-created', (_, window) => {
 let accessor
 try {
   accessor = new Accessor(appEnvironment)
+  global.accessor = accessor
 } catch (err) {
   const msgHint = err.message.includes('Config schema violation')
     ? t('error.configSchemaViolation')
