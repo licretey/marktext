@@ -94,7 +94,9 @@ export default function renderLeafBlock (parent, block, activeBlocks, matches, u
 
   if (text) {
     let tokens = []
-    if (highlights.length === 0 && this.tokenCache.has(text)) {
+    const canUseCache = highlights.length === 0 && this.tokenCache.has(text)
+
+    if (canUseCache) {
       tokens = this.tokenCache.get(text)
     } else if (
       HAS_TEXT_BLOCK_REG.test(type) &&
@@ -110,7 +112,8 @@ export default function renderLeafBlock (parent, block, activeBlocks, matches, u
         options: this.muya.options
       })
       const hasReferenceTokens = hasReferenceToken(tokens)
-      if (highlights.length === 0 && useCache && DEVICE_MEMORY >= 4 && !hasReferenceTokens) {
+      // KEY CHANGE: removed `useCache &&` — cache now works in both full and partial renders
+      if (highlights.length === 0 && DEVICE_MEMORY >= 4 && !hasReferenceTokens) {
         this.tokenCache.set(text, tokens)
       }
     }
