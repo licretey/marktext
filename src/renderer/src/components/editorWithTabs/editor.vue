@@ -1094,8 +1094,11 @@ onMounted(() => {
 
   editor.value.on('format-click', ({ event, formatType, data }) => {
     const ctrlOrMeta = (isOsx && event.metaKey) || (!isOsx && event.ctrlKey)
-    if (formatType === 'link' && ctrlOrMeta) {
-      editorStore.FORMAT_LINK_CLICK({ data, dirname: window.DIRNAME })
+    if (formatType === 'link') {
+      event.preventDefault()
+      if (ctrlOrMeta) {
+        editorStore.FORMAT_LINK_CLICK({ data, dirname: window.DIRNAME })
+      }
     } else if (formatType === 'image' && ctrlOrMeta) {
       if (imageViewer) {
         imageViewer.destroy()
