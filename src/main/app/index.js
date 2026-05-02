@@ -112,6 +112,11 @@ class App {
       contents.setWindowOpenHandler((details) => {
         return { action: 'deny' }
       })
+
+      contents.session.setPermissionRequestHandler((webContents, permission, callback) => {
+        const allowed = ['clipboard-read', 'clipboard-write', 'notifications']
+        callback(allowed.includes(permission))
+      })
     })
   }
 
