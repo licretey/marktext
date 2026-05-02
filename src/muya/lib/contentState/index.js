@@ -372,7 +372,12 @@ class ContentState {
   }
 
   setBlocks(blocks) {
+    this.clearBlockIndex()
     this.blocks = blocks
+  }
+
+  clearBlockIndex() {
+    this.blockIndex.clear()
   }
 
   // getBlocks
@@ -408,6 +413,7 @@ class ContentState {
     const travel = (block, parent, preBlock, nextBlock) => {
       const key = getUniqueId()
       block.key = key
+      this.blockIndex.set(key, block)
       block.parent = parent ? parent.key : null
       block.preSibling = preBlock ? preBlock.key : null
       block.nextSibling = nextBlock ? nextBlock.key : null

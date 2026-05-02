@@ -676,6 +676,7 @@ const importRegister = (ContentState) => {
    * @param {*} checkCursorSignature Tells the lexer on whether to look out for the inserted cursorSignature and handle accordingly. Enable to prevent invalid markdown parsing when a cursorSignature is inserted.
    */
   ContentState.prototype.importMarkdown = function (markdown, checkCursorSignature = false) {
+    this.clearBlockIndex()
     this.blocks = this.markdownToState(markdown, checkCursorSignature)
   }
 

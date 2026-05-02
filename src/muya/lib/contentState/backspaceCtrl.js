@@ -152,6 +152,7 @@ const backspaceCtrl = (ContentState) => {
     // Handle select all content.
     if (this.isSelectAll()) {
       event.preventDefault()
+      this.clearBlockIndex()
       this.blocks = [this.createBlockP()]
       this.init()
 
