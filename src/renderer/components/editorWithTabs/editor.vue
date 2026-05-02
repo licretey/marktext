@@ -77,6 +77,8 @@ import { shell } from 'electron'
 import path from 'path'
 import log from 'electron-log'
 import { mapState } from 'vuex'
+import { watch } from 'vue'
+import { usePreferencesStore } from '@/store/preferences'
 // import ViewImage from 'view-image'
 import { isChildOfDirectory } from 'common/filesystem/paths'
 import Muya from 'muya/lib'
@@ -653,6 +655,18 @@ export default {
       if (process.env.NODE_ENV === 'development') {
         window.__muya = this.editor
       }
+
+      // Direct Pinia watch for cleanWrite — bypasses the vuex mapState
+      // compatibility layer which may not react to Pinia state changes.
+      const preferencesStore = usePreferencesStore()
+      watch(
+        () => preferencesStore.cleanWrite,
+        (value) => {
+          if (this.editor) {
+            this.editor.setOptions({ cleanWrite: value }, true)
+          }
+        }
+      )
 
       // Create spell check wrapper and enable spell checking if preferred.
       this.spellchecker = new SpellChecker(spellcheckerEnabled, spellcheckerLanguage)
