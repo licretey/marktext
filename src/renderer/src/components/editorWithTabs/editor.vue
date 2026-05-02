@@ -1023,6 +1023,12 @@ onMounted(() => {
   }
 
   editor.value = new Muya(ele, options)
+  printer.setMuya(editor.value)
+
+  // Expose muya for dev console debugging
+  if (process.env.NODE_ENV === 'development') {
+    window.__muya = editor.value
+  }
 
   const { container } = editor.value
 

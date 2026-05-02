@@ -1,6 +1,10 @@
 import { getImageInfo } from 'muya/lib/utils'
 
 class MarkdownPrint {
+  setMuya(muya) {
+    this.muya = muya
+  }
+
   /**
    * Prepare document export and append a hidden print container to the window.
    * Everything outside of this hidden print container will be hidden with display: none.
@@ -21,7 +25,9 @@ class MarkdownPrint {
       const images = printContainer.getElementsByTagName('img')
       for (const image of images) {
         const rawSrc = image.getAttribute('src')
-        image.src = getImageInfo(rawSrc, this.muya.options).src
+        if (this.muya) {
+          image.src = getImageInfo(rawSrc, this.muya.options).src
+        }
       }
     }
 

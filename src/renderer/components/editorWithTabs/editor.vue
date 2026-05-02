@@ -638,6 +638,12 @@ export default {
       }
 
       const { container } = this.editor = new Muya(ele, options, this.$store.state.preferences)
+      this.printer.setMuya(this.editor)
+
+      // Expose muya for dev console debugging
+      if (process.env.NODE_ENV === 'development') {
+        window.__muya = this.editor
+      }
 
       // Create spell check wrapper and enable spell checking if preferred.
       this.spellchecker = new SpellChecker(spellcheckerEnabled, spellcheckerLanguage)
