@@ -726,6 +726,30 @@ class ContentState {
     newBlock.parent = oldBlock.parent
     newBlock.preSibling = oldBlock.preSibling
     newBlock.nextSibling = oldBlock.nextSibling
+
+    this.blockIndex.delete(oldBlock.key)
+    const removeChildIndex = (b) => {
+      if (b.children && b.children.length) {
+        b.children.forEach((child) => {
+          this.blockIndex.delete(child.key)
+          removeChildIndex(child)
+        })
+      }
+    }
+    removeChildIndex(oldBlock)
+
+    this.blockIndex.set(newBlock.key, newBlock)
+    if (newBlock.children && newBlock.children.length) {
+      const indexChildren = (children) => {
+        for (const child of children) {
+          this.blockIndex.set(child.key, child)
+          if (child.children && child.children.length) {
+            indexChildren(child.children)
+          }
+        }
+      }
+      indexChildren(newBlock.children)
+    }
   }
 
   canInserFrontMatter(block) {
