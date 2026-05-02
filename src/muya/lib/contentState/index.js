@@ -377,10 +377,23 @@ class ContentState {
   setBlocks(blocks) {
     this.clearBlockIndex()
     this.blocks = blocks
+    this.rebuildBlockIndex()
   }
 
   clearBlockIndex() {
     this.blockIndex.clear()
+  }
+
+  rebuildBlockIndex() {
+    const indexBlocks = (blockList) => {
+      for (const block of blockList) {
+        this.blockIndex.set(block.key, block)
+        if (block.children && block.children.length) {
+          indexBlocks(block.children)
+        }
+      }
+    }
+    indexBlocks(this.blocks)
   }
 
   invalidateMarkdownCache(keys) {

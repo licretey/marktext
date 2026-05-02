@@ -528,6 +528,10 @@ class Muya {
   }
 
   destroy() {
+    if (this.changeDebounceTimer) {
+      clearTimeout(this.changeDebounceTimer)
+      this.changeDebounceTimer = null
+    }
     this.contentState.clear()
     this.quickInsert.destroy()
     this.codePicker.destroy()
