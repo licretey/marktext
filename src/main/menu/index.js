@@ -263,6 +263,7 @@ class AppMenu {
       updateMenuItem(oldMenu, newMenu, 'focusModeMenuItem')
       updateMenuItem(oldMenu, newMenu, 'sideBarMenuItem')
       updateMenuItem(oldMenu, newMenu, 'tabBarMenuItem')
+      updateMenuItem(oldMenu, newMenu, 'cleanWriteMenuItem')
 
       // update window menu
       value.menu = newMenu

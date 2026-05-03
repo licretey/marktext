@@ -140,6 +140,17 @@ export const usePreferencesStore = defineStore('preferences', {
 
       window.electron.ipcRenderer.on('mt::user-preference', (e, preferences) => {
         this.SET_USER_PREFERENCE(preferences)
+
+        // Sync initial view mode states so menu checkboxes match defaults.
+        // Must happen here (not in LISTEN_FOR_VIEW) because the main process
+        // window menu and global.marktext.env are only ready after the async
+        // preference response.
+        this.DISPATCH_EDITOR_VIEW_STATE({
+          sourceCode: this.sourceCode,
+          typewriter: this.typewriter,
+          focus: this.focus,
+          cleanWrite: this.cleanWrite
+        })
       })
     },
 
@@ -177,13 +188,6 @@ export const usePreferencesStore = defineStore('preferences', {
         this.DISPATCH_EDITOR_VIEW_STATE({ [entryName]: this[entryName] })
       })
 
-      // Sync initial view mode states so menu checkboxes match defaults (e.g. cleanWrite=true)
-      this.DISPATCH_EDITOR_VIEW_STATE({
-        sourceCode: this.sourceCode,
-        typewriter: this.typewriter,
-        focus: this.focus,
-        cleanWrite: this.cleanWrite
-      })
     },
 
     // Toggle a view option and notify main process to toggle menu item.

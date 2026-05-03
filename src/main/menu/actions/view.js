@@ -109,6 +109,8 @@ export const loadViewCommands = (commandManager) => {
  * @param {*} changes Array of changed view settings (e.g. [ {showSideBar: true} ]).
  */
 export const viewLayoutChanged = (applicationMenu, changes) => {
+  if (!applicationMenu) return
+
   const disableMenuByName = (id, value) => {
     const menuItem = applicationMenu.getMenuItemById(id)
     menuItem.enabled = value
