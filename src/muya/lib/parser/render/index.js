@@ -5,6 +5,7 @@ import { patch, toVNode, toHTML, h } from './snabbdom'
 import { beginRules } from '../rules'
 import renderInlines from './renderInlines'
 import renderBlock from './renderBlock'
+import { DEBUG as VSCROLL_DEBUG } from '../../virtualScroll'
 
 // --- Contrast enforcement for mermaid SVGs ---
 
