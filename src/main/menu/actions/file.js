@@ -57,7 +57,7 @@ const getPdfPageOptions = (options) => {
 }
 
 // Handle the export response from renderer process.
-const handleResponseForExport = async (e, { type, content, pathname, title, pageOptions }) => {
+const handleResponseForExport = async(e, { type, content, pathname, title, pageOptions }) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   const extension = EXTENSION_HASH[type]
   const dirname = pathname ? path.dirname(pathname) : getPath('documents')
@@ -104,14 +104,14 @@ const handleResponseForExport = async (e, { type, content, pathname, title, page
   }
 }
 
-const handleResponseForPrint = async (e) => {
+const handleResponseForPrint = async(e) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   win.webContents.print({ printBackground: true }).then(() => {
     removePrintServiceFromWindow(win)
   })
 }
 
-const handleResponseForSave = async (e, id, filename, pathname, markdown, options, defaultPath) => {
+const handleResponseForSave = async(e, id, filename, pathname, markdown, options, defaultPath) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   let recommendFilename = getRecommendTitleFromMarkdownString(markdown)
   if (!recommendFilename) {
@@ -162,13 +162,13 @@ const handleResponseForSave = async (e, id, filename, pathname, markdown, option
     })
 }
 
-const writeDocumentContentToDisk = async (win, id, filePath, markdown, options) => {
+const writeDocumentContentToDisk = async(win, id, filePath, markdown, options) => {
   // Ignore file watcher change event.
   win.webContents.send('mt::watcher-ignore-change-event', id)
   return writeMarkdownFile(filePath, markdown, options, win)
 }
 
-const showUnsavedFilesMessage = async (win, files) => {
+const showUnsavedFilesMessage = async(win, files) => {
   // In read-only mode, automatically don't save (no prompt)
   // Check both CLI flag and preference setting
   const alwaysReadOnly = global.accessor && global.accessor.preferences.getItem('alwaysReadOnly')
@@ -213,7 +213,7 @@ const noticePandocNotFound = (win) => {
   })
 }
 
-const openPandocFile = async (windowId, pathname) => {
+const openPandocFile = async(windowId, pathname) => {
   try {
     const converter = pandoc(pathname, 'markdown')
     const data = await converter()
@@ -246,7 +246,7 @@ ipcMain.on('mt::save-tabs', (e, unsavedFiles) => {
   ).catch(log.error)
 })
 
-ipcMain.on('mt::save-and-close-tabs', async (e, unsavedFiles) => {
+ipcMain.on('mt::save-and-close-tabs', async(e, unsavedFiles) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   const userResult = await showUnsavedFilesMessage(win, unsavedFiles)
   if (!userResult) {
@@ -283,7 +283,7 @@ ipcMain.on('mt::save-and-close-tabs', async (e, unsavedFiles) => {
 
 ipcMain.on(
   'mt::response-file-save-as',
-  async (e, id, filename, pathname, markdown, options, defaultPath) => {
+  async(e, id, filename, pathname, markdown, options, defaultPath) => {
     const win = BrowserWindow.fromWebContents(e.sender)
     let recommendFilename = getRecommendTitleFromMarkdownString(markdown)
     if (!recommendFilename) {
@@ -329,7 +329,7 @@ ipcMain.on(
   }
 )
 
-ipcMain.on('mt::close-window-confirm', async (e, unsavedFiles) => {
+ipcMain.on('mt::close-window-confirm', async(e, unsavedFiles) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   const userResult = await showUnsavedFilesMessage(win, unsavedFiles)
   if (!userResult) {
@@ -382,7 +382,7 @@ ipcMain.on('mt::response-export', handleResponseForExport)
 
 ipcMain.on('mt::response-print', handleResponseForPrint)
 
-ipcMain.handle('mt::editor-file-auto-save', async (event, id, filePath, markdown, options, lastModTime) => {
+ipcMain.handle('mt::editor-file-auto-save', async(event, id, filePath, markdown, options, lastModTime) => {
   if (lastModTime) {
     try {
       const fileInfo = await fsPromises.stat(filePath)
@@ -403,7 +403,7 @@ ipcMain.handle('mt::editor-file-auto-save', async (event, id, filePath, markdown
   return true
 })
 
-ipcMain.on('mt::window::drop', async (e, fileList) => {
+ipcMain.on('mt::window::drop', async(e, fileList) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   for (const file of fileList) {
     if (isMarkdownFile(file)) {
@@ -424,7 +424,7 @@ ipcMain.on('mt::window::drop', async (e, fileList) => {
   }
 })
 
-ipcMain.on('mt::rename', async (e, { id, pathname, newPathname }) => {
+ipcMain.on('mt::rename', async(e, { id, pathname, newPathname }) => {
   if (pathname === newPathname) return
   const win = BrowserWindow.fromWebContents(e.sender)
 
@@ -462,7 +462,7 @@ ipcMain.on('mt::rename', async (e, { id, pathname, newPathname }) => {
   }
 })
 
-ipcMain.on('mt::response-file-move-to', async (e, { id, pathname }) => {
+ipcMain.on('mt::response-file-move-to', async(e, { id, pathname }) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   const { filePath, canceled } = await dialog.showSaveDialog(win, {
     buttonLabel: 'Move to',
@@ -487,7 +487,7 @@ ipcMain.on('mt::response-file-move-to', async (e, { id, pathname }) => {
   }
 })
 
-ipcMain.on('mt::ask-for-open-project-in-sidebar', async (e) => {
+ipcMain.on('mt::ask-for-open-project-in-sidebar', async(e) => {
   const win = BrowserWindow.fromWebContents(e.sender)
   const { filePaths } = await dialog.showOpenDialog(win, {
     properties: ['openDirectory', 'createDirectory']
@@ -499,7 +499,7 @@ ipcMain.on('mt::ask-for-open-project-in-sidebar', async (e) => {
   }
 })
 
-ipcMain.on('mt::format-link-click', async (e, { data, dirname }) => {
+ipcMain.on('mt::format-link-click', async(e, { data, dirname }) => {
   if (!data || (!data.href && !data.text)) {
     return
   }
@@ -587,7 +587,7 @@ ipcMain.on('mt::format-link-click', async (e, { data, dirname }) => {
   }
 })
 
-ipcMain.handle('mt::create-and-open-empty-markdown-file', async (event, fullPath) => {
+ipcMain.handle('mt::create-and-open-empty-markdown-file', async(event, fullPath) => {
   const win = BrowserWindow.fromWebContents(event.sender)
   await fs.outputFile(fullPath, '', 'utf-8')
   openFileOrFolder(win, fullPath)
@@ -628,7 +628,7 @@ export const exportFile = (win, type) => {
   }
 }
 
-export const importFile = async (win) => {
+export const importFile = async(win) => {
   const existsPandoc = pandoc.exists()
 
   if (!existsPandoc) {
@@ -656,7 +656,7 @@ export const printDocument = (win) => {
   }
 }
 
-export const openFile = async (win) => {
+export const openFile = async(win) => {
   const { filePaths } = await dialog.showOpenDialog(win, {
     properties: ['openFile', 'multiSelections'],
     filters: [
@@ -672,7 +672,7 @@ export const openFile = async (win) => {
   }
 }
 
-export const openFolder = async (win) => {
+export const openFolder = async(win) => {
   const { filePaths } = await dialog.showOpenDialog(win, {
     properties: ['openDirectory', 'createDirectory']
   })

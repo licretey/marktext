@@ -187,7 +187,6 @@ export const usePreferencesStore = defineStore('preferences', {
         this.TOGGLE_VIEW_MODE(entryName)
         this.DISPATCH_EDITOR_VIEW_STATE({ [entryName]: this[entryName] })
       })
-
     },
 
     // Toggle a view option and notify main process to toggle menu item.

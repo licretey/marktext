@@ -8,10 +8,14 @@ import babelParser from '@babel/eslint-parser'
 const { configs: js } = eslintJs
 
 export default [
-  // 0. ESLint core recommended rules
+  // 0. Global ignores (must be standalone config object in flat config)
+  {
+    ignores: ['node_modules/', 'out/', 'dist/', '.git/', '**/*.min.js']
+  },
 
+  // 1. ESLint core recommended rules
   js.recommended,
-  // 1. Use neostandard instead
+  // 2. Use neostandard instead
   ...neostandard(),
 
   ...pluginVue.configs['flat/recommended'],
@@ -47,7 +51,8 @@ export default [
       'prefer-const': 'off',
       'no-mixed-operators': 'off',
       'no-prototype-builtins': 'off',
-      'space-before-function-paren': ['error', 'never']
+      'space-before-function-paren': ['error', 'never'],
+      '@stylistic/space-before-function-paren': ['error', 'never']
     },
     ignores: ['node_modules', 'src/muya/dist/**/*', 'src/muya/webpack.config.js']
   },

@@ -444,7 +444,7 @@ class AppMenu {
       this.clearRecentlyUsedDocuments()
     })
 
-    ipcMain.on('broadcast-preferences-changed', async (prefs) => {
+    ipcMain.on('broadcast-preferences-changed', async(prefs) => {
       if (prefs.theme !== undefined || prefs.followSystemTheme !== undefined) {
         this.updateAppMenu()
       }
