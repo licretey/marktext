@@ -512,7 +512,14 @@ class Selection {
           count += textLength
         }
       }
-      return { node, offset }
+      const lastChild = childNodes[len - 1]
+      if (lastChild) {
+        if (lastChild.nodeType === 3) {
+          return { node: lastChild, offset: lastChild.textContent.length }
+        }
+        return getNodeAndOffset(lastChild, (lastChild.textContent || '').length)
+      }
+      return { node, offset: 0 }
     }
 
     let { node: anchorNode, offset: anchorOffset } = getNodeAndOffset(
