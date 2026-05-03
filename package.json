@@ -1,6 +1,6 @@
 {
   "name": "marktext",
-  "version": "0.21.7",
+  "version": "0.21.8",
   "description": "MarkText",
   "main": "./out/main/index.js",
   "author": "Marktext Contributors (Tkaixiang fork)",
@@ -101,5 +101,8 @@
     "vite-svg-loader": "^5.1.0",
     "vue": "^3.5.32",
     "vue-eslint-parser": "^10.2.0"
+  },
+  "overrides": {
+    "node-abi": "4.28.0"
   }
 }
