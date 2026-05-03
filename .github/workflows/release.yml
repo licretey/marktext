@@ -56,6 +56,8 @@ jobs:
         run: npx @electron/rebuild -f
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CXXFLAGS: "-std=c++20"
+          CCFLAGS: "-std=c++20"
 
       - name: Minify locales
         run: npm run minify-locales
