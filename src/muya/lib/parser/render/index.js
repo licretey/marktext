@@ -214,7 +214,7 @@ class StateRender {
         const textLen = (block.text || '').length
         const atStart = token.range && token.range.start === 0
         const atEnd = token.range && token.range.end === textLen
-        if (atStart || atEnd) {
+        if (atStart && atEnd) {
           return CLASS_OR_ID.AG_GRAY
         }
       }
