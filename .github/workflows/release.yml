@@ -69,6 +69,9 @@ jobs:
       - name: Build (electron-vite)
         run: npm run build
 
+      - name: Remove Electron mirror for packaging
+        run: grep -v 'electron_mirror' .npmrc > .npmrc.tmp && mv .npmrc.tmp .npmrc
+
       - name: Package Linux
         if: matrix.platform == 'linux'
         run: npx electron-builder --linux --publish never
@@ -81,7 +84,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CSC_IDENTITY_AUTO_DISCOVERY: false
-          DEBUG: electron-builder
 
       - name: Package Windows
         if: matrix.platform == 'windows'
