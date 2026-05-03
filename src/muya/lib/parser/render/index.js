@@ -6,6 +6,7 @@ import { beginRules } from '../rules'
 import renderInlines from './renderInlines'
 import renderBlock from './renderBlock'
 import { DEBUG as VSCROLL_DEBUG } from '../../virtualScroll'
+import VirtualScrollManager from '../../virtualScroll'
 
 // --- Contrast enforcement for mermaid SVGs ---
 
@@ -154,10 +155,12 @@ class StateRender {
     this.renderingTable = null
     this.renderingRowContainer = null
     this.container = null
+    this.virtualScroll = null // initialized after container is set
   }
 
   setContainer(container) {
     this.container = container
+    this.virtualScroll = new VirtualScrollManager(this)
   }
 
   // collect link reference definition
@@ -366,6 +369,9 @@ class StateRender {
     this.renderMermaid()
     this.renderDiagram()
     this.codeCache.clear()
+    if (this.virtualScroll) {
+      this.virtualScroll.afterRender()
+    }
   }
 
   // Only render the blocks which you updated
@@ -374,9 +380,39 @@ class StateRender {
     // If cursor is not in render blocks, need to render cursor block independently
     const needRenderCursorBlock = cursorOutMostBlock && blocks.indexOf(cursorOutMostBlock) === -1
     const t = this.muya.options.t || ((key) => key) // 获取翻译函数，如果没有则返回原始键值
+
+    // --- virtual scroll: visibility classification ---
+    let visibleSet = null
+    if (this.virtualScroll) {
+      const range = this.virtualScroll.getVisibleRange()
+      visibleSet = new Set([...range.visibleKeys, ...range.bufferKeys])
+      // always force-render the changed range (startKey..endKey) since those blocks are being edited
+      if (startKey) visibleSet.add(startKey)
+      if (endKey) visibleSet.add(endKey)
+      // force the cursor block
+      const cursor = this.muya.contentState.cursor
+      if (cursor && cursor.start) visibleSet.add(cursor.start.key)
+    }
+
+    const renderBlockOrPlaceholder = (block) => {
+      if (!visibleSet || visibleSet.has(block.key)) {
+        return this.renderBlock(null, block, activeBlocks, matches, false, t)
+      }
+      // placeholder: lightweight div with cached height
+      const cachedHeight = this.virtualScroll.cache.get(block.key)
+      const height = cachedHeight != null ? cachedHeight : 60
+      return h(
+        `div#${block.key}.${CLASS_OR_ID.AG_PARAGRAPH}`,
+        {
+          attrs: { 'data-placeholder': '', 'data-block-key': block.key },
+          style: { height: height + 'px', overflow: 'hidden' }
+        }
+      )
+    }
+
     const newVnode = h(
       'section',
-      blocks.map((block) => this.renderBlock(null, block, activeBlocks, matches, false, t))
+      blocks.map(renderBlockOrPlaceholder)
     )
     const html = toHTML(newVnode).replace(/^<section>([\s\S]+?)<\/section>$/, '$1')
 
@@ -421,6 +457,11 @@ class StateRender {
     this.renderMermaid()
     this.renderDiagram()
     this.codeCache.clear()
+
+    // Schedule height measurement after DOM update
+    if (this.virtualScroll) {
+      this.virtualScroll.afterRender()
+    }
   }
 
   /**
