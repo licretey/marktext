@@ -210,6 +210,14 @@ class StateRender {
 
   getClassName(outerClass, block, token, cursor) {
     if (this.muya.options.cleanWrite) {
+      if (/^(strong|em|del|inline_code|inline_math|highlight|sup_sub)$/.test(token.type)) {
+        const textLen = (block.text || '').length
+        const atStart = token.range && token.range.start === 0
+        const atEnd = token.range && token.range.end === textLen
+        if (atStart || atEnd) {
+          return CLASS_OR_ID.AG_GRAY
+        }
+      }
       return CLASS_OR_ID.AG_HIDE
     }
     return (
