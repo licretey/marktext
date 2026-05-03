@@ -40,7 +40,7 @@ export default function (keybindings) {
       }
     }, {
       id: 'cleanWriteMenuItem',
-      label: 'Clean Write Mode',
+      label: t('menu.view.cleanWriteMode'),
       type: 'checkbox',
       checked: false,
       click (item, focusedWindow) {

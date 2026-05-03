@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { ref, reactive, watch, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
 import log from 'electron-log'
 // import ViewImage from 'view-image'
 import Muya from 'muya/lib'
@@ -168,6 +168,9 @@ const {
   focus,
   sourceCode
 } = storeToRefs(preferencesStore)
+
+// cleanWrite — standalone computed (avoids storeToRefs edge cases)
+const cleanWrite = computed(() => preferencesStore.cleanWrite)
 
 // Editor store refs
 const { currentFile } = storeToRefs(editorStore)
@@ -446,6 +449,12 @@ watch(sourceCode, (value, oldValue) => {
     if (editor.value) {
       editor.value.hideAllFloatTools()
     }
+  }
+})
+
+watch(cleanWrite, (value, oldValue) => {
+  if (value !== oldValue && editor.value) {
+    editor.value.setOptions({ cleanWrite: value }, true)
   }
 })
 
@@ -983,7 +992,6 @@ onMounted(() => {
     markdown: props.markdown,
     preferLooseListItem: preferLooseListItem.value,
     autoPairBracket: autoPairBracket.value,
-    autoPairMarkdownSyntax: autoPairMarkdownSyntax.value,
     trimUnnecessaryCodeBlockEmptyLines: trimUnnecessaryCodeBlockEmptyLines.value,
     autoPairQuote: autoPairQuote.value,
     bulletListMarker: bulletListMarker.value,
@@ -1002,6 +1010,8 @@ onMounted(() => {
     hideLinkPopup: hideLinkPopup.value,
     autoCheck: autoCheck.value,
     sequenceTheme: sequenceTheme.value,
+    autoPairMarkdownSyntax: autoPairMarkdownSyntax.value,
+    cleanWrite: cleanWrite.value,
     spellcheckEnabled: spellcheckerEnabled.value,
     imageAction,
     imagePathPicker,
