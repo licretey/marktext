@@ -77,6 +77,9 @@ class Muya {
       eventCenter.dispatch('scroll', {
         scrollTop: container.scrollTop
       })
+      if (contentState.stateRender.virtualScroll) {
+        contentState.stateRender.virtualScroll.onScroll()
+      }
     }, 100)
 
     eventCenter.attachDOMEvent(container, 'focus', () => {
