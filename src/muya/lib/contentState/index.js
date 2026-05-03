@@ -256,6 +256,7 @@ class ContentState {
     this.stateRender.collectLabels(blocks)
     this.stateRender.render(blocks, activeBlocks, matches)
     if (isRenderCursor) {
+      this._ensureCursorBlockReal()
       this.setCursor()
     } else {
       this.muya.blur()
@@ -308,6 +309,7 @@ class ContentState {
     }
     this.stateRender.partialRender(blocksToRender, activeBlocks, matches, startKey, endKey)
     if (isRenderCursor) {
+      this._ensureCursorBlockReal()
       this.setCursor()
     } else {
       this.muya.blur()
@@ -937,6 +939,24 @@ class ContentState {
 
   clear() {
     this.history.clearHistory()
+  }
+
+  /**
+   * Ensure the cursor block is rendered as real DOM before cursor placement.
+   * If the block is a placeholder, force a single render on it.
+   */
+  _ensureCursorBlockReal() {
+    if (!this.cursor || !this.cursor.start) return
+    const { key } = this.cursor.start
+    const dom = document.getElementById(key)
+    if (!dom) return
+
+    // Check if cursor block is a placeholder
+    if (dom.hasAttribute('data-placeholder')) {
+      const block = this.getBlock(key)
+      if (!block) return
+      this.singleRender(block, false)
+    }
   }
 }
 
