@@ -10,7 +10,7 @@ const { configs: js } = eslintJs
 export default [
   // 0. Global ignores (must be standalone config object in flat config)
   {
-    ignores: ['node_modules/', 'out/', 'dist/', '.git/', '**/*.min.js']
+    ignores: ['node_modules/', 'out/', 'dist/', '.git/', '**/*.min.js', '.electron-vue/', 'scripts/', '.worktrees/', '.superpowers/', 'docs/']
   },
 
   // 1. ESLint core recommended rules
