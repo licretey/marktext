@@ -65,7 +65,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, watch, onMounted, onBeforeUnmount, nextTick, computed } from 'vue'
+import { ref, reactive, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
 import log from 'electron-log'
 // import ViewImage from 'view-image'
 import Muya from 'muya/lib'
@@ -166,11 +166,9 @@ const {
   // Edit modes
   typewriter,
   focus,
-  sourceCode
+  sourceCode,
+  cleanWrite
 } = storeToRefs(preferencesStore)
-
-// cleanWrite — standalone computed (avoids storeToRefs edge cases)
-const cleanWrite = computed(() => preferencesStore.cleanWrite)
 
 // Editor store refs
 const { currentFile } = storeToRefs(editorStore)

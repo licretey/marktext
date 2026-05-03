@@ -176,6 +176,14 @@ export const usePreferencesStore = defineStore('preferences', {
         this.TOGGLE_VIEW_MODE(entryName)
         this.DISPATCH_EDITOR_VIEW_STATE({ [entryName]: this[entryName] })
       })
+
+      // Sync initial view mode states so menu checkboxes match defaults (e.g. cleanWrite=true)
+      this.DISPATCH_EDITOR_VIEW_STATE({
+        sourceCode: this.sourceCode,
+        typewriter: this.typewriter,
+        focus: this.focus,
+        cleanWrite: this.cleanWrite
+      })
     },
 
     // Toggle a view option and notify main process to toggle menu item.
@@ -187,6 +195,9 @@ export const usePreferencesStore = defineStore('preferences', {
     },
 
     DISPATCH_EDITOR_VIEW_STATE(viewState) {
+      if (!global.marktext || !global.marktext.env || !global.marktext.env.windowId) {
+        return
+      }
       const { windowId } = global.marktext.env
       window.electron.ipcRenderer.send('mt::view-layout-changed', windowId, viewState)
     }
