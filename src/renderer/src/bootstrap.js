@@ -77,12 +77,18 @@ const handleRendererError = (event) => {
       stack
     }
 
+    // Log full stack trace to help debug startup errors in packaged builds
+    console.error('[Renderer Error]', name, message)
+    if (stack) {
+      console.error('[Renderer Error Stack]\n' + stack)
+    }
+
     exceptionLogger(event.error)
 
     // Pass exception to main process exception handler to show a error dialog.
     window.electron.ipcRenderer.send('mt::handle-renderer-error', copy)
   } else {
-    console.error(event)
+    console.error('[Renderer Error] Unknown error event:', event)
   }
 }
 

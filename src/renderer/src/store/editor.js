@@ -80,14 +80,19 @@ export const useEditorStore = defineStore('editor', {
       })
 
       this.updateTabIdToIndex()
-      window.DIRNAME = currentFile.pathname ? window.path.dirname(currentFile.pathname) : ''
+      if (currentFile) {
+        window.DIRNAME = currentFile.pathname ? window.path.dirname(currentFile.pathname) : ''
+      } else {
+        window.DIRNAME = ''
+      }
       this.UPDATE_LINE_ENDING_MENU()
 
       for (const warning of bufferedEditorState.restoreWarnings) {
+        if (!warning || (!warning.tabId && !warning.pathname)) continue
         const restoredTabId = warning.tabId ? oldIdToNewId[warning.tabId] : null
         const tab = restoredTabId
           ? this.tabs.find((t) => t.id === restoredTabId)
-          : this.tabs.find((t) => window.fileUtils.isSamePathSync(t.pathname, warning.pathname))
+          : (warning.pathname ? this.tabs.find((t) => window.fileUtils.isSamePathSync(t.pathname, warning.pathname)) : null)
 
         if (!tab) continue
 
