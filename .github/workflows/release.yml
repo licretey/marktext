@@ -80,6 +80,7 @@ jobs:
         run: npx electron-builder --mac --${{ matrix.arch }} --publish never
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Package Windows
         if: matrix.platform == 'windows'
