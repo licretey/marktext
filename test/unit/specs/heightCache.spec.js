@@ -67,6 +67,43 @@ describe('HeightCache', () => {
     expect(cache.get('b')).to.equal(20)
   })
 
+  it('invalidateRange removes entries between start and end key inclusive', () => {
+    cache.set('k0', 10)
+    cache.set('k1', 20)
+    cache.set('k2', 30)
+    cache.set('k3', 40)
+    cache.set('k4', 50)
+    cache.setOrder(['k0', 'k1', 'k2', 'k3', 'k4'])
+    cache.invalidateRange('k1', 'k3')
+    expect(cache.get('k0')).to.equal(10)
+    expect(cache.get('k1')).to.be.undefined
+    expect(cache.get('k2')).to.be.undefined
+    expect(cache.get('k3')).to.be.undefined
+    expect(cache.get('k4')).to.equal(50)
+    expect(cache.size).to.equal(2)
+  })
+
+  it('invalidateRange ignores when order not set', () => {
+    cache.set('a', 10)
+    cache.set('b', 20)
+    cache.set('c', 30)
+    cache.invalidateRange('a', 'c')
+    expect(cache.get('a')).to.equal(10)
+    expect(cache.get('b')).to.equal(20)
+    expect(cache.get('c')).to.equal(30)
+  })
+
+  it('invalidateRange with null endKey invalidates to end', () => {
+    cache.set('k0', 10)
+    cache.set('k1', 20)
+    cache.set('k2', 30)
+    cache.setOrder(['k0', 'k1', 'k2'])
+    cache.invalidateRange('k1', null)
+    expect(cache.get('k0')).to.equal(10)
+    expect(cache.get('k1')).to.be.undefined
+    expect(cache.get('k2')).to.be.undefined
+  })
+
   it('clear removes all entries', () => {
     cache.set('a', 10)
     cache.set('b', 20)

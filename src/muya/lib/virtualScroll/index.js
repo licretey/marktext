@@ -70,7 +70,7 @@ class VirtualScrollManager {
 
     for (const key of measureKeys) {
       const dom = document.getElementById(key)
-      if (dom) {
+      if (dom && !dom.hasAttribute('data-placeholder')) {
         const height = dom.getBoundingClientRect().height
         if (height > 0) {
           this.cache.set(key, height)
@@ -80,10 +80,8 @@ class VirtualScrollManager {
 
     log('_measureHeights: measured', measureKeys.size, 'blocks, cache size:', this.cache.size)
 
-    // After first measurement, initialize the rendered-keys tracker
-    if (!this._renderedKeys) {
-      this._renderedKeys = new Set(measureKeys)
-    }
+    // Keep rendered-keys tracker in sync with current visible+buffer set
+    this._renderedKeys = new Set(measureKeys)
   }
 
   /**
@@ -138,7 +136,7 @@ class VirtualScrollManager {
         if (!oldDom || oldDom.hasAttribute('data-placeholder')) continue
 
         const cachedHeight = this.cache.get(key)
-        const height = cachedHeight != null ? cachedHeight : 60
+        const height = cachedHeight != null && cachedHeight > 0 ? cachedHeight : 60
         const placeholderHtml = `<div id="${key}" data-placeholder="" data-block-key="${key}" class="${CLASS_OR_ID.AG_PARAGRAPH}" style="height:${height}px;overflow:hidden"></div>`
         oldDom.insertAdjacentHTML('beforebegin', placeholderHtml)
         oldDom.remove()
@@ -153,7 +151,7 @@ class VirtualScrollManager {
         const block = this.stateRender.muya.contentState.getBlock(key)
         if (!block) {
           oldDom.remove()
-          this._renderedKeys.add(key)
+          this._renderedKeys.delete(key)
           continue
         }
 

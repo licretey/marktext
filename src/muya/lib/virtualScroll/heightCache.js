@@ -35,6 +35,17 @@ class HeightCache {
     }
   }
 
+  invalidateRange(startKey, endKey) {
+    if (!this._order) return
+    const startIdx = this._order.indexOf(startKey)
+    if (startIdx === -1) return
+    const endIdx = endKey ? this._order.indexOf(endKey) : this._order.length - 1
+    const end = endIdx === -1 ? this._order.length - 1 : endIdx
+    for (let i = startIdx; i <= end && i < this._order.length; i++) {
+      this._cache.delete(this._order[i])
+    }
+  }
+
   clear() {
     this._cache.clear()
     this._order = null

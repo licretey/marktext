@@ -273,9 +273,9 @@ class ContentState {
     const [startKey, endKey] = this.renderRange
     // Invalidate height cache for the blocks being re-rendered
     if (this.stateRender.virtualScroll) {
+      this.stateRender.virtualScroll.cache.setOrder(blocks.map(b => b.key))
       if (startKey) {
-        this.stateRender.virtualScroll.cache.invalidate(startKey)
-        this.stateRender.virtualScroll.cache.invalidateAfter(startKey)
+        this.stateRender.virtualScroll.cache.invalidateRange(startKey, endKey)
       }
     }
     matches.forEach((m, i) => {
