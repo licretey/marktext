@@ -73,7 +73,7 @@ export const useEditorStore = defineStore('editor', {
       layoutStore.RESTORE_BUFFERED_STATE(state?.layout)
       this.$patch((state) => {
         state.tabs = tabs
-        state.currentFile = currentFile
+        state.currentFile = currentFile || {}
         state.tabIdToIndex = {}
         state.listToc = []
         state.toc = []
@@ -341,7 +341,7 @@ export const useEditorStore = defineStore('editor', {
 
     // We need to update line endings menu when changing tabs.
     UPDATE_LINE_ENDING_MENU() {
-      const { lineEnding } = this.currentFile
+      const { lineEnding } = this.currentFile || {}
       if (lineEnding) {
         const { windowId } = global.marktext.env
         window.electron.ipcRenderer.send('mt::update-line-ending-menu', windowId, lineEnding)
