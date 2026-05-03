@@ -88,7 +88,7 @@ class Muya {
     eventCenter.attachDOMEvent(container, 'blur', () => {
       eventCenter.dispatch('blur')
     })
-    eventCenter.attachDOMEvent(container, 'scroll', handleScroll)
+    eventCenter.attachDOMEvent(container, 'scroll', handleScroll, false, { passive: true })
   }
 
   mutationObserver() {

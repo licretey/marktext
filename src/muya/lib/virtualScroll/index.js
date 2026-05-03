@@ -85,8 +85,9 @@ class VirtualScrollManager {
   }
 
   /**
-   * Called on scroll. Swaps individual blocks between placeholder and real DOM
+   * Called on scroll. Swaps blocks between placeholder and real DOM
    * as they enter or exit the visible+buffer zone. Throttled via rAF.
+   * Uses batch DOM replacement to avoid per-block layout thrashing.
    */
   onScroll() {
     if (this._scrollPending) return
@@ -130,36 +131,60 @@ class VirtualScrollManager {
       const matches = this.stateRender.muya.contentState.searchMatches.matches
       const t = this.stateRender.muya.options.t || ((key) => key)
 
-      // Collapse: real DOM -> placeholder
-      for (const key of toCollapse) {
-        const oldDom = document.getElementById(key)
-        if (!oldDom || oldDom.hasAttribute('data-placeholder')) continue
-
-        const cachedHeight = this.cache.get(key)
-        const height = cachedHeight != null && cachedHeight > 0 ? cachedHeight : 60
-        const placeholderHtml = `<div id="${key}" data-placeholder="" data-block-key="${key}" class="${CLASS_OR_ID.AG_PARAGRAPH}" style="height:${height}px;overflow:hidden"></div>`
-        oldDom.insertAdjacentHTML('beforebegin', placeholderHtml)
-        oldDom.remove()
-        this._renderedKeys.delete(key)
+      // Batch collapse: real DOM -> placeholder (single DOM insert + single remove pass)
+      if (toCollapse.length > 0) {
+        let collapseHtml = ''
+        const collapseKeys = []
+        for (const key of toCollapse) {
+          const oldDom = document.getElementById(key)
+          if (!oldDom || oldDom.hasAttribute('data-placeholder')) continue
+          const cachedHeight = this.cache.get(key)
+          const height = cachedHeight != null && cachedHeight > 0 ? cachedHeight : 60
+          collapseHtml += `<div id="${key}" data-placeholder="" data-block-key="${key}" class="${CLASS_OR_ID.AG_PARAGRAPH}" style="height:${height}px;overflow:hidden;contain:strict"></div>`
+          collapseKeys.push(key)
+        }
+        if (collapseKeys.length > 0) {
+          const anchor = document.getElementById(collapseKeys[0])
+          if (anchor) {
+            anchor.insertAdjacentHTML('beforebegin', collapseHtml)
+            for (const key of collapseKeys) {
+              const oldDom = document.getElementById(key)
+              if (oldDom && !oldDom.hasAttribute('data-placeholder')) oldDom.remove()
+              this._renderedKeys.delete(key)
+            }
+          }
+        }
       }
 
-      // Render: placeholder -> real DOM
-      for (const key of toRender) {
-        const oldDom = document.getElementById(key)
-        if (!oldDom) continue
-
-        const block = this.stateRender.muya.contentState.getBlock(key)
-        if (!block) {
-          oldDom.remove()
-          this._renderedKeys.delete(key)
-          continue
+      // Batch render: placeholder -> real DOM
+      if (toRender.length > 0) {
+        let renderHtml = ''
+        const renderKeys = []
+        for (const key of toRender) {
+          const oldDom = document.getElementById(key)
+          if (!oldDom) continue
+          const block = this.stateRender.muya.contentState.getBlock(key)
+          if (!block) {
+            oldDom.remove()
+            this._renderedKeys.delete(key)
+            continue
+          }
+          const newVnode = this.stateRender.renderBlock(null, block, activeBlocks, matches, false, t)
+          renderHtml += toHTML(newVnode)
+          renderKeys.push(key)
         }
-
-        const newVnode = this.stateRender.renderBlock(null, block, activeBlocks, matches, false, t)
-        const html = toHTML(newVnode)
-        oldDom.insertAdjacentHTML('beforebegin', html)
-        oldDom.remove()
-        this._renderedKeys.add(key)
+        if (renderKeys.length > 0) {
+          const anchor = document.getElementById(renderKeys[0])
+          if (anchor) {
+            anchor.insertAdjacentHTML('beforebegin', renderHtml)
+            for (const key of renderKeys) {
+              const oldDom = document.getElementById(key)
+              if (oldDom && oldDom.hasAttribute('data-placeholder')) oldDom.remove()
+              else if (oldDom) oldDom.remove()
+              this._renderedKeys.add(key)
+            }
+          }
+        }
       }
 
       // Measure new real blocks

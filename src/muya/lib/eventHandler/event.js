@@ -10,16 +10,17 @@ class EventCenter {
    * [attachDOMEvent] bind event listener to target, and return a unique ID,
    * this ID
    */
-  attachDOMEvent (target, event, listener, capture) {
+  attachDOMEvent (target, event, listener, capture, options) {
     if (this.checkHasBind(target, event, listener, capture)) return false
     const eventId = getUniqueId()
-    target.addEventListener(event, listener, capture)
+    target.addEventListener(event, listener, options || capture)
     this.events.push({
       eventId,
       target,
       event,
       listener,
-      capture
+      capture,
+      options
     })
     return eventId
   }
@@ -32,8 +33,8 @@ class EventCenter {
     if (!eventId) return false
     const index = this.events.findIndex(e => e.eventId === eventId)
     if (index > -1) {
-      const { target, event, listener, capture } = this.events[index]
-      target.removeEventListener(event, listener, capture)
+      const { target, event, listener, capture, options } = this.events[index]
+      target.removeEventListener(event, listener, options || capture)
       this.events.splice(index, 1)
     }
   }
@@ -99,9 +100,10 @@ class EventCenter {
   }
 
   // Determine whether the event has been bind
-  checkHasBind (cTarget, cEvent, cListener, cCapture) {
-    for (const { target, event, listener, capture } of this.events) {
-      if (target === cTarget && event === cEvent && listener === cListener && capture === cCapture) {
+  checkHasBind (cTarget, cEvent, cListener, cCapture, cOptions) {
+    for (const { target, event, listener, capture, options } of this.events) {
+      if (target === cTarget && event === cEvent && listener === cListener &&
+          (cOptions ? options === cOptions : capture === cCapture)) {
         return true
       }
     }
