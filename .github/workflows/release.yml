@@ -70,7 +70,7 @@ jobs:
         run: npm run build
 
       - name: Remove Electron mirror for packaging
-        run: grep -v 'electron_mirror' .npmrc > .npmrc.tmp && mv .npmrc.tmp .npmrc
+        run: node -e "const fs=require('fs');const c=fs.readFileSync('.npmrc','utf8').split('\n').filter(l=>!l.includes('electron_mirror')).join('\n');fs.writeFileSync('.npmrc',c)"
 
       - name: Package Linux
         if: matrix.platform == 'linux'
