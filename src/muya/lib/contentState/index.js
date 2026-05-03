@@ -270,6 +270,13 @@ class ContentState {
     } = this
     const activeBlocks = this.getActiveBlocks()
     const [startKey, endKey] = this.renderRange
+    // Invalidate height cache for the blocks being re-rendered
+    if (this.stateRender.virtualScroll) {
+      if (startKey) {
+        this.stateRender.virtualScroll.cache.invalidate(startKey)
+        this.stateRender.virtualScroll.cache.invalidateAfter(startKey)
+      }
+    }
     matches.forEach((m, i) => {
       m.active = i === index
     })
