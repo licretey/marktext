@@ -73,14 +73,14 @@ class Muya {
     this.setFocusMode(focusMode)
     this.mutationObserver()
 
-    const handleScroll = debounce(() => {
+    const handleScroll = () => {
       eventCenter.dispatch('scroll', {
         scrollTop: container.scrollTop
       })
       if (contentState.stateRender.virtualScroll) {
         contentState.stateRender.virtualScroll.onScroll()
       }
-    }, 100)
+    }
 
     eventCenter.attachDOMEvent(container, 'focus', () => {
       eventCenter.dispatch('focus')

@@ -1,4 +1,4 @@
-const BUFFER_RATIO = 1.0
+const BUFFER_RATIO = 2.0
 
 class ViewportDetector {
   computeVisible(container, cache, allBlockKeys, cursorKey) {
