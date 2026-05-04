@@ -52,6 +52,10 @@ electronLanguages: # Avoid packaging all chromium locales since our app has in-b
 
 asarUnpack:
   - resources/**
+  - node_modules/@vscode/ripgrep/bin/**
+  - node_modules/ced/build/**
+  - node_modules/keytar/build/**
+  - node_modules/native-keymap/build/**
 fileAssociations:
   - ext: md
     name: Markdown
