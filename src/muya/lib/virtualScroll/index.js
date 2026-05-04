@@ -71,6 +71,7 @@ class VirtualScrollManager {
 
     const blocks = this.stateRender.muya.contentState.blocks
     const allKeys = blocks.map(b => b.key)
+    this.cache.setOrder(allKeys)
     const { visibleKeys, bufferKeys } = this.detector.computeVisible(
       container, this.cache, allKeys, null
     )
@@ -168,7 +169,8 @@ class VirtualScrollManager {
       // that the batch insertAdjacentHTML approach had)
       for (const key of toCollapse) {
         const oldDom = document.getElementById(key)
-        if (!oldDom || oldDom.hasAttribute('data-placeholder')) continue
+        if (!oldDom) { this._renderedKeys.delete(key); continue }
+        if (oldDom.hasAttribute('data-placeholder')) { this._renderedKeys.delete(key); continue }
         const cachedHeight = this.cache.get(key)
         const height = cachedHeight != null && cachedHeight > 0 ? cachedHeight : 60
         oldDom.outerHTML = `<div id="${key}" data-placeholder="" data-block-key="${key}" class="${CLASS_OR_ID.AG_PARAGRAPH}" style="height:${height}px;overflow:hidden;contain:strict"></div>`
