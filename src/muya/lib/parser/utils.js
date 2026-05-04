@@ -39,6 +39,19 @@ export const WHITELIST_ATTRIBUTES = Object.freeze([
 
 const UNICODE_WHITESPACE_REG = /^\s/
 
+// CJK character ranges where punctuation runs without whitespace.
+// Fullwidth punctuation like U+FF1A (：) followed by CJK text characters
+// is a normal pattern — e.g. **关键设计特点：**的 — and should not
+// block emphasis close, unlike Latin punctuation followed by Latin text.
+// Key CJK character ranges (Unified Ideographs, Hiragana, Katakana, Hangul).
+// Used to allow emphasis close after CJK punctuation — in CJK writing there
+// is no whitespace between punctuation and the next character, so patterns
+// like **text：**more should work (unlike Latin where punctuation signals
+// a boundary that should block emphasis close).
+const CJK_CHAR_REG = /[一-鿿㐀-䶿぀-ゟ゠-ヿ가-힯豈-﫿ｦ-ﾟ]/
+
+
+
 const validWidthAndHeight = value => {
   if (!/^\d{1,}$/.test(value)) return ''
   value = parseInt(value)
@@ -142,7 +155,9 @@ const canCloseEmphasis = (src, offset, marker) => {
   }
   // either (2a) not preceded by a punctuation character,
   // or (2b) preceded by a punctuation character and followed by Unicode whitespace or a punctuation character.
-  if (PUNCTUATION_REG.test(precededChar) && !(UNICODE_WHITESPACE_REG.test(followedChar) || PUNCTUATION_REG.test(followedChar))) {
+  // CJK exception: fullwidth punctuation like U+FF1A (：) is commonly followed
+  // by CJK text without whitespace — e.g. **text：**more is valid bold.
+  if (PUNCTUATION_REG.test(precededChar) && !(UNICODE_WHITESPACE_REG.test(followedChar) || PUNCTUATION_REG.test(followedChar) || CJK_CHAR_REG.test(followedChar))) {
     return false
   }
   if (/_/.test(marker) && !(UNICODE_WHITESPACE_REG.test(followedChar) || PUNCTUATION_REG.test(followedChar))) {
