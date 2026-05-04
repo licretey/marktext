@@ -46,6 +46,8 @@ extraResources:
     filter:
       - '**/*'
       - '!locales/**/!(*.min).json'
+  - from: node_modules/@vscode/ripgrep/bin/rg
+    to: ripgrep/rg
 npmRebuild: false
 electronLanguages: # Avoid packaging all chromium locales since our app has in-built locales
   - en-US

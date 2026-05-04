@@ -1,7 +1,23 @@
 import EnvPaths from 'common/envPaths'
 
-// // "vscode-ripgrep" is unpacked out of asar because of the binary.
-const rgDiskPath = window.rgPath.replace(/\bapp\.asar\b/, 'app.asar.unpacked')
+// In packaged builds the ripgrep binary is copied to resources/ripgrep/rg via
+// electron-builder extraResources so it is accessible outside the asar archive.
+// asarUnpack extraction is unreliable across platforms and packaging formats.
+const resolveRgPath = () => {
+  if (process.env.MARKTEXT_RIPGREP_PATH) {
+    return process.env.MARKTEXT_RIPGREP_PATH
+  }
+
+  // When running from an asar the path contains 'app.asar' — use the
+  // extraResources copy that lives outside the archive.
+  if (window.rgPath.includes('app.asar')) {
+    return window.path.join(process.resourcesPath, 'ripgrep', 'rg')
+  }
+
+  return window.rgPath
+}
+
+const rgDiskPath = resolveRgPath()
 
 class RendererPaths extends EnvPaths {
   /**
