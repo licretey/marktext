@@ -20,8 +20,10 @@ class VirtualScrollManager {
     this.detector = new ViewportDetector()
     this._measurePending = false
     this._scrollPending = false
-    // Track which keys currently have real DOM (visible + buffer). null = first render not done yet
-    this._renderedKeys = null
+    // Track which keys currently have real DOM (visible + buffer).
+    // Populated by first _measureHeights, then managed exclusively by onScroll.
+    this._renderedKeys = new Set()
+    this._initialized = false
   }
 
   /**
@@ -60,34 +62,65 @@ class VirtualScrollManager {
   /**
    * Measure all currently visible real-DOM blocks and update cache.
    * Only measures blocks that are in the visible or buffer sets (real DOM).
+   * On first call, initializes _renderedKeys from current visible+buffer set.
+   * After initialization, never modifies _renderedKeys — onScroll owns it.
    */
   _measureHeights() {
     const container = this.stateRender.muya.container
     if (!container) return
 
-    const { visibleKeys, bufferKeys } = this.getVisibleRange()
+    const blocks = this.stateRender.muya.contentState.blocks
+    const allKeys = blocks.map(b => b.key)
+    const { visibleKeys, bufferKeys } = this.detector.computeVisible(
+      container, this.cache, allKeys, null
+    )
     const measureKeys = new Set([...visibleKeys, ...bufferKeys])
 
-    for (const key of measureKeys) {
+    // Collect entries in document order (allKeys order), not Set insertion order.
+    const entries = []
+    for (const key of allKeys) {
+      if (!measureKeys.has(key)) continue
       const dom = document.getElementById(key)
       if (dom && !dom.hasAttribute('data-placeholder')) {
-        const height = dom.getBoundingClientRect().height
-        if (height > 0) {
-          this.cache.set(key, height)
-        }
+        entries.push({ key, dom })
       }
     }
 
-    log('_measureHeights: measured', measureKeys.size, 'blocks, cache size:', this.cache.size)
+    // Measure effective vertical space using position difference between
+    // consecutive DOM siblings. This naturally accounts for margins, padding,
+    // borders, and margin collapsing — all of which getBoundingClientRect
+    // alone would miss.
+    for (let i = 0; i < entries.length; i++) {
+      const { key, dom } = entries[i]
+      let height = 0
+      if (i < entries.length - 1) {
+        height = entries[i + 1].dom.getBoundingClientRect().top - dom.getBoundingClientRect().top
+      }
+      if (height <= 0) {
+        height = dom.getBoundingClientRect().height
+      }
+      if (height > 0) {
+        this.cache.set(key, height)
+      }
+    }
 
-    // Keep rendered-keys tracker in sync with current visible+buffer set
-    this._renderedKeys = new Set(measureKeys)
+    log('_measureHeights: measured', entries.length, 'blocks, cache size:', this.cache.size)
+
+    // On first call, seed _renderedKeys from the current real-DOM set.
+    // After that, onScroll manages _renderedKeys exclusively — overwriting
+    // it here would desync from the actual DOM state and cause blank blocks.
+    if (!this._initialized) {
+      this._renderedKeys = new Set(measureKeys)
+      this._initialized = true
+      log('_measureHeights: initialized _renderedKeys with', this._renderedKeys.size, 'keys')
+    }
   }
 
   /**
-   * Called on scroll. Swaps blocks between placeholder and real DOM
-   * as they enter or exit the visible+buffer zone. Throttled via rAF.
-   * Uses batch DOM replacement to avoid per-block layout thrashing.
+   * Called on scroll. Ensures visible+buffer blocks have real DOM and
+   * blocks outside have placeholders. Each block swap uses outerHTML
+   * (single DOM operation per block, no layout thrashing).
+   * Throttled via rAF.
    */
   onScroll() {
     if (this._scrollPending) return
@@ -95,7 +128,7 @@ class VirtualScrollManager {
     requestAnimationFrame(() => {
       this._scrollPending = false
 
-      if (!this._renderedKeys) return // not yet initialized
+      if (!this._initialized) return
 
       const container = this.stateRender.muya.container
       if (!container) return
@@ -109,85 +142,49 @@ class VirtualScrollManager {
       const { visibleKeys, bufferKeys } =
         this.detector.computeVisible(container, this.cache, allKeys, cursorKey)
 
-      const newRenderKeys = new Set([...visibleKeys, ...bufferKeys])
+      const renderSet = new Set([...visibleKeys, ...bufferKeys])
 
-      // Keys now visible that were not before: placeholder -> real
-      const toRender = []
-      // Keys that were visible but are not now: real -> placeholder
+      // 1. Collapse blocks leaving the render zone: real DOM → placeholder
       const toCollapse = []
-
-      for (const key of newRenderKeys) {
-        if (!this._renderedKeys.has(key)) toRender.push(key)
-      }
       for (const key of this._renderedKeys) {
-        if (!newRenderKeys.has(key)) toCollapse.push(key)
+        if (!renderSet.has(key)) toCollapse.push(key)
+      }
+
+      // 2. Render blocks entering the render zone: placeholder → real DOM
+      const toRender = []
+      for (const key of renderSet) {
+        if (!this._renderedKeys.has(key)) toRender.push(key)
       }
 
       if (toRender.length === 0 && toCollapse.length === 0) return
 
-      log('onScroll: toRender=' + toRender.length, 'toCollapse=' + toCollapse.length)
+      log('onScroll: render=' + toRender.length, 'collapse=' + toCollapse.length)
 
       const activeBlocks = this.stateRender.muya.contentState.getActiveBlocks()
       const matches = this.stateRender.muya.contentState.searchMatches.matches
       const t = this.stateRender.muya.options.t || ((key) => key)
 
-      // Batch collapse: real DOM -> placeholder (single DOM insert + single remove pass)
-      if (toCollapse.length > 0) {
-        let collapseHtml = ''
-        const collapseKeys = []
-        for (const key of toCollapse) {
-          const oldDom = document.getElementById(key)
-          if (!oldDom || oldDom.hasAttribute('data-placeholder')) continue
-          const cachedHeight = this.cache.get(key)
-          const height = cachedHeight != null && cachedHeight > 0 ? cachedHeight : 60
-          collapseHtml += `<div id="${key}" data-placeholder="" data-block-key="${key}" class="${CLASS_OR_ID.AG_PARAGRAPH}" style="height:${height}px;overflow:hidden;contain:strict"></div>`
-          collapseKeys.push(key)
-        }
-        if (collapseKeys.length > 0) {
-          const anchor = document.getElementById(collapseKeys[0])
-          if (anchor) {
-            anchor.insertAdjacentHTML('beforebegin', collapseHtml)
-            for (const key of collapseKeys) {
-              const oldDom = document.getElementById(key)
-              if (oldDom && !oldDom.hasAttribute('data-placeholder')) oldDom.remove()
-              this._renderedKeys.delete(key)
-            }
-          }
-        }
+      // Collapse: per-block outerHTML swap (avoids duplicate-ID issues
+      // that the batch insertAdjacentHTML approach had)
+      for (const key of toCollapse) {
+        const oldDom = document.getElementById(key)
+        if (!oldDom || oldDom.hasAttribute('data-placeholder')) continue
+        const cachedHeight = this.cache.get(key)
+        const height = cachedHeight != null && cachedHeight > 0 ? cachedHeight : 60
+        oldDom.outerHTML = `<div id="${key}" data-placeholder="" data-block-key="${key}" class="${CLASS_OR_ID.AG_PARAGRAPH}" style="height:${height}px;overflow:hidden;contain:strict"></div>`
+        this._renderedKeys.delete(key)
       }
 
-      // Batch render: placeholder -> real DOM
-      if (toRender.length > 0) {
-        let renderHtml = ''
-        const renderKeys = []
-        for (const key of toRender) {
-          const oldDom = document.getElementById(key)
-          if (!oldDom) continue
-          const block = this.stateRender.muya.contentState.getBlock(key)
-          if (!block) {
-            oldDom.remove()
-            this._renderedKeys.delete(key)
-            continue
-          }
-          const newVnode = this.stateRender.renderBlock(null, block, activeBlocks, matches, false, t)
-          renderHtml += toHTML(newVnode)
-          renderKeys.push(key)
-        }
-        if (renderKeys.length > 0) {
-          const anchor = document.getElementById(renderKeys[0])
-          if (anchor) {
-            anchor.insertAdjacentHTML('beforebegin', renderHtml)
-            for (const key of renderKeys) {
-              const oldDom = document.getElementById(key)
-              if (oldDom && oldDom.hasAttribute('data-placeholder')) oldDom.remove()
-              else if (oldDom) oldDom.remove()
-              this._renderedKeys.add(key)
-            }
-          }
-        }
+      // Render: per-block outerHTML swap
+      for (const key of toRender) {
+        const oldDom = document.getElementById(key)
+        if (!oldDom) continue
+        const block = this.stateRender.muya.contentState.getBlock(key)
+        if (!block) { oldDom.remove(); this._renderedKeys.delete(key); continue }
+        oldDom.outerHTML = toHTML(this.stateRender.renderBlock(null, block, activeBlocks, matches, false, t))
+        this._renderedKeys.add(key)
       }
 
-      // Measure new real blocks
       this.afterRender()
     })
   }
