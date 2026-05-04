@@ -97,6 +97,14 @@ const arrowCtrl = (ContentState) => {
   ContentState.prototype.arrowHandler = function (event) {
     const node = selection.getSelectionStart()
     const paragraph = findNearestParagraph(node)
+    if (!paragraph) {
+      // DOM cursor lost (e.g. block collapsed to placeholder by virtual scroll).
+      // Restore from logical cursor state so the next arrow key works.
+      if (!this.cursor || !this.cursor.start) return
+      this._ensureCursorBlockReal()
+      this.setCursor()
+      return
+    }
     const id = paragraph.id
     const block = this.getBlock(id)
     const preBlock = this.findPreBlockInLocation(block)
