@@ -254,7 +254,11 @@ class ContentState {
     })
     this.setNextRenderRange()
     this.stateRender.collectLabels(blocks)
+    // Preserve scroll position across full render — patch() may cause
+    // the browser to reset scrollTop when content height changes.
+    const scrollTop = this.muya.container.scrollTop
     this.stateRender.render(blocks, activeBlocks, matches)
+    this.muya.container.scrollTop = scrollTop
     if (isRenderCursor) {
       this._ensureCursorBlockReal()
       this.setCursor()
