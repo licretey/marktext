@@ -434,7 +434,6 @@ watch(spellcheckerLanguage, (value, oldValue) => {
 
 watch(currentFile, (value, oldValue) => {
   if (value && value !== oldValue) {
-    scrollToCursor(0)
     // Hide float tools if needed.
     if (editor.value) {
       editor.value.hideAllFloatTools()
@@ -924,7 +923,12 @@ const handleFileChange = ({
     } else {
       container.style.visibility = 'visible'
       container.style.pointerEvents = 'auto'
-      scrollToCursor(0)
+      // Only scroll to cursor when explicitly requested (e.g., from source
+      // code mode switch), not on every debounced state sync that happens
+      // to have an undefined scrollTop.
+      if (renderCursor) {
+        scrollToCursor(0)
+      }
     }
   }
 }

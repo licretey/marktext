@@ -118,6 +118,26 @@ class VirtualScrollManager {
   }
 
   /**
+   * Re-seed _renderedKeys after a full render rebuilds all DOM.
+   * Call after ContentState.render() so that onScroll doesn't
+   * compare against stale keys from before the full render.
+   */
+  reinitializeRenderedKeys() {
+    const container = this.stateRender.muya.container
+    if (!container) return
+
+    const blocks = this.stateRender.muya.contentState.blocks
+    const allKeys = blocks.map(b => b.key)
+    this.cache.setOrder(allKeys)
+    const { visibleKeys, bufferKeys } = this.detector.computeVisible(
+      container, this.cache, allKeys, null
+    )
+    this._renderedKeys = new Set([...visibleKeys, ...bufferKeys])
+    this._initialized = true
+    log('reinitializeRenderedKeys: re-seeded with', this._renderedKeys.size, 'keys')
+  }
+
+  /**
    * Called on scroll. Ensures visible+buffer blocks have real DOM and
    * blocks outside have placeholders. Each block swap uses outerHTML
    * (single DOM operation per block, no layout thrashing).

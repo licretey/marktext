@@ -74,9 +74,14 @@ class Muya {
     this.mutationObserver()
 
     const handleScroll = () => {
-      eventCenter.dispatch('scroll', {
-        scrollTop: container.scrollTop
-      })
+      // Suppress scroll event dispatch during full render — patch() may
+      // temporarily drop scrollTop to 0, which would corrupt the saved
+      // scroll position in the editor store.
+      if (!contentState._isFullRendering) {
+        eventCenter.dispatch('scroll', {
+          scrollTop: container.scrollTop
+        })
+      }
       if (contentState.stateRender.virtualScroll) {
         contentState.stateRender.virtualScroll.onScroll()
       }

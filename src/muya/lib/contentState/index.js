@@ -254,11 +254,18 @@ class ContentState {
     })
     this.setNextRenderRange()
     this.stateRender.collectLabels(blocks)
-    // Preserve scroll position across full render — patch() may cause
-    // the browser to reset scrollTop when content height changes.
+    // Suppress scroll events during full render — patch() may cause
+    // the browser to fire scroll events with scrollTop=0 which would
+    // corrupt the editor store's saved scroll position.
+    this._isFullRendering = true
     const scrollTop = this.muya.container.scrollTop
     this.stateRender.render(blocks, activeBlocks, matches)
     this.muya.container.scrollTop = scrollTop
+    this._isFullRendering = false
+    // Full render rebuilds all DOM — re-seed virtual scroll's key tracking
+    if (this.stateRender.virtualScroll) {
+      this.stateRender.virtualScroll.reinitializeRenderedKeys()
+    }
     if (isRenderCursor) {
       this._ensureCursorBlockReal()
       this.setCursor()
