@@ -84,7 +84,7 @@
         >
           <span>{{ t('sideBar.tree.emptyProject') }}</span>
           <div class="centered-group">
-            <button class="button-primary" @click="createFile">
+            <button class="button-primary create-file-btn" @click="createFile">
               {{ t('sideBar.tree.createFile') }}
             </button>
           </div>
@@ -179,7 +179,7 @@ onMounted(() => {
   // hide rename or create input if needed
   document.addEventListener('click', (event) => {
     const target = event.target
-    if (target.tagName !== 'INPUT' && target.textContent !== 'Create File') {
+    if (target.tagName !== 'INPUT' && !target.closest('.create-file-btn')) {
       projectStore.CHANGE_ACTIVE_ITEM({})
       projectStore.createCache = {}
       projectStore.renameCache = null

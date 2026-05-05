@@ -155,6 +155,7 @@ class StateRender {
     this.renderingRowContainer = null
     this.container = null
     this.virtualScroll = null // initialized after container is set
+    this._mermaidRendered = new Map() // key → code, skip re-render when unchanged
   }
 
   setContainer(container) {
@@ -293,14 +294,19 @@ class StateRender {
         // Wait longer for DOM to be fully ready
         await new Promise(resolve => setTimeout(resolve, 200))
 
-        // Prepare all diagrams first
-        const targets = []
+        // Prepare all diagrams, skipping already-rendered ones whose SVG
+        // is still intact. After a virtual-scroll placeholder→real transition
+        // the DOM is reset to "Loading..." and must be re-rendered even when
+        // the code is unchanged — so we check for an existing <svg> child.
         for (const [key, value] of this.mermaidCache.entries()) {
           const { code } = value
+
           const target = document.querySelector(key)
-          if (!target) {
-            continue
-          }
+          if (!target) continue
+
+          // Cached code matches AND the DOM still has a rendered SVG →
+          // skip to avoid flicker on cursor-move partialRenders.
+          if (this._mermaidRendered.get(key) === code && target.querySelector('svg')) continue
 
           try {
             target.removeAttribute('data-processed')
@@ -310,10 +316,12 @@ class StateRender {
             } else {
               mermaid.init(undefined, target)
             }
+            this._mermaidRendered.set(key, code)
           } catch (err) {
             console.error('Mermaid parse error for:', code.substring(0, 50), err)
             target.innerHTML = '< Invalid Mermaid Codes >'
             target.classList.add(CLASS_OR_ID.AG_MATH_ERROR)
+            this._mermaidRendered.delete(key)
           }
         }
         this.mermaidCache.clear()
@@ -452,9 +460,28 @@ class StateRender {
     }
     nextSibling && needToRemoved.push(nextSibling)
 
+    // Preserve rendered mermaid SVG content before DOM destruction.
+    // The snabbdom toHTML serialization breaks SVG text elements, so we
+    // save the innerHTML (browser's native serializer, SVG-safe) and
+    // restore it into the recreated DOM element after HTML insertion.
+    const mermaidSaves = []
+    for (const dom of needToRemoved) {
+      if (dom.querySelector('svg') && dom.classList.contains(CLASS_OR_ID.AG_CONTAINER_PREVIEW)) {
+        mermaidSaves.push({ id: dom.id, html: dom.innerHTML })
+      }
+    }
+
     firstOldDom.insertAdjacentHTML('beforebegin', html)
 
     Array.from(needToRemoved).forEach((dom) => dom.remove())
+
+    // Restore mermaid SVG into the new DOM elements (now that old ones are removed)
+    for (const { id, html } of mermaidSaves) {
+      const newDom = document.getElementById(id)
+      if (newDom) {
+        newDom.innerHTML = html
+      }
+    }
 
     // Render cursor block independently
     if (needRenderCursorBlock) {

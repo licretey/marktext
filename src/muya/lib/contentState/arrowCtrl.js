@@ -17,6 +17,15 @@ const adjustOffset = (offset, block, event) => {
   return offset
 }
 
+// Scroll the viewport so the cursor block is visible. Call after
+// arrow-key navigation since we preventDefault the native scroll.
+const scrollToCursor = (contentState) => {
+  if (!contentState.cursor || !contentState.cursor.start) return
+  const { key } = contentState.cursor.start
+  const dom = document.getElementById(key)
+  if (dom) dom.scrollIntoView({ block: 'nearest', behavior: 'instant' })
+}
+
 const arrowCtrl = (ContentState) => {
   ContentState.prototype.findNextRowCell = function (cell) {
     if (cell.functionType !== 'cellContent') {
@@ -194,7 +203,9 @@ const arrowCtrl = (ContentState) => {
           isEdit: false
         }
 
-        return this.partialRender()
+        this.partialRender()
+        scrollToCursor(this)
+        return
       }
     }
 
@@ -213,7 +224,9 @@ const arrowCtrl = (ContentState) => {
         isEdit: false
       }
 
-      return this.partialRender()
+      this.partialRender()
+      scrollToCursor(this)
+      return
     } else if (
       event.key === EVENT_KEYS.ArrowDown ||
       (event.key === EVENT_KEYS.ArrowRight && start.offset === block.text.length)
@@ -237,7 +250,9 @@ const arrowCtrl = (ContentState) => {
         isEdit: !!newBlock // If a new block was created, it is an edit
       }
 
-      return this.partialRender()
+      this.partialRender()
+      scrollToCursor(this)
+      return
     }
   }
 }

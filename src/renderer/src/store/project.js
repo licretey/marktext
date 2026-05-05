@@ -199,7 +199,8 @@ export const useProjectStore = defineStore('project', {
         if (clipboard && clipboard.src) {
           clipboard.dest = dirname + PATH_SEPARATOR + window.path.basename(clipboard.src)
 
-          if (window.path.normalize(clipboard.src) === window.path.normalize(clipboard.dest)) {
+          if (window.path.normalize(clipboard.src) === window.path.normalize(clipboard.dest) ||
+              window.fileUtils.isChildOfDirectory(clipboard.src, clipboard.dest)) {
             notice.notify({
               title: 'Paste Forbidden',
               type: 'warning',

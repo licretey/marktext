@@ -4,7 +4,7 @@ import 'katex/dist/contrib/mhchem.min.js'
 import { CLASS_OR_ID, DEVICE_MEMORY, PREVIEW_DOMPURIFY_CONFIG, HAS_TEXT_BLOCK_REG } from '../../../config'
 import { tokenizer } from '../../'
 import { snakeToCamel, sanitize, escapeHTML, getLongUniqueId, getImageInfo } from '../../../utils'
-import { h, htmlToVNode } from '../snabbdom'
+import { h, htmlToVNode, toVNode } from '../snabbdom'
 
 // todo@jocs any better solutions?
 const MARKER_HASK = {
@@ -181,15 +181,32 @@ export default function renderLeafBlock (parent, block, activeBlocks, matches, u
       case 'mermaid': {
         selector += `.${CLASS_OR_ID.AG_CONTAINER_PREVIEW}`
         Object.assign(data.attrs, { spellcheck: 'false' })
+        const mermaidKey = `#${block.key}`
         if (code === '') {
           children = t('editor.emptyMermaidBlock')
           selector += `.${CLASS_OR_ID.AG_EMPTY}`
+          this._mermaidRendered.delete(mermaidKey)
+        } else if (this._mermaidRendered.get(mermaidKey) === code) {
+          if (useCache) {
+            // Full/single render via patch(): VNodes are diffed in-memory,
+            // DOM is preserved. Safe to capture SVG directly from DOM.
+            const existingDom = document.querySelector(mermaidKey)
+            if (existingDom) {
+              children = toVNode(existingDom).children
+            }
+          }
+          // For partial render (!useCache): partialRender() saves the
+          // existing SVG innerHTML before DOM destruction and restores it
+          // into the new element after insertAdjacentHTML, so the VNode
+          // carries no SVG children.
+          // Always add to cache so renderMermaid can fall back to re-render
+          // if the SVG wasn't in the old DOM (e.g., after placeholder swap).
+          this.mermaidCache.set(mermaidKey, { code, functionType })
         } else {
+          // New/changed code or codeCache not yet populated — show
+          // loading placeholder and queue for rendering.
           children = t('editor.loading')
-          this.mermaidCache.set(`#${block.key}`, {
-            code,
-            functionType
-          })
+          this.mermaidCache.set(mermaidKey, { code, functionType })
         }
         break
       }
