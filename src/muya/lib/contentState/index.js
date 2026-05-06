@@ -269,6 +269,7 @@ class ContentState {
     if (isRenderCursor) {
       this._ensureCursorBlockReal()
       this.setCursor()
+      this._anchorCursorInViewport()
     } else {
       this.muya.blur()
     }
@@ -322,6 +323,7 @@ class ContentState {
     if (isRenderCursor) {
       this._ensureCursorBlockReal()
       this.setCursor()
+      this._anchorCursorInViewport()
     } else {
       this.muya.blur()
     }
@@ -342,6 +344,7 @@ class ContentState {
     this.stateRender.singleRender(block, activeBlocks, matches)
     if (isRenderCursor) {
       this.setCursor()
+      this._anchorCursorInViewport()
     } else {
       this.muya.blur()
     }
@@ -968,6 +971,16 @@ class ContentState {
       if (!block) return
       this.singleRender(block, false)
     }
+  }
+
+  _anchorCursorInViewport() {
+    if (!this.cursor || !this.cursor.start) return
+    const { key } = this.cursor.start
+    const dom = document.getElementById(key)
+    if (!dom || dom.hasAttribute('data-placeholder')) return
+    // Use the same approach as search: bring the cursor block into view
+    // if it's not visible, no-op if already in viewport.
+    dom.scrollIntoView({ block: 'nearest', behavior: 'instant' })
   }
 }
 
