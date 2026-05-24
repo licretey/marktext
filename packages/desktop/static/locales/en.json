@@ -212,7 +212,9 @@
       "tokyoNight": "Tokyo Night",
       "tokyoNightLight": "Tokyo Night Light",
       "tokyoNightStorm": "Tokyo Night Storm",
-      "ulyssesLight": "Ulysses Light"
+      "ulyssesLight": "Ulysses Light",
+      "financeLight": "Finance Light",
+      "financeDark": "Finance Dark"
     }
   },
   "contextMenu": {

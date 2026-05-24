@@ -34,6 +34,8 @@ import solarizedLightTheme from '../assets/themes/solarized-light.theme.css?inli
 import ayuLightTheme from '../assets/themes/ayu-light.theme.css?inline'
 import everforestLightTheme from '../assets/themes/everforest-light.theme.css?inline'
 import rosePineDawnTheme from '../assets/themes/rose-pine-dawn.theme.css?inline'
+import financeLightTheme from '../assets/themes/finance-light.theme.css?inline'
+import financeDarkTheme from '../assets/themes/finance-dark.theme.css?inline'
 
 // Prism.js syntax highlighting themes
 import darkPrismTheme from '../assets/themes/prismjs/dark.theme.css?inline'
@@ -197,4 +199,13 @@ export const everforestLight = (): string => {
 
 export const rosePineDawn = (): string => {
   return rosePineDawnTheme + '\n' + rosePineDawnPrismTheme
+}
+
+// Finance themes
+export const financeLight = (): string => {
+  return financeLightTheme
+}
+
+export const financeDark = (): string => {
+  return financeDarkTheme + '\n' + darkPrismTheme
 }
