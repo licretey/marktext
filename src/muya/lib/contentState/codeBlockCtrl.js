@@ -36,6 +36,7 @@ const codeBlockCtrl = (ContentState) => {
 
   ContentState.prototype.selectLanguage = function(paragraph, lang) {
     const block = this.getBlock(paragraph.id)
+    if (!block) return
     if (lang === 'math' && this.isGitlabCompatibilityEnabled && this.updateMathBlock(block)) {
       return
     }
@@ -49,6 +50,7 @@ const codeBlockCtrl = (ContentState) => {
    * @param lang Language identifier
    */
   ContentState.prototype.updateCodeLanguage = function(block, lang) {
+    if (!block) return
     if (!lang || typeof lang !== 'string') {
       console.error('Invalid code block language string:', lang)
 
