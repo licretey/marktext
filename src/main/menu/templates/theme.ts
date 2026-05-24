@@ -134,6 +134,16 @@ export default function(userPreference: Preference): MenuItemConstructorOptions 
         actions.selectTheme('ulysses')
       }
     },
+    {
+      label: t('menu.theme.financeLight'),
+      type: 'radio',
+      id: 'finance-light',
+      enabled: isThemeSelectionEnabled,
+      checked: theme === 'finance-light',
+      click() {
+        actions.selectTheme('finance-light')
+      }
+    },
     { type: 'separator' },
     // Dark Themes (alphabetical)
     {
@@ -358,6 +368,16 @@ export default function(userPreference: Preference): MenuItemConstructorOptions 
       checked: theme === 'tokyo-night',
       click() {
         actions.selectTheme('tokyo-night')
+      }
+    },
+    {
+      label: t('menu.theme.financeDark'),
+      type: 'radio',
+      id: 'finance-dark',
+      enabled: isThemeSelectionEnabled,
+      checked: theme === 'finance-dark',
+      click() {
+        actions.selectTheme('finance-dark')
       }
     },
     {

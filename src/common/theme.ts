@@ -21,7 +21,8 @@ export const railscastsThemes: readonly string[] = Object.freeze([
   'oxocarbon-dark',
   'kanagawa',
   'nightfox',
-  'cyberdream'
+  'cyberdream',
+  'finance-dark'
 ])
 
 export const oneDarkThemes: readonly string[] = Object.freeze(['one-dark'])

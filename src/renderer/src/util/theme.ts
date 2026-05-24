@@ -39,7 +39,9 @@ import {
   solarizedLight,
   ayuLight,
   everforestLight,
-  rosePineDawn
+  rosePineDawn,
+  financeLight,
+  financeDark
 } from './themeColor'
 import { isLinux } from './index'
 
@@ -168,6 +170,12 @@ export const addThemeStyle = (theme: string): void => {
       break
     case 'rose-pine-dawn':
       themeStyleEle.innerHTML = patchTheme(rosePineDawn())
+      break
+    case 'finance-light':
+      themeStyleEle.innerHTML = patchTheme(financeLight())
+      break
+    case 'finance-dark':
+      themeStyleEle.innerHTML = patchTheme(financeDark())
       break
     default:
       break
