@@ -37,6 +37,11 @@ import rosePineDawnTheme from '../assets/themes/rose-pine-dawn.theme.css?inline'
 import financeLightTheme from '../assets/themes/finance-light.theme.css?inline'
 import financeDarkTheme from '../assets/themes/finance-dark.theme.css?inline'
 
+// Kami themes
+import kamiTheme from '../assets/themes/kami.theme.css?inline'
+import kamiYamiTheme from '../assets/themes/kami-yami.theme.css?inline'
+import kamiRainbowTheme from '../assets/themes/kami-rainbow.theme.css?inline'
+
 // Prism.js syntax highlighting themes
 import darkPrismTheme from '../assets/themes/prismjs/dark.theme.css?inline'
 import oneDarkPrismTheme from '../assets/themes/prismjs/one-dark.theme.css?inline'
@@ -69,6 +74,9 @@ import nightfoxPrismTheme from '../assets/themes/prismjs/nightfox.theme.css?inli
 import cyberdreamPrismTheme from '../assets/themes/prismjs/cyberdream.theme.css?inline'
 import graphitePrismTheme from '../assets/themes/prismjs/graphite.theme.css?inline'
 import ulyssesPrismTheme from '../assets/themes/prismjs/ulysses.theme.css?inline'
+import kamiPrismTheme from '../assets/themes/prismjs/kami.theme.css?inline'
+import kamiYamiPrismTheme from '../assets/themes/prismjs/kami-yami.theme.css?inline'
+import kamiRainbowPrismTheme from '../assets/themes/prismjs/kami-rainbow.theme.css?inline'
 
 // Original themes
 export const dark = (): string => {
@@ -208,4 +216,17 @@ export const financeLight = (): string => {
 
 export const financeDark = (): string => {
   return financeDarkTheme + '\n' + darkPrismTheme
+}
+
+// Kami themes
+export const kami = (): string => {
+  return kamiTheme + '\n' + kamiPrismTheme
+}
+
+export const kamiYami = (): string => {
+  return kamiYamiTheme + '\n' + kamiYamiPrismTheme
+}
+
+export const kamiRainbow = (): string => {
+  return kamiRainbowTheme + '\n' + kamiRainbowPrismTheme
 }

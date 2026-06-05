@@ -95,6 +95,26 @@ export default function(userPreference: Preference): MenuItemConstructorOptions 
       }
     },
     {
+      label: t('menu.theme.kami'),
+      type: 'radio',
+      id: 'kami',
+      enabled: isThemeSelectionEnabled,
+      checked: theme === 'kami',
+      click() {
+        actions.selectTheme('kami')
+      }
+    },
+    {
+      label: t('menu.theme.kamiRainbow'),
+      type: 'radio',
+      id: 'kami-rainbow',
+      enabled: isThemeSelectionEnabled,
+      checked: theme === 'kami-rainbow',
+      click() {
+        actions.selectTheme('kami-rainbow')
+      }
+    },
+    {
       label: t('menu.theme.rosePineDawn'),
       type: 'radio',
       id: 'rose-pine-dawn',
@@ -238,6 +258,16 @@ export default function(userPreference: Preference): MenuItemConstructorOptions 
       checked: theme === 'horizon-dark',
       click() {
         actions.selectTheme('horizon-dark')
+      }
+    },
+    {
+      label: t('menu.theme.kamiYami'),
+      type: 'radio',
+      id: 'kami-yami',
+      enabled: isThemeSelectionEnabled,
+      checked: theme === 'kami-yami',
+      click() {
+        actions.selectTheme('kami-yami')
       }
     },
     {
