@@ -17,10 +17,11 @@ export const railscastsThemes: readonly string[] = Object.freeze([
   'monokai-pro',
   'synthwave-84',
   'horizon-dark',
-  'palenight',
-  'oxocarbon-dark',
+  'kami-yami',
   'kanagawa',
   'nightfox',
+  'oxocarbon-dark',
+  'palenight',
   'cyberdream'
 ])
 

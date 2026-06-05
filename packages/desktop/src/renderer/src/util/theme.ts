@@ -39,7 +39,11 @@ import {
   solarizedLight,
   ayuLight,
   everforestLight,
-  rosePineDawn
+  rosePineDawn,
+  // Kami themes
+  kami,
+  kamiYami,
+  kamiRainbow
 } from './themeColor'
 import { isLinux } from './index'
 
@@ -132,6 +136,9 @@ export const addThemeStyle = (theme: string): void => {
     case 'horizon-dark':
       themeStyleEle.innerHTML = patchTheme(horizonDark())
       break
+    case 'kami-yami':
+      themeStyleEle.innerHTML = patchTheme(kamiYami())
+      break
     case 'palenight':
       themeStyleEle.innerHTML = patchTheme(palenight())
       break
@@ -153,6 +160,13 @@ export const addThemeStyle = (theme: string): void => {
       break
     case 'gruvbox-light':
       themeStyleEle.innerHTML = patchTheme(gruvboxLight())
+      break
+    // Kami themes - Light
+    case 'kami':
+      themeStyleEle.innerHTML = patchTheme(kami())
+      break
+    case 'kami-rainbow':
+      themeStyleEle.innerHTML = patchTheme(kamiRainbow())
       break
     case 'tokyo-night-light':
       themeStyleEle.innerHTML = patchTheme(tokyoNightLight())

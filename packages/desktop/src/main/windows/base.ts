@@ -166,6 +166,11 @@ class BaseWindow extends TypedEmitter<BaseWindowEvents> {
         return '#f7f7f7'
       case 'one-dark':
         return '#282c34'
+      case 'kami':
+      case 'kami-rainbow':
+        return '#f5f4ed'
+      case 'kami-yami':
+        return '#1a1a18'
       case 'light':
       default:
         return '#ffffff'
