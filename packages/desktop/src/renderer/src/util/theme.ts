@@ -40,9 +40,9 @@ import {
   ayuLight,
   everforestLight,
   rosePineDawn,
+  // Finance themes
   financeLight,
   financeDark,
-  rosePineDawn,
   // Kami themes
   kami,
   kamiYami,

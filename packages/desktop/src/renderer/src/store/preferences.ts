@@ -112,6 +112,7 @@ export interface PreferencesState {
   typewriter: boolean
   focus: boolean
   sourceCode: boolean
+  cleanWrite: boolean
 
   // ----- User config -----
   imageFolderPath: string
